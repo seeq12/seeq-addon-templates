@@ -1,0 +1,1 @@
+# seeq-addons-templates
