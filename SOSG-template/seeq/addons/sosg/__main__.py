@@ -5,7 +5,7 @@ import subprocess
 from getpass import getpass
 from urllib.parse import urlparse
 from seeq import sdk, spy
-from ._copy import copy
+from ._copy import copy_notebooks
 from ._utils import sanitize_sdl_url, permissions_defaults
 from ._utils import get_datalab_project_id, addon_tool_management
 
@@ -58,8 +58,8 @@ def install_app(sdl_url_, *, sort_key=None, permissions_group: list = None, perm
                          users=permissions_users)
     )
 
-    copy(des_folder=DEPLOYMENT_FOLDER, src_folder='mypackage/deployment_notebook',
-         overwrite_folder=False, overwrite_contents=True)
+    copy_notebooks(des_folder=DEPLOYMENT_FOLDER, src_folder='mypackage/deployment_notebook', overwrite_folder=False,
+                   overwrite_contents=True)
     addon_tool_management(add_on_details)
 
 

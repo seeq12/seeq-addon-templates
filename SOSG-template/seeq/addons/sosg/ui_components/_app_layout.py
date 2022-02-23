@@ -1,0 +1,68 @@
+import ipyvuetify as v
+import traitlets
+import ipywidgets as widgets
+from pathlib import Path
+
+from ._hamburger_menu import HamburgerMenu
+
+CURRENT_DIR = Path(__file__).parent.resolve()
+TEMPLATES_DIR = CURRENT_DIR.joinpath('templates')
+STATIC_DIR = TEMPLATES_DIR.joinpath('static')
+TEMPLATE_FILE = '_app_layout.vue'
+
+
+class AppLayout(v.VuetifyTemplate):
+    """
+    UI component - Layout of the Add-on
+
+    Attributes
+    ----------
+    btn_loading: bool
+        If True, it shows the loading spinner on the Signal to Workbench button
+    disabled_controls: bool
+        If True, it disables all components within the v-card
+    first_dropdown_items: list
+        Items of the First Signal dropdown
+    first_dropdown_value: str
+        Selected item of the First Signal dropdown
+    math_operator_value: str
+        Selected item of the Math Operator dropdown
+    second_dropdown_items: list
+        Items of the Second Signal dropdown
+    second_dropdown_value: str
+        Selected item of the Second Signal dropdown
+    signal_plot: plotly.graph_objects.FigureWidget
+        A plotly.graph_objects.FigureWidget instance with the Plotly plot of
+        the resulting signal.
+    visualization: {'plot', 'message'}
+        If 'plot', it will display the AppLayout.signal_plot widget;
+        if 'message', it will display the alternative message instead of the plot.
+    template_file: str
+        Modifies the VueTemplate.template_file attribute with the
+        seeq.addons.causality.ui_components.templates._app_layout.vue template
+    """
+
+    template_file = str(TEMPLATES_DIR.joinpath(TEMPLATE_FILE))
+
+    disabled_controls = traitlets.Bool(default_value=False).tag(sync=True)
+    first_dropdown_items = traitlets.List(default_value=[]).tag(sync=True)
+    first_dropdown_value = traitlets.Unicode(default_value='').tag(sync=True)
+    math_operator_value = traitlets.Unicode(default_value='+').tag(sync=True)
+    second_dropdown_items = traitlets.List(default_value=[]).tag(sync=True)
+    second_dropdown_value = traitlets.Unicode(default_value='').tag(sync=True)
+    btn_loading = traitlets.Bool(default_value=False).tag(sync=True)
+    signal_plot = traitlets.Any().tag(sync=True, **widgets.widget_serialization)
+    visualization = traitlets.Unicode(default_value='message').tag(sync=True)
+
+    def __init__(self,
+                 *args,
+                 **kwargs
+                 ):
+        super().__init__(*args, **kwargs)
+
+        # Components
+        self.hamburger_menu = HamburgerMenu(**kwargs)
+
+        self.components = {
+            'hamburger-menu': self.hamburger_menu,
+        }
