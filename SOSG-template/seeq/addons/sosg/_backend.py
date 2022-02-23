@@ -1,0 +1,32 @@
+"""
+This is a dummy file that contains some functions (it could be classes) to perform backend calculations
+"""
+
+import numpy as np
+import pandas as pd
+from seeq import spy
+
+
+def create_new_signal(signal_a: np.array, signal_b: np.array, index: pd.Index, operation):
+    if operation not in ['add', 'subtract', 'multiply', 'divide']:
+        raise NameError(f"{operation} is not a supported math operator")
+    return pd.DataFrame(getattr(np, operation)(signal_a, signal_b), index=index, columns=['Result'])
+
+
+def pull_only_signals(url, grid='auto'):
+    worksheet = spy.utils.get_analysis_worksheet_from_url(url)
+    start = worksheet.display_range['Start']
+    end = worksheet.display_range['End']
+
+    search_df = spy.search(url, estimate_sample_period=worksheet.display_range, quiet=True)
+    if search_df.empty:
+        return pd.DataFrame()
+    search_signals_df = search_df[search_df['Type'].str.contains('Signal')]
+
+    df = spy.pull(search_signals_df, start=start, end=end, grid=grid, header='ID', quiet=True,
+                  status=spy.Status(quiet=True))
+    return df
+
+
+def push_signal(df, workbook_id, worksheet_name):
+    spy.push(df, workbook=workbook_id, worksheet=worksheet_name, status=spy.Status(quiet=True), quiet=True)
