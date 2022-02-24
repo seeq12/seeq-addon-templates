@@ -48,7 +48,7 @@ class AppLayout(v.VuetifyTemplate):
     template_file = str(TEMPLATES_DIR.joinpath(TEMPLATE_FILE))
 
     disabled_controls = traitlets.Bool(default_value=False).tag(sync=True)
-    btn_disabled = traitlets.Bool(default_value=False).tag(sync=True)
+    btn_disabled = traitlets.Bool(default_value=True).tag(sync=True)
     first_dropdown_items = traitlets.List(default_value=[]).tag(sync=True)
     first_dropdown_value = traitlets.Unicode(default_value='').tag(sync=True)
     math_operator_value = traitlets.Unicode(default_value='+').tag(sync=True)

@@ -10,41 +10,40 @@ the repository. That being said, feel free to change this file according to your
 </p>
 
 <p align="center">
-  <a href="https://seeq12.github.io/seeq-<app-name>/index.html" rel="nofollow">
-    <img src="https://seeq12.github.io/seeq-<app-name>/_static/your_image.png" alt="add-on-catchy-image.png">
+  <a href="https://seeq12.github.io/seeq-<addon-name>/index.html" rel="nofollow">
+    <img src="https://seeq12.github.io/seeq-<addon-name>/_static/your_image.png" alt="add-on-catchy-image.png">
   </a>
 </p>
 
 ----
 
-**seeq-<app-name>** is a Python module to ...
+**seeq-<addon-name>** is a Python module to ...
 
 ----
 
 # Documentation
 
-The documentation for **seeq-<app-name>** can be found
-[**here**](https://seeq12.github.io/seeq-<app-name>/index.html).
+The documentation for **seeq-<addon-name>** can be found
+[**here**](https://seeq12.github.io/seeq-<addon-name>/index.html).
 
 ----
 
 # User Guide
 
-[**seeq-<app-name> User Guide**](https://seeq12.github.io/seeq-<app-name>/user_guide.html)
-provides a more in-depth explanation of .... Examples of typical types
-of analyses using **seeq-<app-name>** can be found in the
-section [Use Cases](https://seeq12.github.io/seeq-<app-name>/examples.html).
+[**seeq-<addon-name> User Guide**](https://seeq12.github.io/seeq-<addon-name>/user_guide.html)
+provides a more in-depth explanation of .... Examples of typical types of analyses using **seeq-<addon-name>** can be
+found in the section [Use Cases](https://seeq12.github.io/seeq-<addon-name>/examples.html).
 
 
 -----
 
 # Installation
 
-The backend of **seeq-<app-name>** requires **Python 3.7** or later.
+The backend of **seeq-<addon-name>** requires **Python 3.7** or later.
 
 ## Dependencies
 
-See [`requirements.txt`](https://github.com/seeq12/seeq-<app-name>/tree/master/requirements.txt) file for a list of
+See [`requirements.txt`](https://github.com/seeq12/seeq-<addon-name>/tree/master/requirements.txt) file for a list of
 dependencies and versions...
 
 ## User Installation Requirements (Seeq Data Lab)
@@ -53,12 +52,12 @@ dependencies and versions...
 
 ## User Installation (Seeq Data Lab)
 
-The latest build of the project can be found [here](https://pypi.org/project/seeq-<app-name>/) as a wheel file. The
+The latest build of the project can be found [here](https://pypi.org/project/seeq-<addon-name>/) as a wheel file. The
 file is published as a courtesy to the user, and it does not imply any obligation for support from the publisher.
 
 1. Create a **new** Seeq Data Lab project and open the **Terminal** window
-2. Run `pip install seeq-<app-name>`
-3. Run `python -m seeq.addons.<app-name> [--users <users_list> --groups <groups_list>]`
+2. Run `pip install seeq-<addon-name>`
+3. Run `python -m seeq.addons.<addon-name> [--users <users_list> --groups <groups_list>]`
 
 ----
 
@@ -69,15 +68,15 @@ contributing code, documentation, tests, etc.
 
 ## Important links
 
-* Official source code repo: https://github.com/seeq12/seeq-<app-name>
-* Issue tracker: https://github.com/seeq12/seeq-<app-name>/issues
+* Official source code repo: https://github.com/seeq12/seeq-<addon-name>
+* Issue tracker: https://github.com/seeq12/seeq-<addon-name>/issues
 
 ## Source code
 
 You can get started by cloning the repository with the command:
 
 ```shell
-git clone git@github.com:seeq12/seeq-<app-name>.git
+git clone git@github.com:seeq12/seeq-<addon-name>.git
 ```
 
 ## Installation from source
@@ -86,7 +85,7 @@ For development work, it is highly recommended creating a python virtual environ
 working environment. If you are not familiar with python virtual environments, you can take a
 look [here](https://docs.python.org/3.8/tutorial/venv.html)
 
-Once your virtual environment is activated, you can install **seeq-<app-name>** from source with:
+Once your virtual environment is activated, you can install **seeq-<addon-name>** from source with:
 
 ```shell
 python setup.py install
@@ -94,11 +93,11 @@ python setup.py install
 
 ## Testing
 
-There are several types of testing available for **seeq-<app-name>**
+There are several types of testing available for **seeq-<addon-name>**
 
 ### Automatic Testing
 
-After installation, you can launch the test suite from the root directory of the project (i.e. `seeq-<app-name>`
+After installation, you can launch the test suite from the root directory of the project (i.e. `seeq-<addon-name>`
 directory). You will need to have pytest >= 5.0.1 installed
 
 To run all tests:
@@ -132,7 +131,7 @@ run `developer_notebook.ipynb` notebook there.
 
 # Changelog
 
-The changelog can be found [**here**](https://seeq12.github.io/seeq-<app-name>/changelog.html)
+The changelog can be found [**here**](https://seeq12.github.io/seeq-<addon-name>/changelog.html)
 
 
 ----
@@ -140,7 +139,7 @@ The changelog can be found [**here**](https://seeq12.github.io/seeq-<app-name>/c
 # Support
 
 Code related issues (e.g. bugs, feature requests) can be created in the
-[issue tracker](https://github.com/seeq12/seeq-<app-name>/issues)
+[issue tracker](https://github.com/seeq12/seeq-<addon-name>/issues)
 
 
 ----
@@ -150,9 +149,9 @@ Code related issues (e.g. bugs, feature requests) can be created in the
 Please cite this work as:
 
 ```shell
-seeq-<app-name>
+seeq-<addon-name>
 Seeq Corporation, 2021
-https://github.com/seeq12/seeq-<app-name>
+https://github.com/seeq12/seeq-<addon-name>
 ```
 
 

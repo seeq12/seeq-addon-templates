@@ -41,4 +41,4 @@ def pull_only_signals(url, grid='auto'):
 
 
 def push_signal(df, workbook_id, worksheet_name):
-    spy.push(df, workbook=workbook_id, worksheet=worksheet_name, status=spy.Status(quiet=True), quiet=True)
+    return spy.push(df, workbook=workbook_id, worksheet=worksheet_name, status=spy.Status(quiet=True), quiet=True)

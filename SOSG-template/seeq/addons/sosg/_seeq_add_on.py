@@ -2,6 +2,7 @@ import warnings
 import pandas as pd
 import plotly.graph_objects as go
 from IPython.display import clear_output
+from IPython.display import display, Javascript
 
 from . import create_new_signal, df_plot, pull_only_signals
 from ._backend import push_signal
@@ -81,7 +82,8 @@ class MyAddOn(AppLayout):
         self.create_displayed_fig(fig)
 
     def push_to_seeq(self, *_):
-        push_signal(self.result_signal, self.workbook_id, 'From My Add-on')
+        df_pushed = push_signal(self.result_signal, self.workbook_id, 'From My Add-on')
+        display(Javascript(f'window.open("{df_pushed.spy.workbook_url}");'))
 
     def run(self):
         return self

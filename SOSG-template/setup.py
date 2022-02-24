@@ -26,32 +26,27 @@ with open("seeq/addons/sosg/_version.py", "r+") as f:
         print(str(e))
         raise
 
+# The metadata included here will be visible in PyPI if the artifact is published
 setup_args = dict(
-    name='seeq-correlation',
+    name='seeq-addon-template',
     version=version_scope['__version__'],
-    author="Seeq Corporation",
-    author_email="applied.research@seeq.com",
+    author="Alberto Rivas",
+    author_email="alberto.rivas@seeq.com",
     license='Apache License 2.0',
     platforms=["Linux", "Windows"],
-    description="Correlation analysis of time series data in Seeq",
+    description="Template for SOSG Add-On",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/seeq12/seeq-correlation",
+    url="https://github.com/seeq12/<app-name>",
     packages=setuptools.find_namespace_packages(include=[namespace]),
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'dask[complete]>=2021.10.0',
+        "ipywidgets>=7.6.3",
         'ipyvuetify>=1.5.1',
-        'matplotlib>=3.1.3',
-        'memoization>=0.2.2',
         'numpy>=1.19.5',
         'pandas>=1.2.1',
         'plotly>=4.5.0',
-        'python-dateutil>=2.8.1',
-        'scikit-learn>=0.22.1',
-        'seaborn>=0.10.0',
-        'sklearn>=0.0',
     ],
     classifiers=[
         "Programming Language :: Python :: 3.7",
