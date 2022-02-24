@@ -9,7 +9,7 @@ directory = Path(__file__).resolve().parent.parent
 def copy_notebooks(des_folder=None, src_folder=None, *, overwrite_folder=False, overwrite_contents=False):
     """
     Copies the files on the src_folder to a des_folder in the current working directory.
-    This function should be called again with overwrite=True if the Correlation package is updated.
+    This function should be called again with overwrite=True if the package is updated.
 
     Parameters
     ----------

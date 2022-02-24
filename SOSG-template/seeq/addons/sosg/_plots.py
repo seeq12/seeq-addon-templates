@@ -4,6 +4,20 @@ pd.options.plotting.backend = "plotly"
 
 
 def df_plot(df):
+    """
+    This function makes a plot of the dataframe that is passed into the
+    function and modifies some layout settings of the plot layout.
+
+    Parameters
+    ----------
+    df: pd.DataFrame
+        DataFrame to be plotted
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+
+    """
     if df.empty:
         return None
     fig = df.plot()

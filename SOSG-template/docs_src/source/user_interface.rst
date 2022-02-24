@@ -1,14 +1,10 @@
 User Interface
 ------------------
 
-.. automodule:: seeq.addons.correlation._heatmap
+.. automodule:: seeq.addons.sosg._plots
    :members:
    :show-inheritance:
 
-.. automodule:: seeq.addons.correlation._pairplot
-   :members:
-   :show-inheritance:
-
-.. automodule:: seeq.addons.correlation._seeq_add_on
+.. automodule:: seeq.addons.sosg._seeq_add_on
    :members:
    :show-inheritance:

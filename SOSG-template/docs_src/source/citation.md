@@ -3,7 +3,7 @@
 Please cite this work as:
 
 ```shell
-seeq-correlation
+seeq-<addon-name>
 Seeq Corporation, 2021
-https://github.com/seeq12/seeq-correlation
+https://github.com/seeq12/seeq-<addon-name>
 ```

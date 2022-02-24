@@ -1,6 +1,6 @@
 Add-on Installation
 -------------------
 
-.. automodule:: seeq.addons.correlation.__main__
+.. automodule:: seeq.addons.sosg.__main__
    :members:
    :show-inheritance:

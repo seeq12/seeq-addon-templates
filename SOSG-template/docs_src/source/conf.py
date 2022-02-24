@@ -15,7 +15,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('../..'))
-from seeq.addons import correlation
+from seeq.addons import sosg
 
 # -- Project information -----------------------------------------------------
 
@@ -24,8 +24,8 @@ copyright = '2021, Seeq Corporation'
 author = 'Alberto Rivas'
 
 # The full version, including alpha/beta/rc tags
-version = correlation.__version__
-release = correlation.__version__
+version = sosg.__version__
+release = sosg.__version__
 
 # -- General configuration ---------------------------------------------------
 
@@ -36,6 +36,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     'sphinx.ext.intersphinx',
+    'sphinx.ext.githubpages',
     'sphinx.ext.viewcode',
     'myst_parser'
 ]

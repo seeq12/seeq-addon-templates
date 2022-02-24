@@ -1,10 +1,11 @@
 ..
-    seeq-correlation documentation master file, created by
+    documentation master file, created by
     sphinx-quickstart on Sun Oct 10 15:56:25 2021.
+    However, it has been adapted for SOSG projects.
     You can adapt this file completely to your liking, but it should at least
     contain the root `toctree` directive.
 
-Welcome to seeq-correlation's documentation
+Welcome to YOUR ADDON documentation
 ============================================
 
 .. toctree::
@@ -14,7 +15,7 @@ Welcome to seeq-correlation's documentation
    Introduction <introduction.md>
    Installation <installation.md>
    User Guide <user_guide.md>
-   Use Cases <examples.md>
+   Use Cases <use_cases.md>
    Code Documentation <docstrings.rst>
    Changelog <changelog.md>
    License <license.md>

@@ -8,6 +8,25 @@ from seeq import spy
 
 
 def create_new_signal(signal_a: np.array, signal_b: np.array, index: pd.Index, operation):
+    """
+    Creates resulting signal from the input signals
+
+    Parameters
+    ----------
+    signal_a: pd.DataFrame
+        First input signal
+    signal_b: pd.DataFrame
+        Second input signal
+    index: pd.Index
+        DataFrame index of the resulting signal
+    operation: {'add', 'subtract', 'multiply', 'divide'}
+        Determines the math operation applied to signal_a with signal_b
+
+    Returns
+    -------
+    pd.DataFrame
+
+    """
     if operation not in ['add', 'subtract', 'multiply', 'divide']:
         raise NameError(f"{operation} is not a supported math operator")
     return pd.DataFrame(getattr(np, operation)(signal_a, signal_b), index=index, columns=['Result'])

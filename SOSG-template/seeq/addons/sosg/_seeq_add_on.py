@@ -13,6 +13,13 @@ warnings.filterwarnings('ignore')
 
 
 class MyAddOn(AppLayout):
+    """
+    This is the main class for the User Interface of the <Add on Name> Add-on.
+    To create an instance, either a Seeq Data Lab project URL with appropriate
+    query parameters or pd.DataFrame must be passed.
+
+    """
+
     def __init__(self, sdl_notebook_url):
         self.workbook_id, self.worksheet_id, self.workstep_id = get_workbook_worksheet_workstep_ids(
             sdl_notebook_url)

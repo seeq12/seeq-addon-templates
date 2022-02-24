@@ -13,6 +13,17 @@ def get_worksheet_url(jupyter_notebook_url):
 
 
 def get_workbook_worksheet_workstep_ids(url):
+    """
+    Gets the workbook, worksheet, and worksteps IDs from the URL
+    Parameters
+    ----------
+    url: str
+        Seeq URL
+
+    Returns
+    -------
+    tuple
+    """
     parsed = parse_url(url)
     params = parse_qs(parsed.query)
     workbook_id = None
