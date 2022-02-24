@@ -41,7 +41,7 @@ def copy_notebooks(des_folder=None, src_folder=None, *, overwrite_folder=False, 
     des_folder_path = Path.cwd().joinpath(des_folder)
 
     if not src_folder:
-        src_folder = 'deployment_notebook'
+        src_folder = '../deployment_notebook'
     src_folder_path = directory.joinpath(src_folder)
 
     if des_folder_path.exists():

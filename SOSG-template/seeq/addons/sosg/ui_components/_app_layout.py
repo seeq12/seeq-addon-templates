@@ -20,6 +20,8 @@ class AppLayout(v.VuetifyTemplate):
     ----------
     btn_loading: bool
         If True, it shows the loading spinner on the Signal to Workbench button
+    btn_disabled: bool
+        If True, it disables the Signal to Workbench button
     disabled_controls: bool
         If True, it disables all components within the v-card
     first_dropdown_items: list
@@ -46,6 +48,7 @@ class AppLayout(v.VuetifyTemplate):
     template_file = str(TEMPLATES_DIR.joinpath(TEMPLATE_FILE))
 
     disabled_controls = traitlets.Bool(default_value=False).tag(sync=True)
+    btn_disabled = traitlets.Bool(default_value=False).tag(sync=True)
     first_dropdown_items = traitlets.List(default_value=[]).tag(sync=True)
     first_dropdown_value = traitlets.Unicode(default_value='').tag(sync=True)
     math_operator_value = traitlets.Unicode(default_value='+').tag(sync=True)
@@ -60,6 +63,7 @@ class AppLayout(v.VuetifyTemplate):
                  first_signal_on_change: Callable[[str], None] = None,
                  second_signal_on_change: Callable[[str], None] = None,
                  math_operator_on_change: Callable[[str], None] = None,
+                 push_to_seeq_on_click: Callable[[], None] = None,
                  **kwargs
                  ):
         super().__init__(*args, **kwargs)
@@ -75,6 +79,7 @@ class AppLayout(v.VuetifyTemplate):
         self.first_signal_on_change = first_signal_on_change
         self.second_signal_on_change = second_signal_on_change
         self.math_operator_on_change = math_operator_on_change
+        self.push_to_seeq_on_click = push_to_seeq_on_click
 
     def vue_first_signal_on_change(self, data):
         if self.first_signal_on_change is not None:
@@ -87,3 +92,7 @@ class AppLayout(v.VuetifyTemplate):
     def vue_math_operator_on_change(self, data):
         if self.math_operator_on_change is not None:
             self.math_operator_on_change(data)
+
+    def vue_push_to_seeq_on_click(self, data):
+        if self.push_to_seeq_on_click is not None:
+            self.push_to_seeq_on_click(data)

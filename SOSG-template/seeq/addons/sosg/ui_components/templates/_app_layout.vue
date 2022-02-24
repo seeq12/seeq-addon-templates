@@ -86,10 +86,12 @@
 
             <!-- Create Signals -->
             <v-btn
+                :disabled="btn_disabled"
                 style="text-transform: capitalize;"
                 color="primary"
                 target="_blank"
                 :loading="btn_loading"
+                @click="push_to_seeq_on_click"
             >
               Signal to Workbench
             </v-btn>
@@ -112,6 +114,19 @@
             <div>
               No data for resulting signal
             </div>
+          </div>
+          <!-- spinner -->
+          <div
+              :style="((visualization==='spinner')?'height: 200px;': 'display: none !important;')"
+              class="d-flex flex-row justify-center align-center"
+          >
+            <v-progress-circular
+                color="primary"
+                indeterminate
+                size="50"
+                width="6"
+            >
+            </v-progress-circular>
           </div>
         </div>
 
