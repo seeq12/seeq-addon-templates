@@ -48,6 +48,7 @@
                   v-model="first_dropdown_value"
                   style="max-width: 500px"
                   class="mr-5"
+                  @change="first_signal_on_change"
               >
               </v-select>
 
@@ -62,6 +63,7 @@
                   v-model="math_operator_value"
                   style="max-width: 70px"
                   class="mr-5"
+                  @change="math_operator_on_change"
               >
               </v-select>
 
@@ -76,6 +78,7 @@
                   v-model="second_dropdown_value"
                   style="max-width: 500px"
                   class="mr-5"
+                  @change="second_signal_on_change"
               >
               </v-select>
 
@@ -84,7 +87,7 @@
             <!-- Create Signals -->
             <v-btn
                 style="text-transform: capitalize;"
-                color="success"
+                color="primary"
                 target="_blank"
                 :loading="btn_loading"
             >
@@ -104,13 +107,14 @@
               :widget="signal_plot"
           >
           </jupyter-widget>
-        </div>
-        <!-- error message -->
-        <div :style="((visualization==='message')?'': 'display: none !important;')">
-          <div>
-            No data for resulting signal
+          <!-- error message -->
+          <div :style="((visualization==='message')?'': 'display: none !important;')">
+            <div>
+              No data for resulting signal
+            </div>
           </div>
         </div>
+
 
 
       </div>
@@ -183,6 +187,11 @@ div.output_scroll {
   margin-bottom: 0 !important;
 }
 
+.v-application .primary {
+  background-color: #007960 !important;
+  border-color: #007960 !important;
+}
+
 .vuetify-styles .v-text-field__details {
   min-height: 0 !important;
 }
@@ -198,4 +207,10 @@ div.output_scroll {
 .vuetify-styles .v-application {
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
+.v-application .primary--text {
+  color: #007960 !important;
+  caret-color: #007960 !important;
+}
+
 </style>

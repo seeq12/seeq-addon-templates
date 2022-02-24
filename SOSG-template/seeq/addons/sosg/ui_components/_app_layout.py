@@ -1,5 +1,6 @@
 import ipyvuetify as v
 import traitlets
+from typing import Callable
 import ipywidgets as widgets
 from pathlib import Path
 
@@ -56,6 +57,9 @@ class AppLayout(v.VuetifyTemplate):
 
     def __init__(self,
                  *args,
+                 first_signal_on_change: Callable[[str], None] = None,
+                 second_signal_on_change: Callable[[str], None] = None,
+                 math_operator_on_change: Callable[[str], None] = None,
                  **kwargs
                  ):
         super().__init__(*args, **kwargs)
@@ -66,3 +70,20 @@ class AppLayout(v.VuetifyTemplate):
         self.components = {
             'hamburger-menu': self.hamburger_menu,
         }
+
+        # user callback functions
+        self.first_signal_on_change = first_signal_on_change
+        self.second_signal_on_change = second_signal_on_change
+        self.math_operator_on_change = math_operator_on_change
+
+    def vue_first_signal_on_change(self, data):
+        if self.first_signal_on_change is not None:
+            self.first_signal_on_change(data)
+
+    def vue_second_signal_on_change(self, data):
+        if self.second_signal_on_change is not None:
+            self.second_signal_on_change(data)
+
+    def vue_math_operator_on_change(self, data):
+        if self.math_operator_on_change is not None:
+            self.math_operator_on_change(data)
