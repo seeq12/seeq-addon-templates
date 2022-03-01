@@ -1,0 +1,16 @@
+{
+    "project_slug": "seeq-sosg",
+    "project": "sosg",
+    "camelcase_addon_class": "MyOpenSourceAddon",
+    "include_tests": "y",
+    "include_docs": "y",
+    "current_year": "2022",
+    "project_description": "Sample SDL Addon scaffolded based on the cookie cutter template.",
+    "addon_name" : "My Add on example",
+    "addon_description" : "This is a very cool add-on",
+    "addon_icon" : "fa fa-th",
+    "addon_window_details" : "toolbar=0,location=0,left=800,top=400,height=1000,width=1400",
+    "project_license": ["sosg", "marketplace"],
+    "author": "",
+    "author_email": ""
+}
