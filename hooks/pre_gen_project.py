@@ -15,7 +15,7 @@ CURRENT_DIR = Path(__file__).parent.parent.resolve()
 MODULE_REGEX = r'^[_a-zA-Z][_a-zA-Z0-9]+$'
 
 project_name = '{{ cookiecutter.project_name}}'
-docs_only = True if '{{ cookiecutter.docs_only }}' == 'y' else False
+docs_only = True if '{{ cookiecutter.documentation_only }}' == 'y' else False
 addon_class = '{{ cookiecutter.camelcase_addon_class}}'
 addon_name = '{{ cookiecutter.addon_name }}'
 addon_description = '{{ cookiecutter.addon_description }}'

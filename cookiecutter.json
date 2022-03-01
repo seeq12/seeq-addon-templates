@@ -11,7 +11,7 @@
     "addon_icon" : "fa fa-th",
     "addon_window_details" : "toolbar=0,location=0,left=800,top=400,height=1000,width=1400",
     "camelcase_addon_class": "MyAddOnClassName",
-    "include_tests": "y",
-    "include_docs": "y",
-    "docs_only": "n"
+    "include_tests": "yes",
+    "include_docs": "yes",
+    "documentation_only": "no"
 }

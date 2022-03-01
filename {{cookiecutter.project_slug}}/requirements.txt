@@ -14,3 +14,6 @@ traitlets~=5.1.1
 sphinx>=4.4.0
 sphinx-rtd-theme>=1.0.0
 myst-parser>=0.17.0
+{% if cookiecutter.project_license == 'marketplace' -%}
+Cython==0.29.22
+{% endif %}
