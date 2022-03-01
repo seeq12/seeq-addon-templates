@@ -1,6 +1,7 @@
-{% if cookiecutter.project_license == 'sosg' -%} This is an example of the content that goes in the ReadMe file. We are
-trying to be as consistent as possible with the content of this file across SOSG (Seeq Open Source Gallery) projects
-since this is considered the "front-page" of the repository. That being said, feel free to change this file according to
+{% if cookiecutter.project_license == 'sosg' +%} 
+This is an example of the content that goes in the ReadMe file. We are trying to be as consistent as possible with 
+the content of this file across SOSG (Seeq Open Source Gallery) projects since this is considered the "front-page" 
+of the repository. That being said, feel free to change this file according to
 your project needs.
 
 
@@ -11,40 +12,40 @@ your project needs.
 </p>
 
 <p align="center">
-  <a href="https://seeq12.github.io/seeq-<addon-name>/index.html" rel="nofollow">
-    <img src="https://seeq12.github.io/seeq-<addon-name>/_static/your_image.png" alt="add-on-catchy-image.png">
+  <a href="https://seeq12.github.io/{{cookiecutter.project_slug}}/index.html" rel="nofollow">
+    <img src="https://seeq12.github.io/{{cookiecutter.project_slug}}/_static/your_image.png" alt="add-on-catchy-image.png">
   </a>
 </p>
 
 ----
 
-**seeq-<addon-name>** is a Python module to ...
+**{{cookiecutter.project_slug}}** is a Python module to ...
 
 ----
 
 # Documentation
 
-The documentation for **seeq-<addon-name>** can be found
-[**here**](https://seeq12.github.io/seeq-<addon-name>/index.html).
+The documentation for **{{cookiecutter.project_slug}}** can be found
+[**here**](https://seeq12.github.io/{{cookiecutter.project_slug}}/index.html).
 
 ----
 
 # User Guide
 
-[**seeq-<addon-name> User Guide**](https://seeq12.github.io/seeq-<addon-name>/user_guide.html)
-provides a more in-depth explanation of .... Examples of typical types of analyses using **seeq-<addon-name>** can be
-found in the section [Use Cases](https://seeq12.github.io/seeq-<addon-name>/examples.html).
+[**{{cookiecutter.project_slug}} User Guide**](https://seeq12.github.io/{{cookiecutter.project_slug}}/user_guide.html)
+provides a more in-depth explanation of .... Examples of typical types of analyses using **{{cookiecutter.project_slug}}** can be
+found in the section [Use Cases](https://seeq12.github.io/{{cookiecutter.project_slug}}/examples.html).
 
 
 -----
 
 # Installation
 
-The backend of **seeq-<addon-name>** requires **Python 3.7** or later.
+The backend of **{{cookiecutter.project_slug}}** requires **Python 3.7** or later.
 
 ## Dependencies
 
-See [`requirements.txt`](https://github.com/seeq12/seeq-<addon-name>/tree/master/requirements.txt) file for a list of
+See [`requirements.txt`](https://github.com/seeq12/{{cookiecutter.project_slug}}/tree/master/requirements.txt) file for a list of
 dependencies and versions...
 
 ## User Installation Requirements (Seeq Data Lab)
@@ -53,11 +54,11 @@ dependencies and versions...
 
 ## User Installation (Seeq Data Lab)
 
-The latest build of the project can be found [here](https://pypi.org/project/seeq-<addon-name>/) as a wheel file. The
+The latest build of the project can be found [here](https://pypi.org/project/{{cookiecutter.project_slug}}/) as a wheel file. The
 file is published as a courtesy to the user, and it does not imply any obligation for support from the publisher.
 
 1. Create a **new** Seeq Data Lab project and open the **Terminal** window
-2. Run `pip install seeq-<addon-name>`
+2. Run `pip install {{cookiecutter.project_slug}}`
 3. Run `python -m seeq.addons.<addon-name> [--users <users_list> --groups <groups_list>]`
 
 ----
@@ -69,15 +70,15 @@ contributing code, documentation, tests, etc.
 
 ## Important links
 
-* Official source code repo: https://github.com/seeq12/seeq-<addon-name>
-* Issue tracker: https://github.com/seeq12/seeq-<addon-name>/issues
+* Official source code repo: https://github.com/seeq12/{{cookiecutter.project_slug}}
+* Issue tracker: https://github.com/seeq12/{{cookiecutter.project_slug}}/issues
 
 ## Source code
 
 You can get started by cloning the repository with the command:
 
 ```shell
-git clone git@github.com:seeq12/seeq-<addon-name>.git
+git clone git@github.com:seeq12/{{cookiecutter.project_slug}}.git
 ```
 
 ## Installation from source
@@ -86,7 +87,7 @@ For development work, it is highly recommended creating a python virtual environ
 working environment. If you are not familiar with python virtual environments, you can take a
 look [here](https://docs.python.org/3.8/tutorial/venv.html)
 
-Once your virtual environment is activated, you can install **seeq-<addon-name>** from source with:
+Once your virtual environment is activated, you can install **{{cookiecutter.project_slug}}** from source with:
 
 ```shell
 python setup.py install
@@ -94,11 +95,11 @@ python setup.py install
 
 ## Testing
 
-There are several types of testing available for **seeq-<addon-name>**
+There are several types of testing available for **{{cookiecutter.project_slug}}**
 
 ### Automatic Testing
 
-After installation, you can launch the test suite from the root directory of the project (i.e. `seeq-<addon-name>`
+After installation, you can launch the test suite from the root directory of the project (i.e. `{{cookiecutter.project_slug}}`
 directory). You will need to have pytest >= 5.0.1 installed
 
 To run all tests:
@@ -132,7 +133,7 @@ run `developer_notebook.ipynb` notebook there.
 
 # Changelog
 
-The changelog can be found [**here**](https://seeq12.github.io/seeq-<addon-name>/changelog.html)
+The changelog can be found [**here**](https://seeq12.github.io/{{cookiecutter.project_slug}}/changelog.html)
 
 
 ----
@@ -140,7 +141,7 @@ The changelog can be found [**here**](https://seeq12.github.io/seeq-<addon-name>
 # Support
 
 Code related issues (e.g. bugs, feature requests) can be created in the
-[issue tracker](https://github.com/seeq12/seeq-<addon-name>/issues)
+[issue tracker](https://github.com/seeq12/{{cookiecutter.project_slug}}/issues)
 
 
 ----
@@ -173,6 +174,4 @@ are found in: https://seeq12.github.io/{{cookiecutter.project_slug}}/installatio
 The User Guide can be found [here](https://seeq12.github.io/{{cookiecutter.project_slug}}/index.html)
 
 {% endif %}
-
-
 

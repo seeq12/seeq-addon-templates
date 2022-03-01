@@ -13,7 +13,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 version_scope = {'__builtins__': None}
-with open("seeq/addons/{{cookiecutter.project}}/_version.py", "r+") as f:
+with open("seeq/addons/{{cookiecutter.project_name}}/_version.py", "r+") as f:
     version_file = f.read()
     version_line = re.search(r"__version__ = (.*)", version_file)
     if version_line is None:
@@ -132,7 +132,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 version_scope = {'__builtins__': None}
-with open("seeq/addons/{{cookiecutter.project_slug}}/_version.py", "r+") as f:
+with open("seeq/addons/{{cookiecutter.project_name}}/_version.py", "r+") as f:
     version_file = f.read()
     version_line = re.search(r"__version__ = (.*)", version_file)
     if version_line is None:

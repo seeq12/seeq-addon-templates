@@ -1,10 +1,10 @@
 Seeq Interactions
 ------------------
 
-.. automodule:: seeq.addons.{{cookiecutter.project}}.utils._sdl
+.. automodule:: seeq.addons.{{cookiecutter.project_name}}.utils._sdl
    :members:
    :show-inheritance:
 
-.. automodule:: seeq.addons.{{cookiecutter.project}}.utils._copy
+.. automodule:: seeq.addons.{{cookiecutter.project_name}}.utils._copy
    :members:
    :show-inheritance:

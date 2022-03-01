@@ -15,7 +15,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('../..'))
-from seeq.addons import {{cookiecutter.project}}
+from seeq.addons import {{cookiecutter.project_name}}
 
 # -- Project information -----------------------------------------------------
 
@@ -24,8 +24,8 @@ copyright = '{{cookiecutter.current_year}}, Seeq Corporation'
 author = '{{cookiecutter.author}}'
 
 # The full version, including alpha/beta/rc tags
-version = {{cookiecutter.project}}.__version__
-release = {{cookiecutter.project}}.__version__
+version = {{cookiecutter.project_name}}.__version__
+release = {{cookiecutter.project_name}}.__version__
 
 # -- General configuration ---------------------------------------------------
 

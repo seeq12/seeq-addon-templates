@@ -27,4 +27,4 @@ file is published as a courtesy to the user, and it does not imply any obligatio
 
 1. Create a **new** Seeq Data Lab project and open the **Terminal** window
 2. Run `pip install {{cookiecutter.project_slug}}`
-3. Run `python -m seeq.addons.{{cookiecutter.project}} [--users <users_list> --groups <groups_list>]`
+3. Run `python -m seeq.addons.{{cookiecutter.project_name}} [--users <users_list> --groups <groups_list>]`

@@ -10,11 +10,11 @@ from seeq.spy._errors import *
 # noinspection PyProtectedMember
 from seeq.spy import _url
 from seeq.sdk import SystemApi, ConfigurationInputV1, ConfigurationOptionInputV1
-from seeq.addons.{{cookiecutter.project}}.utils import copy_notebooks
+from seeq.addons.{{cookiecutter.project_name}}.utils import copy_notebooks
 
 NB_EXTENSIONS = ['widgetsnbextension', 'plotlywidget', 'ipyvuetify', 'ipyvue']
 DEPLOYMENT_FOLDER = 'deployment'
-DEPLOYMENT_NOTEBOOK = "{{cookiecutter.project}}_deployment.ipynb"
+DEPLOYMENT_NOTEBOOK = "{{cookiecutter.project_name}}_deployment.ipynb"
 DEFAULT_GROUP = ['Everyone']
 DEFAULT_USERS = []
 ADDON_NAME = "{{cookiecutter.addon_name}}"
@@ -174,7 +174,7 @@ if __name__ == '__main__':
         sdl_url = input("Seeq Data Lab project URL: ")
         project_id = spy.utils.get_data_lab_project_id_from_url(sdl_url)
         if not project_id:
-            raise RuntimeError(f'Could not install "seeq-{{cookiecutter.project}}" because the SDL project ID could not be found')
+            raise RuntimeError(f'Could not install "{{cookiecutter.project_slug}}" because the SDL project ID could not be found')
     sdl_url_sanitized = _url.SeeqURL.parse(sdl_url).url
 
     # App Installation

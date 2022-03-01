@@ -1,6 +1,6 @@
 include LICENSE
 global-exclude *.pyc
 global-exclude .ipynb_checkpoints
-graft seeq/addons/{{cookiecutter.project}}/deployment_notebook
-graft seeq/addons/{{cookiecutter.project}}/ui_components/templates
+graft seeq/addons/{{cookiecutter.project_name}}/deployment_notebook
+graft seeq/addons/{{cookiecutter.project_name}}/ui_components/templates
 prune tests

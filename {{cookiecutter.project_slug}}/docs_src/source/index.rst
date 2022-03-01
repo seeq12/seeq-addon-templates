@@ -5,8 +5,8 @@
     You can adapt this file completely to your liking, but it should at least
     contain the root `toctree` directive.
 
-Welcome to YOUR ADDON documentation
-============================================
+Welcome to {{cookiecutter.project_name|upper}} documentation
+==============================================================
 
 .. toctree::
    :maxdepth: 2
@@ -16,11 +16,15 @@ Welcome to YOUR ADDON documentation
    Installation <installation.md>
    User Guide <user_guide.md>
    Use Cases <use_cases.md>
+{%+ if cookiecutter.project_license == 'sosg' +%}
    Code Documentation <docstrings.rst>
+{% endif %}
    Changelog <changelog.md>
    License <license.md>
    Citation <citation.md>
+{%+ if cookiecutter.project_license == 'sosg' +%}
    View on GitHub <github.md>
+{% endif %}
 
 Indices and tables
 ==================
