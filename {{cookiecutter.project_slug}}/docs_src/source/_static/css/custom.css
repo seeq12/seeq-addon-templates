@@ -1,4 +1,4 @@
-{% if cookiecutter.project_license=='sosg'-%}
+{% if cookiecutter.project_license=='open-source'-%}
 /*!
  * angular-loading-bar v0.9.0
  * https://chieffancypants.github.io/angular-loading-bar

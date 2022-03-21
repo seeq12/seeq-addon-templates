@@ -66,7 +66,7 @@ html_static_path = ['_static']
 
 html_favicon = '_static/seeq-favicon.ico'
 
-{% if cookiecutter.project_license == 'sosg' -%}
+{% if cookiecutter.project_license == 'open-source' -%}
 html_logo = '_static/Seeq_logo_darkBlue_sm.png'
 
 # # These paths are either relative to html_static_path

@@ -1,6 +1,6 @@
 # License
 
-{% if cookiecutter.project_license == 'sosg' -%}
+{% if cookiecutter.project_license == 'open-source' -%}
 Copyright [{{cookiecutter.current_year}}] [Seeq Corporation]
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this work except in compliance with the

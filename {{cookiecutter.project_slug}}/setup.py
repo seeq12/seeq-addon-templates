@@ -1,5 +1,5 @@
 # coding: utf-8
-{% if cookiecutter.project_license == 'sosg' -%}
+{% if cookiecutter.project_license == 'open-source' -%}
 import re
 from parver import Version, ParseError
 import setuptools
@@ -35,7 +35,7 @@ setup_args = dict(
     author_email="{{cookiecutter.author_email}}",
     license='Apache License 2.0',
     platforms=["Linux", "Windows"],
-    description="{{cookiecutter.project_description}}",
+    description="{{cookiecutter.demo_addon_class}}",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/seeq12/{{cookiecutter.project_slug}}",
@@ -153,7 +153,7 @@ setup_args = dict(
     author_email="{{cookiecutter.author_email}}",
     # license="No license offered",
     platforms=["Linux", "Windows"],
-    description="{{cookiecutter.project_description}}",
+    description="{{cookiecutter.demo_addon_class}}",
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=setuptools.find_namespace_packages(include=[namespace]),

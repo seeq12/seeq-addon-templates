@@ -125,8 +125,8 @@ def login_attempts(_user):
 
 
 def cli_interface():
-    """ Installs {{cookiecutter.camelcase_addon_class}} as a Seeq Add-on Tool """
-    parser = argparse.ArgumentParser(description='Install {{cookiecutter.camelcase_addon_class}} as a Seeq Add-on Tool')
+    """ Installs {{cookiecutter.demo_addon_class}} as a Seeq Add-on Tool """
+    parser = argparse.ArgumentParser(description='Install {{cookiecutter.demo_addon_class}} as a Seeq Add-on Tool')
     parser.add_argument('--nbextensions_only', action='store_true',
                         help='Only installs the nbextensions without installing or updating the Add-on Tools'
                              'links')
@@ -135,10 +135,10 @@ def cli_interface():
     parser.add_argument('--seeq_url', type=str, nargs='?',
                         help="Seeq hostname URL with the format https://my.seeq.com/ or https://my.seeq.com:34216")
     parser.add_argument('--users', type=str, nargs='*', default=[],
-                        help="List of the Seeq users to will have access to the {{cookiecutter.camelcase_addon_class}}"
+                        help="List of the Seeq users to will have access to the {{cookiecutter.demo_addon_class}}"
                              " Add-on Tool, default: %(default)s")
     parser.add_argument('--groups', type=str, nargs='*', default=['Everyone'],
-                        help="List of the Seeq groups to will have access to the {{cookiecutter.camelcase_addon_class}}"
+                        help="List of the Seeq groups to will have access to the {{cookiecutter.demo_addon_class}}"
                              " Add-on Tool, default: %(default)s")
     return parser.parse_args()
 
@@ -182,7 +182,7 @@ if __name__ == '__main__':
         print('You must be an admin user to install AddOns')
         sys.exit(1)
 
-    print(f"\nThe {{cookiecutter.camelcase_addon_class}} Tool will be installed on the SDL "
+    print(f"\nThe {{cookiecutter.demo_addon_class}} Tool will be installed on the SDL "
           f"notebook: {sdl_url_sanitized}\n"
           f"If this is not your intent, you can quit the installation now ")
     print('\n[enter] to continue or type "quit" to exit installation')

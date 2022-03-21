@@ -1,4 +1,4 @@
-{% if cookiecutter.project_license == 'sosg' %} 
+{% if cookiecutter.project_license == 'open-source' %} 
 This is an example of the content that goes in the ReadMe file. We are trying to be as consistent as possible with 
 the content of this file across SOSG (Seeq Open Source Gallery) projects since this is considered the "front-page" 
 of the repository. That being said, feel free to change this file according to

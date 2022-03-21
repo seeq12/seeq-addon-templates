@@ -16,13 +16,13 @@ Welcome to {{cookiecutter.project_name|upper}} documentation
    Installation <installation.md>
    User Guide <user_guide.md>
    Use Cases <use_cases.md>
-{%+ if cookiecutter.project_license == 'sosg' %}
+{%+ if cookiecutter.project_license == 'open-source' %}
    Code Documentation <docstrings.rst>
 {% endif %}
    Changelog <changelog.md>
    License <license.md>
    Citation <citation.md>
-{%+ if cookiecutter.project_license == 'sosg' %}
+{%+ if cookiecutter.project_license == 'open-source' %}
    View on GitHub <github.md>
 {% endif %}
 
