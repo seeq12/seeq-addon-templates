@@ -92,7 +92,7 @@ def check_project_name(project_name):
 
 @click.command(context_settings=dict(help_option_names=['-h', '--help']))
 @click.version_option(__version__, '-V', '--version', message=version_msg())
-@click.argument('main_command', required=False)
+@click.argument('create', required=False)
 @click.option(
     '-c',
     '--checkout',
@@ -124,7 +124,7 @@ def check_project_name(project_name):
     help='Where to output the generated project dir into',
 )
 def main(
-        main_command,
+        create,
         checkout,
         replay,
         overwrite_if_exists,
@@ -137,16 +137,16 @@ def main(
     # known commands
     known_commands = ['help', 'create']
 
-    if main_command not in known_commands:
+    if create not in known_commands:
         print('\nERROR: Unknown command\n See help below for correct usage. \n\n')
-        main_command = None
+        create = None
 
     # Raising usage, after all commands that should work without args.
-    if not main_command or main_command.lower() == 'help':
+    if not create or create.lower() == 'help':
         click.echo(click.get_current_context().get_help())
         sys.exit(0)
 
-    if main_command.lower() == 'create':
+    if create.lower() == 'create':
 
         context_variables = OrderedDict()
         kwargs = dict(

@@ -3,4 +3,4 @@ from sq_addon_template.cli import main
 
 
 if __name__ == "__main__":  # pragma: no cover
-    main(prog_name="sq_addon_template")
+    main(,
