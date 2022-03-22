@@ -1,22 +1,27 @@
 import json
 import re
-import os
 import sys
 import click
 import datetime
 from collections import OrderedDict
+from pathlib import Path
+import cookiecutter as cookie
 from cookiecutter.main import cookiecutter
-__version__ = '0.1.1'
+from sq_addon_template import __version__
 
 
 NAME_REGEX = r'^[a-zA-Z][_a-zA-Z0-9]+$'
+DIRECTORY = Path(__file__).parent.resolve()
 
 
 def version_msg():
-    """Return the Cookiecutter version, location and Python powering it."""
+    """
+    Return the sq-addon-template version, cookiecutter version, location and
+    Python powering it.
+    """
     python_version = sys.version
-    location = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    message = f"sq-addon-template {__version__} from {location} (Python {python_version})"
+    message = f"sq-addon-template: {__version__}\ncookiecutter: {cookie.__version__}" \
+              f"\nfrom {DIRECTORY.parent.resolve()} (Python {python_version})"
     return message
 
 
@@ -94,9 +99,6 @@ def check_project_name(project_name):
     help='branch, tag or commit to checkout after git clone',
 )
 @click.option(
-    '-v', '--verbose', is_flag=True, help='Print debug information', default=False
-)
-@click.option(
     '--replay',
     is_flag=True,
     help='Do not prompt for parameters and only use information entered previously',
@@ -125,15 +127,11 @@ def main(
         main_command,
         checkout,
         replay,
-        verbose,
         overwrite_if_exists,
         skip_if_file_exists,
         output_dir,
 ):
-    """Create a project from a Cookiecutter project template (TEMPLATE).
-    Cookiecutter is free and open source software, developed and managed by
-    volunteers. If you would like to help out or fund the project, please get
-    in touch at https://github.com/cookiecutter/cookiecutter.
+    """Create a Seeq Add-on project from a Cookiecutter project template.
     """
 
     # known commands
@@ -161,12 +159,12 @@ def main(
 
         if kwargs['replay']:
             # Short-circuit everything and re-run with the information previously entered
-            cookiecutter('.', **kwargs)
+            cookiecutter(DIRECTORY, **kwargs)
             print(f"'{context_variables['project_slug']}' project created successfully")
             return
 
         # defaults
-        with open("cookiecutter.json") as f:
+        with open(Path.joinpath(DIRECTORY, "cookiecutter.json")) as f:
             defaults = json.load(f)
 
         error = True
@@ -205,7 +203,7 @@ def main(
         for k, v in context_variables.items():
             print(f"{k}: {v}")
 
-        cookiecutter('.', no_input=True, extra_context=context_variables, **kwargs)
+        cookiecutter(str(DIRECTORY), no_input=True, extra_context=context_variables, **kwargs)
 
         print(f"'{context_variables['project_slug']}' project created successfully")
 
