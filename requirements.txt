@@ -1,6 +1,4 @@
 cookiecutter
-
-
 click~=8.0.4
 pandas~=1.3.5
 seeq~=53.4.4.183.0

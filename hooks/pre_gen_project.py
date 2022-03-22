@@ -6,7 +6,7 @@ since the value is required to first create the directory.
 """
 import sys
 
-docs_only = True if '{{ cookiecutter.template_type }}' == 'documentation only' else False
+docs_only = True if '{{ cookiecutter.template_type }}' == 'documentation_only' else False
 addon_class = '{{ cookiecutter.demo_addon_class}}'
 addon_name = '{{ cookiecutter.addon_name }}'
 addon_description = '{{ cookiecutter.addon_description }}'

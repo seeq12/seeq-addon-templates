@@ -11,6 +11,7 @@ __version__ = '0.1.1'
 
 NAME_REGEX = r'^[a-zA-Z][_a-zA-Z0-9]+$'
 
+
 def version_msg():
     """Return the Cookiecutter version, location and Python powering it."""
     python_version = sys.version
@@ -37,15 +38,15 @@ def request_user_input(variable, friendly_name, context_variables, defaults, use
 def user_input_yes_or_no(variable, friendly_name, context_variables, defaults):
     error = True
     while error:
-        context_variables[variable] = input(f"{friendly_name} (yes/no) [{defaults[variable][0]}]: ")
+        context_variables[variable] = input(f"{friendly_name} [{defaults[variable][0]}]: ")
         if context_variables[variable] == '' or \
-                context_variables[variable].lower() == defaults[variable][0][0] or \
-                context_variables[variable] == defaults[variable][0]:
-            context_variables[variable] = defaults[variable][0]
+                context_variables[variable].lower() == defaults[variable][0][0].lower() or \
+                context_variables[variable].lower() == defaults[variable][0].lower():
+            context_variables[variable] = defaults[variable][0].lower()
             error = False
-        elif context_variables[variable] == defaults[variable][1][0] or \
-                context_variables[variable] == defaults[variable][1]:
-            context_variables[variable] = defaults[variable][1]
+        elif context_variables[variable].lower() == defaults[variable][1][0].lower() or \
+                context_variables[variable].lower() == defaults[variable][1].lower():
+            context_variables[variable] = defaults[variable][1].lower()
             error = False
         else:
             print(f"""ERROR: Select either 'yes' or 'no'. Got '{context_variables[variable]}'""")
@@ -96,6 +97,11 @@ def check_project_name(project_name):
     '-v', '--verbose', is_flag=True, help='Print debug information', default=False
 )
 @click.option(
+    '--replay',
+    is_flag=True,
+    help='Do not prompt for parameters and only use information entered previously',
+)
+@click.option(
     '-f',
     '--overwrite-if-exists',
     is_flag=True,
@@ -118,6 +124,7 @@ def check_project_name(project_name):
 def main(
         main_command,
         checkout,
+        replay,
         verbose,
         overwrite_if_exists,
         skip_if_file_exists,
@@ -144,21 +151,24 @@ def main(
     if main_command.lower() == 'create':
 
         context_variables = OrderedDict()
-
-        print(
-            f"\nknown_commands: {known_commands}",
-            f"\ncheckout: {checkout}",
-            f"\nverbose: {verbose}",
-            f"\noverwrite_if_exists: {overwrite_if_exists}",
-            f"\nskip_if_file_exists: {skip_if_file_exists}",
-            f"\noutput_dir: {output_dir}"
+        kwargs = dict(
+            checkout=checkout,
+            replay=replay,
+            overwrite_if_exists=overwrite_if_exists,
+            output_dir=output_dir,
+            skip_if_file_exists=skip_if_file_exists,
         )
+
+        if kwargs['replay']:
+            # Short-circuit everything and re-run with the information previously entered
+            cookiecutter('.', **kwargs)
+            print(f"'{context_variables['project_slug']}' project created successfully")
+            return
 
         # defaults
         with open("cookiecutter.json") as f:
             defaults = json.load(f)
 
-        print("\n\n")
         error = True
         while error:
             request_user_input('project_name', 'Project name', context_variables, defaults)
@@ -174,13 +184,14 @@ def main(
 
         user_input_list('template_type', 'the type of template', context_variables, defaults)
 
-        if context_variables['template_type'] == 'documentation only':
+        if context_variables['template_type'] == 'documentation_only':
             context_variables['project_pypi_description'] = defaults['project_pypi_description']
             context_variables['addon_name'] = defaults['addon_name']
             context_variables['addon_description'] = defaults['addon_description']
             context_variables['addon_icon'] = defaults['addon_icon']
             context_variables['addon_window_details'] = defaults['addon_window_details']
             context_variables['demo_addon_class'] = defaults['demo_addon_class']
+            context_variables['include_tests'] = "no"
         else:
             request_user_input('project_pypi_description', 'PyPI description', context_variables, defaults)
             request_user_input('addon_name', 'Seeq Add-on name', context_variables, defaults, use_defaults=False)
@@ -188,12 +199,15 @@ def main(
             request_user_input('addon_icon', 'Seeq Add-on icon', context_variables, defaults)
             request_user_input('addon_window_details', 'Seeq Add-on window details', context_variables, defaults)
             request_user_input('demo_addon_class', 'Name of the demo python class', context_variables, defaults)
+            user_input_yes_or_no('include_tests', 'Include tests? (yes/no)', context_variables, defaults)
 
-        print("\n\n")
+        print("\n")
         for k, v in context_variables.items():
-            print(f"{k}: {v}\n")
+            print(f"{k}: {v}")
 
-        cookiecutter('.', no_input=True, extra_context=context_variables)
+        cookiecutter('.', no_input=True, extra_context=context_variables, **kwargs)
+
+        print(f"'{context_variables['project_slug']}' project created successfully")
 
 
 if __name__ == "__main__":

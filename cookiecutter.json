@@ -1,5 +1,5 @@
 {
-    "project_name": "my-open-source-app",
+    "project_name": "awesomeness",
     "project_slug": "seeq-{{ cookiecutter.project_name|lower|replace(' ', '-') }}",
     "project_license": ["open-source", "marketplace"],
     "author": "",
@@ -11,5 +11,6 @@
     "addon_icon" : "fa fa-th",
     "addon_window_details" : "toolbar=0,location=0,left=800,top=400,height=1000,width=1400",
     "demo_addon_class": "MyAddOnClassName",
-    "template_type": ["add-on code and documentation", "add-on code only", "documentation only"]
+    "template_type": ["add-on_code_and_documentation", "add-on_code_only", "documentation_only"],
+    "include_tests": ["yes", "no"]
 }
