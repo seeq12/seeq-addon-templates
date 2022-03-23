@@ -1,4 +1,4 @@
-"""Allow cookiecutter to be executable from a checkout or zip file."""
+"""Allow sq_addon_template to be executable from a checkout or zip file."""
 import runpy
 
 
