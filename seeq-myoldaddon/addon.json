@@ -1,0 +1,55 @@
+{
+  "identifier": "com.seeq.signal-math",
+  "name": "Signal Math",
+  "description": "This is a dummy add-on that is painful to install",
+  "version": "0.0.1",
+  "maintainer": "Seeq Corporation https://seeq.com/",
+  "license": "Apache License 2.0",
+  "icon": "fa-bullseye",
+  "elements": [
+    {
+      "name": "Signal Math Add-on",
+      "identifier": "com.seeq.signal-math.addontool",
+      "description": "What does this describe?",
+      "type": "AddOnTool",
+      "path": "addOnToolElement",
+      "notebook_file_path": "myOldAddOn_deployment.ipynb",
+      "resource_size": "GP_S",
+      "extensions": ["ipyvuetify", "widgetsnbextension", "ipyvue"],
+      "configuration_schema": {
+        "type": "object",
+        "properties": {
+          "display": {
+            "type": "object",
+            "properties": {
+              "icon": {
+                "type": "string",
+                "default": "fa-bullseye"
+              },
+              "linkType": {
+                "enum": ["window", "tab", "none"],
+                "default": "window"
+              },
+              "sortKey": {
+                "type": "string",
+                "default": "S"
+              },
+              "windowDetails": {
+                "type": "string",
+                "default": "toolbar=0,location=0,scroll"
+              }
+            },
+            "required": [
+              "icon",
+              "linkType",
+              "sortKey",
+              "windowDetails"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "previews": [],
+  "tags": {}
+}
