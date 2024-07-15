@@ -158,7 +158,7 @@ def package(args=None):
         for filename in get_files_to_package():
             add_on_file.write(filename, filename)
         for element_path, element_type in get_element_paths_with_type().items():
-            for filename in get_module(element_path, element_type).get_files_to_package():
+            for filename in get_module(element_path, element_type).get_files_to_package(element_path):
                 full_path = PROJECT_PATH / element_path / filename
                 archive_path = pathlib.Path(element_path) / filename
                 add_on_file.write(full_path, archive_path)

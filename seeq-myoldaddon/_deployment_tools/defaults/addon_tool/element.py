@@ -47,11 +47,11 @@ def get_build_dependencies() -> List[str]:
     return []
 
 
-def get_files_to_package() -> List[str]:
+def get_files_to_package(element_path: pathlib.Path) -> List[str]:
     from _deployment_tools import find_files_in_folder_recursively
 
     files_to_deploy = find_files_in_folder_recursively(
-        str(ELEMENT_PATH),
+        str(element_path),
         file_extensions=FILE_EXTENSIONS,
         excluded_files=EXCLUDED_FILES,
         excluded_folders=EXCLUDED_FOLDERS,
