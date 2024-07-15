@@ -6,7 +6,7 @@ import pathlib
 import subprocess
 import sys
 import zipfile
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 from _deployment_tools import load_json, save_json, topological_sort, ElementProtocol
 
@@ -29,6 +29,9 @@ DIST_FOLDER = PROJECT_PATH / 'dist'
 ADD_ON_EXTENSION = '.addon'
 ADD_ON_METADATA_EXTENSION = '.addonmeta'
 
+DEFAULT_ADD_ON_TOOL_ELEMENT_PATH = '_deployment_tools.defaults.addon_tool'
+ADD_ON_TOOL_TYPE = "AddOnTool"
+
 
 def get_files_to_package() -> List[str]:
     add_on_json = get_add_on_json()
@@ -48,11 +51,11 @@ def get_bootstrap_json() -> Optional[dict]:
     return load_json(BOOTSTRAP_JSON_FILE)
 
 
-def get_element_paths() -> List[str]:
+def get_element_paths_with_type() -> Dict[str, str]:
     add_on_json = get_add_on_json()
     if add_on_json is None or ELEMENTS not in add_on_json:
-        return []
-    element_paths = [element.get(ELEMENT_PATH) for element in add_on_json.get(ELEMENTS)]
+        return {}
+    element_paths = {element.get(ELEMENT_PATH): element.get(ELEMENT_TYPE) for element in add_on_json.get(ELEMENTS)}
     for element_path in element_paths:
         if not pathlib.Path(element_path).exists():
             raise Exception(f'Element path does not exist: {element_path}')
@@ -60,29 +63,48 @@ def get_element_paths() -> List[str]:
     return element_paths
 
 
-def filter_element_paths(element_paths: Optional[List[str]], subset_folders: Optional[List[str]]):
+def get_element_types() -> List[str]:
+    add_on_json = get_add_on_json()
+    if add_on_json is None or ELEMENTS not in add_on_json:
+        return []
+    return [element.get(ELEMENT_TYPE) for element in add_on_json.get(ELEMENTS)]
+
+
+def filter_element_paths(element_paths_with_type: Optional[Dict[str, str]], subset_folders: Optional[List[str]]):
     if subset_folders is None:
-        return element_paths
-    return [element_path for element_path in element_paths if element_path in subset_folders]
+        return element_paths_with_type
+    return {element_path: element_type for element_path, element_type in element_paths_with_type.items()
+            if element_path in subset_folders}
 
 
-def get_module(element_path: str) -> ElementProtocol:
-    module_path = f"{element_path}.{ELEMENT_ACTION_FILE}"
-    if module_path in sys.modules:
-        module = sys.modules[module_path]
-    else:
-        module = importlib.import_module(module_path)
+def get_module(element_path: str, element_type: str) -> ElementProtocol:
+
+    def load_module(path: str):
+        if path in sys.modules:
+            return sys.modules[path]
+        return importlib.import_module(path)
+    try:
+        module = load_module(f'{element_path}.{ELEMENT_ACTION_FILE}')
         assert isinstance(module, ElementProtocol)
-    return module
+        return module
+    except ModuleNotFoundError:
+        if element_type == ADD_ON_TOOL_TYPE:
+            module = load_module(f"{DEFAULT_ADD_ON_TOOL_ELEMENT_PATH}.{ELEMENT_ACTION_FILE}")
+            assert isinstance(module, ElementProtocol)
+            return module
+        else:
+            raise ModuleNotFoundError(
+                f'Neither {element_path}.{ELEMENT_ACTION_FILE} nor '
+                f'{DEFAULT_ADD_ON_TOOL_ELEMENT_PATH}.{ELEMENT_ACTION_FILE} were found')
 
 
-def check_dependencies(element_paths: List[str]):
+def check_dependencies(element_paths_with_type: Dict[str, str]):
     python_version = sys.version_info
     if python_version < (3, 8):
         raise Exception('Python 3.8 or higher is required.')
     print(f'Python version: {python_version.major}.{python_version.minor}.{python_version.micro}')
-    for element_path in element_paths:
-        get_module(element_path).check_dependencies()
+    for element_path, element_type in element_paths_with_type.items():
+        get_module(element_path, element_type).check_dependencies()
 
 
 def get_folders_from_args(args) -> Optional[List[str]]:
@@ -96,22 +118,23 @@ def get_folders_from_args(args) -> Optional[List[str]]:
 
 def bootstrap(args):
     save_json(BOOTSTRAP_JSON_FILE, {'username': args.username, 'password': args.password, 'url': args.url})
-    target_elements = filter_element_paths(get_element_paths(), get_folders_from_args(args))
+    target_elements = filter_element_paths(get_element_paths_with_type(), get_folders_from_args(args))
     print(f'Bootstrapping elements: {target_elements}')
     check_dependencies(target_elements)
-    for element_path in target_elements:
+    for element_path, element_type in target_elements.items():
         print(f'Bootstrapping element: {element_path}')
-        get_module(element_path).bootstrap(args.username, args.password, args.url, args.clean)
+        get_module(element_path, element_type).bootstrap(pathlib.Path(element_path), args.clean)
 
 
 def build(args=None):
-    target_elements = filter_element_paths(get_element_paths(), get_folders_from_args(args))
-    build_dependencies = {element_path: get_module(element_path).get_build_dependencies()
-                          for element_path in target_elements}
+    target_elements = filter_element_paths(get_element_paths_with_type(), get_folders_from_args(args))
+    build_dependencies = {element_path: get_module(element_path, element_type).get_build_dependencies()
+                          for element_path, element_type in target_elements.items()}
     sorted_elements = topological_sort(build_dependencies)
-    for element_path in sorted_elements:
+    sorted_elements_with_types = {element_path: target_elements[element_path] for element_path in sorted_elements}
+    for element_path, element_type in sorted_elements_with_types.items():
         print(f'Building element: {element_path}')
-        get_module(element_path).build()
+        get_module(element_path, element_type).build()
 
 
 def package(args=None):
@@ -134,8 +157,8 @@ def package(args=None):
     ) as add_on_file:
         for filename in get_files_to_package():
             add_on_file.write(filename, filename)
-        for element_path in get_element_paths():
-            for filename in get_module(element_path).get_files_to_package():
+        for element_path, element_type in get_element_paths_with_type().items():
+            for filename in get_module(element_path, element_type).get_files_to_package():
                 full_path = PROJECT_PATH / element_path / filename
                 archive_path = pathlib.Path(element_path) / filename
                 add_on_file.write(full_path, archive_path)
@@ -152,7 +175,7 @@ def package(args=None):
 def deploy(args):
     url, username, password = _parse_url_username_password(args)
     if args.dir is None:
-        path_to_python = get_module('data-lab-functions').PATH_TO_PYTHON
+        path_to_python = get_module('data-lab-functions', "XXX").PATH_TO_PYTHON
         command_to_run = (f"{path_to_python} data-lab-functions/deploy.py"
                           f" --username {username} --password {password} --url {url}")
         if args.clean:
@@ -161,10 +184,10 @@ def deploy(args):
             command_to_run += ' --replace'
         subprocess.run(command_to_run, shell=True, check=True)
     else:
-        target_elements = filter_element_paths(get_element_paths(), get_folders_from_args(args))
-        for element_path in target_elements:
+        target_elements = filter_element_paths(get_element_paths_with_type(), get_folders_from_args(args))
+        for element_path, element_type in target_elements.items():
             print(f'Deploying element: {element_path}')
-            get_module(element_path).deploy(url, username, password)
+            get_module(element_path, element_type).deploy(url, username, password)
 
 
 def get_add_on_package_name() -> str:
@@ -174,11 +197,11 @@ def get_add_on_package_name() -> str:
 
 def watch(args):
     url, username, password = _parse_url_username_password(args)
-    target_elements = filter_element_paths(get_element_paths(), get_folders_from_args(args))
+    target_elements = filter_element_paths(get_element_paths_with_type(), get_folders_from_args(args))
     processes = {}
-    for element_path in target_elements:
+    for element_path, element_type in target_elements.items():
         print(f'watching element: {element_path}')
-        processes[element_path] = get_module(element_path).watch(url, username, password)
+        processes[element_path] = get_module(element_path, element_type).watch(url, username, password)
     while True:
         try:
             for process in processes.values():
@@ -193,10 +216,10 @@ def watch(args):
 
 
 def elements_test(args):
-    target_elements = filter_element_paths(get_element_paths(), get_folders_from_args(args))
-    for element_path in target_elements:
+    target_elements = filter_element_paths(get_element_paths_with_type(), get_folders_from_args(args))
+    for element_path, element_type in target_elements.items():
         print(f'testing element: {element_path}')
-        get_module(element_path).test()
+        get_module(element_path, element_type).test()
 
 
 def _parse_url_username_password(args):
