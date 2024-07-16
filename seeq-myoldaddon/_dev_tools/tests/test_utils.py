@@ -5,7 +5,7 @@ import pytest
 from mock import mock
 from mock.mock import patch
 
-from _deployment_tools import topological_sort, file_matches_criteria
+from _dev_tools import topological_sort, file_matches_criteria
 
 
 @pytest.mark.unit

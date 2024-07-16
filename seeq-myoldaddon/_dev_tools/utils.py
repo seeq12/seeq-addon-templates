@@ -5,7 +5,7 @@ import importlib
 import pathlib
 import stat
 from typing import Optional, Dict, List, Set
-from _deployment_tools import ElementProtocol
+from .element_protocol import ElementProtocol
 
 
 PROJECT_PATH = pathlib.Path(__file__).parent.parent.resolve()
@@ -24,11 +24,7 @@ ELEMENT_IDENTIFIER = 'identifier'
 CONFIGURATION_SCHEMA = "configuration_schema"
 PREVIEWS = "previews"
 
-DIST_FOLDER = PROJECT_PATH / 'dist'
-ADD_ON_EXTENSION = '.addon'
-ADD_ON_METADATA_EXTENSION = '.addonmeta'
-
-DEFAULT_ADD_ON_TOOL_ELEMENT_PATH = '_deployment_tools.defaults.addon_tool'
+DEFAULT_ADD_ON_TOOL_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.name}.defaults.addon_tool'
 ADD_ON_TOOL_TYPE = "AddOnTool"
 
 
@@ -46,6 +42,15 @@ def save_json(path: pathlib.Path, values: dict) -> None:
 
 def get_add_on_json() -> Optional[dict]:
     return load_json(ADDON_JSON_FILE)
+
+
+def get_add_on_package_name() -> str:
+    add_on_json = get_add_on_json()
+    return f"{create_package_filename(add_on_json[IDENTIFIER], add_on_json[VERSION])}"
+
+
+def create_package_filename(dist_base_filename: str, version: str) -> str:
+    return f"{dist_base_filename}-{version}"
 
 
 def filter_element_paths(element_paths_with_type: Optional[Dict[str, str]], subset_folders: Optional[List[str]]):
@@ -97,6 +102,12 @@ def get_module(element_path: str, element_type: str) -> ElementProtocol:
                 f'{DEFAULT_ADD_ON_TOOL_ELEMENT_PATH}.{ELEMENT_ACTION_FILE} were found')
 
 
+def get_files_to_package() -> List[str]:
+    add_on_json = get_add_on_json()
+    preview_files = add_on_json.get(PREVIEWS, [])
+    return ["addon.json"] + preview_files
+
+
 def topological_sort(graph: Dict[str, List[str]]) -> List[str]:
     """
     Topological sort algorithm.
@@ -119,32 +130,7 @@ def topological_sort(graph: Dict[str, List[str]]) -> List[str]:
     return result
 
 
-def find_files_in_folder_recursively(root: str,
-                                     excluded_files: Set[str] = None,
-                                     excluded_folders: Set[str] = None,
-                                     file_extensions: Set[str] = None,
-                                     exclude_dot_files: bool = False,
-                                     exclude_hidden_files: bool = True):
-    if excluded_folders is None:
-        excluded_folders = {}
-    files_to_deploy = list()
-    for (dir_path, _, files) in os.walk(root):
-        relative_dir_path = os.path.relpath(dir_path, root)
-        if any(relative_dir_path.startswith(excluded_folder) for excluded_folder in excluded_folders):
-            continue
-        for filename in files:
-            if exclude_dot_files and filename.startswith('.'):
-                continue
-            if file_extensions is not None and pathlib.Path(filename).suffix not in file_extensions:
-                continue
-            full_path = os.path.join(dir_path, filename)
-            if exclude_hidden_files and _is_hidden_file(full_path):
-                continue
-            relative_path = os.path.relpath(full_path, root)
-            if excluded_files is not None and relative_path in excluded_files:
-                continue
-            files_to_deploy.append(relative_path)
-    return files_to_deploy
+
 
 
 def file_matches_criteria(root: str,
@@ -231,3 +217,31 @@ def generate_schema_default_dict(schema, path=""):
     else:
         # Extend with additional types as needed
         raise ValueError(f"Unsupported type in path {path}: {schema['type']}")
+
+
+def find_files_in_folder_recursively(root: str,
+                                     excluded_files: Set[str] = None,
+                                     excluded_folders: Set[str] = None,
+                                     file_extensions: Set[str] = None,
+                                     exclude_dot_files: bool = False,
+                                     exclude_hidden_files: bool = True):
+    if excluded_folders is None:
+        excluded_folders = {}
+    files_to_deploy = list()
+    for (dir_path, _, files) in os.walk(root):
+        relative_dir_path = os.path.relpath(dir_path, root)
+        if any(relative_dir_path.startswith(excluded_folder) for excluded_folder in excluded_folders):
+            continue
+        for filename in files:
+            if exclude_dot_files and filename.startswith('.'):
+                continue
+            if file_extensions is not None and pathlib.Path(filename).suffix not in file_extensions:
+                continue
+            full_path = os.path.join(dir_path, filename)
+            if exclude_hidden_files and _is_hidden_file(full_path):
+                continue
+            relative_path = os.path.relpath(full_path, root)
+            if excluded_files is not None and relative_path in excluded_files:
+                continue
+            files_to_deploy.append(relative_path)
+    return files_to_deploy

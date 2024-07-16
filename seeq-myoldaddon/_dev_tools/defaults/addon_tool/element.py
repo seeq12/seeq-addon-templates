@@ -2,8 +2,9 @@ import os
 import pathlib
 import subprocess
 import venv
-from typing import List
+from typing import List, Set
 
+from _dev_tools.utils import _is_hidden_file
 
 FILE_EXTENSIONS = {".py", ".txt", ".ipynb", ".json", ".vue"}
 EXCLUDED_FILES = {"element.py", "requirements.dev.txt"}
@@ -27,7 +28,8 @@ def bootstrap(element_path: pathlib.Path, clean: bool) -> None:
 
 
 def build() -> None:
-    print("Generally, there is no need to build add-on tools that are based on Jupyter notebooks")
+    print('There is no need to build add-on tools that are based on Jupyter notebooks. '
+          'This operation is skipped for this add-on element')
 
 
 def deploy(self, username: str, password: str, url: str) -> None:
@@ -47,8 +49,7 @@ def get_build_dependencies() -> List[str]:
 
 
 def get_files_to_package(element_path: pathlib.Path) -> List[str]:
-    from _deployment_tools import find_files_in_folder_recursively
-
+    from _dev_tools.utils import find_files_in_folder_recursively
     files_to_deploy = find_files_in_folder_recursively(
         str(element_path),
         file_extensions=FILE_EXTENSIONS,

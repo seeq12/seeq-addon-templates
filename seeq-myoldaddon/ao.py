@@ -1,21 +1,17 @@
 import argparse
 import base64
 import glob
-import importlib
 import json
 import os
 import pathlib
 import subprocess
-import sys
 import zipfile
-from typing import Optional, List, Dict
+from typing import Optional, List
 
-from _deployment_tools import (
-    load_json,
-    save_json,
-    topological_sort,
-    utils,
-    bootstrap as bootstrapping
+from _dev_tools import (
+    bootstrap as bootstrapping,
+    build as building,
+    package as packaging
 )
 
 
@@ -23,18 +19,22 @@ def bootstrap(args):
     bootstrapping(args)
 
 
+def build(args=None):
+    building(args)
+
+
+def package(args=None):
+    packaging(args)
 
 
 
 
-def get_files_to_package() -> List[str]:
-    add_on_json = get_add_on_json()
-    preview_files = add_on_json.get(PREVIEWS, [])
-    return ["addon.json"] + preview_files
 
 
-def create_package_filename(dist_base_filename: str, version: str) -> str:
-    return f"{dist_base_filename}-{version}"
+
+
+
+
 
 
 def get_bootstrap_json() -> Optional[dict]:
@@ -96,50 +96,10 @@ def get_configuration():
 
 
 
-def build(args=None):
-    target_elements = filter_element_paths(get_element_paths_with_type(), get_folders_from_args(args))
-    build_dependencies = {element_path: get_module(element_path, element_type).get_build_dependencies()
-                          for element_path, element_type in target_elements.items()}
-    sorted_elements = topological_sort(build_dependencies)
-    sorted_elements_with_types = {element_path: target_elements[element_path] for element_path in sorted_elements}
-    for element_path, element_type in sorted_elements_with_types.items():
-        print(f'Building element: {element_path}')
-        get_module(element_path, element_type).build()
 
 
-def package(args=None):
-    print("Packaging")
-    if not args.skip_build:
-        build()
-    file_name = get_add_on_package_name()
 
-    if DIST_FOLDER.exists():
-        for file in glob.glob(f"{DIST_FOLDER}/*"):
-            os.remove(file)
-    else:
-        os.makedirs(DIST_FOLDER)
 
-    artifact_file_name = DIST_FOLDER / f"{file_name}{ADD_ON_EXTENSION}"
-    metadata_file_name = DIST_FOLDER / f"{file_name}{ADD_ON_METADATA_EXTENSION}"
-
-    with zipfile.ZipFile(
-            artifact_file_name, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9
-    ) as add_on_file:
-        for filename in get_files_to_package():
-            add_on_file.write(filename, filename)
-        for element_path, element_type in get_element_paths_with_type().items():
-            for filename in get_module(element_path, element_type).get_files_to_package(pathlib.Path(element_path)):
-                full_path = PROJECT_PATH / element_path / filename
-                archive_path = pathlib.Path(element_path) / filename
-                add_on_file.write(full_path, archive_path)
-
-    with zipfile.ZipFile(
-            metadata_file_name, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9
-    ) as metadata_file:
-        for filename in get_files_to_package():
-            metadata_file.write(filename, filename)
-
-    print("Done packaging")
 
 
 def deploy(args):
@@ -199,10 +159,6 @@ def deploy(args):
             print(f'Deploying element: {element_path}')
             get_module(element_path, element_type).deploy(url, username, password)
 
-
-def get_add_on_package_name() -> str:
-    add_on_json = get_add_on_json()
-    return f"{create_package_filename(add_on_json[IDENTIFIER], add_on_json[VERSION])}"
 
 
 def watch(args):

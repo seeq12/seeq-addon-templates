@@ -2,7 +2,7 @@ import sys
 import pathlib
 from typing import Dict
 
-from _deployment_tools import (
+from .utils import (
     filter_element_paths,
     get_element_paths_with_type,
     get_folders_from_args,
