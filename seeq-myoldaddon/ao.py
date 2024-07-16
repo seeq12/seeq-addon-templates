@@ -1,6 +1,8 @@
 import argparse
+import base64
 import glob
 import importlib
+import json
 import os
 import pathlib
 import subprocess
@@ -8,29 +10,21 @@ import sys
 import zipfile
 from typing import Optional, List, Dict
 
-from _deployment_tools import load_json, save_json, topological_sort, ElementProtocol
+from _deployment_tools import (
+    load_json,
+    save_json,
+    topological_sort,
+    utils,
+    bootstrap as bootstrapping
+)
 
-PROJECT_PATH = pathlib.Path(__file__).parent.resolve()
-WHEELS_PATH = PROJECT_PATH / '.wheels'
-ADDON_JSON_FILE = PROJECT_PATH / "addon.json"
-BOOTSTRAP_JSON_FILE = PROJECT_PATH / ".bootstrap.json"
 
-ELEMENT_ACTION_FILE = 'element'
+def bootstrap(args):
+    bootstrapping(args)
 
-IDENTIFIER = "identifier"
-VERSION = 'version'
-ELEMENTS = 'elements'
-ELEMENT_PATH = 'path'
-ELEMENT_TYPE = 'type'
-ELEMENT_IDENTIFIER = 'identifier'
-PREVIEWS = "previews"
 
-DIST_FOLDER = PROJECT_PATH / 'dist'
-ADD_ON_EXTENSION = '.addon'
-ADD_ON_METADATA_EXTENSION = '.addonmeta'
 
-DEFAULT_ADD_ON_TOOL_ELEMENT_PATH = '_deployment_tools.defaults.addon_tool'
-ADD_ON_TOOL_TYPE = "AddOnTool"
+
 
 
 def get_files_to_package() -> List[str]:
@@ -43,24 +37,13 @@ def create_package_filename(dist_base_filename: str, version: str) -> str:
     return f"{dist_base_filename}-{version}"
 
 
-def get_add_on_json() -> Optional[dict]:
-    return load_json(ADDON_JSON_FILE)
-
-
 def get_bootstrap_json() -> Optional[dict]:
     return load_json(BOOTSTRAP_JSON_FILE)
 
 
-def get_element_paths_with_type() -> Dict[str, str]:
+def get_add_on_identifier() -> str:
     add_on_json = get_add_on_json()
-    if add_on_json is None or ELEMENTS not in add_on_json:
-        return {}
-    element_paths = {element.get(ELEMENT_PATH): element.get(ELEMENT_TYPE) for element in add_on_json.get(ELEMENTS)}
-    for element_path in element_paths:
-        if not pathlib.Path(element_path).exists():
-            raise Exception(f'Element path does not exist: {element_path}')
-    print(f'Element paths: {element_paths}')
-    return element_paths
+    return add_on_json[IDENTIFIER]
 
 
 def get_element_types() -> List[str]:
@@ -70,60 +53,47 @@ def get_element_types() -> List[str]:
     return [element.get(ELEMENT_TYPE) for element in add_on_json.get(ELEMENTS)]
 
 
-def filter_element_paths(element_paths_with_type: Optional[Dict[str, str]], subset_folders: Optional[List[str]]):
-    if subset_folders is None:
-        return element_paths_with_type
-    return {element_path: element_type for element_path, element_type in element_paths_with_type.items()
-            if element_path in subset_folders}
 
 
-def get_module(element_path: str, element_type: str) -> ElementProtocol:
 
-    def load_module(path: str):
-        if path in sys.modules:
-            return sys.modules[path]
-        return importlib.import_module(path)
-    try:
-        module = load_module(f'{element_path}.{ELEMENT_ACTION_FILE}')
-        assert isinstance(module, ElementProtocol)
-        return module
-    except ModuleNotFoundError:
-        if element_type == ADD_ON_TOOL_TYPE:
-            module = load_module(f"{DEFAULT_ADD_ON_TOOL_ELEMENT_PATH}.{ELEMENT_ACTION_FILE}")
-            assert isinstance(module, ElementProtocol)
-            return module
+
+
+
+def get_configuration():
+    """
+    Fetch the configuration of the add-on, used when deploying the add-on to add-on-manager.
+    If a configuration.json file is present in an element, it will use that instead of the default configuration.
+    """
+    addon_json = get_add_on_json()
+    config = {}
+    for element in addon_json[ELEMENTS]:
+        # check if there's a configuration.json file in each element. If yes, use that instead of default
+        configuration_file_path = (
+                pathlib.Path(element[ELEMENT_PATH]) / "configuration.json"
+        )
+        if configuration_file_path.exists():
+            print(f"Using configuration.json for element {element[ELEMENT_IDENTIFIER]}")
+            with open(configuration_file_path, "r") as f:
+                config[element[ELEMENT_IDENTIFIER]] = json.load(f)
+        elif "configuration_schema" in element:
+            print(
+                f"Using default configuration for element {element[ELEMENT_IDENTIFIER]}"
+            )
+            default_config = utils.generate_schema_default_dict(element[CONFIGURATION_SCHEMA])
+            config[element[ELEMENT_IDENTIFIER]] = default_config
         else:
-            raise ModuleNotFoundError(
-                f'Neither {element_path}.{ELEMENT_ACTION_FILE} nor '
-                f'{DEFAULT_ADD_ON_TOOL_ELEMENT_PATH}.{ELEMENT_ACTION_FILE} were found')
+            print(
+                f"No configuration schema found for element {element[ELEMENT_IDENTIFIER]}"
+            )
+            pass
+    return config
 
 
-def check_dependencies(element_paths_with_type: Dict[str, str]):
-    python_version = sys.version_info
-    if python_version < (3, 8):
-        raise Exception('Python 3.8 or higher is required.')
-    print(f'Python version: {python_version.major}.{python_version.minor}.{python_version.micro}')
-    for element_path, element_type in element_paths_with_type.items():
-        get_module(element_path, element_type).check_dependencies()
 
 
-def get_folders_from_args(args) -> Optional[List[str]]:
-    if args is None or args.dir is None:
-        return None
-    for folder in args.dir:
-        if not (PROJECT_PATH / pathlib.Path(folder)).exists():
-            raise Exception(f'Folder does not exist: {folder}')
-    return [str(pathlib.Path(folder)) for folder in args.dir]
 
 
-def bootstrap(args):
-    save_json(BOOTSTRAP_JSON_FILE, {'username': args.username, 'password': args.password, 'url': args.url})
-    target_elements = filter_element_paths(get_element_paths_with_type(), get_folders_from_args(args))
-    print(f'Bootstrapping elements: {target_elements}')
-    check_dependencies(target_elements)
-    for element_path, element_type in target_elements.items():
-        print(f'Bootstrapping element: {element_path}')
-        get_module(element_path, element_type).bootstrap(pathlib.Path(element_path), args.clean)
+
 
 
 def build(args=None):
@@ -158,7 +128,7 @@ def package(args=None):
         for filename in get_files_to_package():
             add_on_file.write(filename, filename)
         for element_path, element_type in get_element_paths_with_type().items():
-            for filename in get_module(element_path, element_type).get_files_to_package(element_path):
+            for filename in get_module(element_path, element_type).get_files_to_package(pathlib.Path(element_path)):
                 full_path = PROJECT_PATH / element_path / filename
                 archive_path = pathlib.Path(element_path) / filename
                 add_on_file.write(full_path, archive_path)
@@ -174,6 +144,46 @@ def package(args=None):
 
 def deploy(args):
     url, username, password = _parse_url_username_password(args)
+    add_on_identifier = get_add_on_identifier()
+    session = AddOnManagerSession(url, username, password)
+
+    package(args)
+
+    if args.clean:
+        uninstall(args)
+
+    # upload the add-on
+    print("Uploading add-on")
+    filename = f"{get_add_on_package_name()}{ADD_ON_EXTENSION}"
+    with open(
+            DIST_FOLDER / f"{filename}",
+            "rb",
+    ) as f:
+        # file must be base64 encoded
+        encoded_file = base64.b64encode(f.read())
+        upload_response = session.upload_add_on(filename, encoded_file)
+    upload_response.raise_for_status()
+    print("Add-on uploaded")
+    upload_response_body = upload_response.json()
+    print(f"Add-on status is: {upload_response_body['add_on_status']}")
+
+    print("Fetching configuration")
+    configuration = get_configuration()
+    print("Installing Add-on")
+    install_response = session.install_add_on(
+        add_on_identifier, upload_response_body["binary_filename"], configuration
+    )
+    if not install_response.ok:
+        error = install_response.json()["error"]
+        error_message = error["message"]
+        raise Exception(f"Error installing Add-on: {error_message}")
+    install_response.raise_for_status()
+    print("Deployment to Add On Manager Complete")
+
+
+
+
+
     if args.dir is None:
         path_to_python = get_module('data-lab-functions', "XXX").PATH_TO_PYTHON
         command_to_run = (f"{path_to_python} data-lab-functions/deploy.py"
@@ -239,9 +249,9 @@ if __name__ == "__main__":
     subparsers = parser.add_subparsers(help='sub-command help', required=True)
 
     parser_bootstrap = subparsers.add_parser('bootstrap', help='Bootstrap your add-on development environment')
-    parser_bootstrap.add_argument('--username', type=str, required=False)
-    parser_bootstrap.add_argument('--password', type=str, required=False)
-    parser_bootstrap.add_argument('--url', type=str, default='http://localhost:34216')
+    # parser_bootstrap.add_argument('--username', type=str, required=False)
+    # parser_bootstrap.add_argument('--password', type=str, required=False)
+    # parser_bootstrap.add_argument('--url', type=str, default='http://localhost:34216')
     parser_bootstrap.add_argument('--clean', action='store_true', default=False, help='Clean bootstrap')
     parser_bootstrap.add_argument('--dir', type=str, nargs='*', default=None,
                                   help='Execute the command for the subset of the element directories specified.')
@@ -253,8 +263,8 @@ if __name__ == "__main__":
     parser_build.set_defaults(func=build)
 
     parser_deploy = subparsers.add_parser('deploy', help='Deploy your add-on')
-    parser_deploy.add_argument('--username', type=str)
-    parser_deploy.add_argument('--password', type=str)
+    parser_deploy.add_argument('--username', type=str, required=True)
+    parser_deploy.add_argument('--password', type=str, required=True)
     parser_deploy.add_argument('--url', type=str)
     parser_deploy.add_argument('--clean', action='store_true', default=False, help='Uninstall')
     parser_deploy.add_argument('--replace', action='store_true', default=False, help='Replace elements')

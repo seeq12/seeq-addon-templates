@@ -1,8 +1,35 @@
 import json
 import os
+import sys
+import importlib
 import pathlib
 import stat
 from typing import Optional, Dict, List, Set
+from _deployment_tools import ElementProtocol
+
+
+PROJECT_PATH = pathlib.Path(__file__).parent.parent.resolve()
+WHEELS_PATH = PROJECT_PATH / '.wheels'
+ADDON_JSON_FILE = PROJECT_PATH / "addon.json"
+BOOTSTRAP_JSON_FILE = PROJECT_PATH / ".bootstrap.json"
+
+ELEMENT_ACTION_FILE = 'element'
+
+IDENTIFIER = "identifier"
+VERSION = 'version'
+ELEMENTS = 'elements'
+ELEMENT_PATH = 'path'
+ELEMENT_TYPE = 'type'
+ELEMENT_IDENTIFIER = 'identifier'
+CONFIGURATION_SCHEMA = "configuration_schema"
+PREVIEWS = "previews"
+
+DIST_FOLDER = PROJECT_PATH / 'dist'
+ADD_ON_EXTENSION = '.addon'
+ADD_ON_METADATA_EXTENSION = '.addonmeta'
+
+DEFAULT_ADD_ON_TOOL_ELEMENT_PATH = '_deployment_tools.defaults.addon_tool'
+ADD_ON_TOOL_TYPE = "AddOnTool"
 
 
 def load_json(path: pathlib.Path) -> Optional[dict]:
@@ -15,6 +42,59 @@ def load_json(path: pathlib.Path) -> Optional[dict]:
 def save_json(path: pathlib.Path, values: dict) -> None:
     with open(path, mode='w', encoding='utf-8') as json_file:
         json.dump(values, json_file, indent=2, ensure_ascii=False)
+
+
+def get_add_on_json() -> Optional[dict]:
+    return load_json(ADDON_JSON_FILE)
+
+
+def filter_element_paths(element_paths_with_type: Optional[Dict[str, str]], subset_folders: Optional[List[str]]):
+    if subset_folders is None:
+        return element_paths_with_type
+    return {element_path: element_type for element_path, element_type in element_paths_with_type.items()
+            if element_path in subset_folders}
+
+
+def get_folders_from_args(args) -> Optional[List[str]]:
+    if args is None or args.dir is None:
+        return None
+    for folder in args.dir:
+        if not (PROJECT_PATH / pathlib.Path(folder)).exists():
+            raise Exception(f'Folder does not exist: {folder}')
+    return [str(pathlib.Path(folder)) for folder in args.dir]
+
+
+def get_element_paths_with_type() -> Dict[str, str]:
+    add_on_json = get_add_on_json()
+    if add_on_json is None or ELEMENTS not in add_on_json:
+        return {}
+    element_paths = {element.get(ELEMENT_PATH): element.get(ELEMENT_TYPE) for element in add_on_json.get(ELEMENTS)}
+    for element_path in element_paths:
+        if not pathlib.Path(element_path).exists():
+            raise Exception(f'Element path does not exist: {element_path}')
+    print(f'Element paths: {element_paths}')
+    return element_paths
+
+
+def get_module(element_path: str, element_type: str) -> ElementProtocol:
+
+    def load_module(path: str):
+        if path in sys.modules:
+            return sys.modules[path]
+        return importlib.import_module(path)
+    try:
+        module = load_module(f'{element_path}.{ELEMENT_ACTION_FILE}')
+        assert isinstance(module, ElementProtocol)
+        return module
+    except ModuleNotFoundError:
+        if element_type == ADD_ON_TOOL_TYPE:
+            module = load_module(f"{DEFAULT_ADD_ON_TOOL_ELEMENT_PATH}.{ELEMENT_ACTION_FILE}")
+            assert isinstance(module, ElementProtocol)
+            return module
+        else:
+            raise ModuleNotFoundError(
+                f'Neither {element_path}.{ELEMENT_ACTION_FILE} nor '
+                f'{DEFAULT_ADD_ON_TOOL_ELEMENT_PATH}.{ELEMENT_ACTION_FILE} were found')
 
 
 def topological_sort(graph: Dict[str, List[str]]) -> List[str]:
@@ -103,3 +183,51 @@ def _is_hidden_file(full_path):
     except FileNotFoundError:
         return False
 
+
+def generate_schema_default_dict(schema, path=""):
+    """
+    Recursively generate a valid instance dictionary from a given JSON schema
+    that includes only the fields that are required or have a default value.
+
+    :param schema: The JSON schema dictionary.
+    :param path: The path to the current position in the schema (for nested objects).
+    :return: A valid instance dictionary according to the schema.
+    """
+    if "type" not in schema:
+        schema["type"] = "any"
+    if schema["type"] == "object":
+        obj = {}
+        properties = schema.get("properties", {})
+        required_fields = schema.get("required", [])
+
+        for key, value in properties.items():
+            if key in required_fields or "default" in value:
+                # Construct the new path for nested objects
+                new_path = f"{path}.{key}" if path else key
+                # Recursive call for nested objects or fields with default values
+                obj[key] = generate_schema_default_dict(value, path=new_path)
+        return obj
+    elif schema["type"] == "string":
+        # Return the default value if specified, otherwise an empty string if required
+        return schema.get("default", "")
+    elif schema["type"] == "boolean":
+        # Return the default value if specified, otherwise False if required
+        return schema.get("default", False)
+    elif schema["type"] == "array":
+        # Return an empty list or the default value if specified
+        return schema.get("default", [])
+    elif schema["type"] == "number":
+        # Return the default value if specified, otherwise 0 if required
+        return schema.get("default", 0)
+    elif schema["type"] == "integer":
+        # Return the default value if specified, otherwise 0 if required
+        return schema.get("default", 0)
+    elif schema["type"] == "null":
+        # Just return None for null types
+        return None
+    elif schema["type"] == "any":
+        # return None for any type if no default
+        return schema.get("default", None)
+    else:
+        # Extend with additional types as needed
+        raise ValueError(f"Unsupported type in path {path}: {schema['type']}")

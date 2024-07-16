@@ -24,7 +24,6 @@ def check_dependencies() -> None:
 def bootstrap(element_path: pathlib.Path, clean: bool) -> None:
     print(element_path)
     _create_virtual_environment(element_path, clean)
-    print("I'm bootstrapping!")
 
 
 def build() -> None:
