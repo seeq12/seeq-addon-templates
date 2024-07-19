@@ -6,6 +6,8 @@ from .build import build
 
 from .utils import (
     PROJECT_PATH,
+    ADD_ON_EXTENSION,
+    DIST_FOLDER,
     get_add_on_package_name,
     get_element_paths_with_type,
     get_module,
@@ -13,8 +15,6 @@ from .utils import (
 )
 
 
-DIST_FOLDER = PROJECT_PATH / 'dist'
-ADD_ON_EXTENSION = '.addon'
 ADD_ON_METADATA_EXTENSION = '.addonmeta'
 
 

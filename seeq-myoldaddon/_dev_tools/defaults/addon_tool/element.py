@@ -1,10 +1,22 @@
+import base64
+import json
 import os
 import pathlib
 import subprocess
 import venv
-from typing import List, Set
+from typing import List
 
-from _dev_tools.utils import _is_hidden_file
+from _dev_tools import package
+from _dev_tools.add_on_manager_session import AddOnManagerSession
+from _dev_tools.utils import (
+    IDENTIFIER,
+    ADD_ON_EXTENSION,
+    DIST_FOLDER,
+    CONFIGURATION_SCHEMA,
+    get_add_on_json,
+    get_add_on_package_name,
+    generate_schema_default_dict, ELEMENT_IDENTIFIER, ELEMENT_PATH, ELEMENTS
+)
 
 FILE_EXTENSIONS = {".py", ".txt", ".ipynb", ".json", ".vue"}
 EXCLUDED_FILES = {"element.py", "requirements.dev.txt"}
@@ -32,8 +44,41 @@ def build() -> None:
           'This operation is skipped for this add-on element')
 
 
-def deploy(self, username: str, password: str, url: str) -> None:
-    pass
+def deploy(args) -> None:
+    add_on_identifier = get_add_on_identifier()
+    session = AddOnManagerSession(args.url, args.username, args.password)
+
+    package(args)
+
+    # if args.clean:
+    #     uninstall(args)
+
+    # upload the add-on
+    print("Uploading add-on")
+    filename = f"{get_add_on_package_name()}{ADD_ON_EXTENSION}"
+    print(DIST_FOLDER / f"{filename}")
+    with open(DIST_FOLDER / f"{filename}", "rb") as f:
+        # file must be base64 encoded
+        encoded_file = base64.b64encode(f.read())
+        upload_response = session.upload_add_on(filename, encoded_file)
+    upload_response.raise_for_status()
+    print("Add-on uploaded")
+    upload_response_body = upload_response.json()
+    print(f"Add-on status is: {upload_response_body['add_on_status']}")
+
+    print("Fetching configuration")
+    configuration = get_configuration()
+    print("Installing Add-on")
+    install_response = session.install_add_on(
+        add_on_identifier, upload_response_body["binary_filename"], configuration
+    )
+    print(install_response.json())
+    if not install_response.ok:
+        error = install_response.json()["error"]
+        error_message = error["message"]
+        raise Exception(f"Error installing Add-on: {error_message}")
+    install_response.raise_for_status()
+    print("Deployment to Add On Manager Complete")
 
 
 def watch(self, url: str, username: str, password: str) -> subprocess.Popen:
@@ -104,3 +149,38 @@ def get_venv_paths(element_path: pathlib.Path):
     path_to_python = path_to_scripts / "python"
 
     return venv_path, windows_os, path_to_python, path_to_pip, path_to_scripts, wheels_path
+
+
+def get_add_on_identifier() -> str:
+    add_on_json = get_add_on_json()
+    return add_on_json[IDENTIFIER]
+
+
+def get_configuration():
+    """
+    Fetch the configuration of the add-on, used when deploying the add-on to add-on-manager.
+    If a configuration.json file is present in an element, it will use that instead of the default configuration.
+    """
+    addon_json = get_add_on_json()
+    config = {}
+    for element in addon_json[ELEMENTS]:
+        # check if there's a configuration.json file in each element. If yes, use that instead of default
+        configuration_file_path = (
+                pathlib.Path(element[ELEMENT_PATH]) / "configuration.json"
+        )
+        if configuration_file_path.exists():
+            print(f"Using configuration.json for element {element[ELEMENT_IDENTIFIER]}")
+            with open(configuration_file_path, "r") as f:
+                config[element[ELEMENT_IDENTIFIER]] = json.load(f)
+        elif "configuration_schema" in element:
+            print(
+                f"Using default configuration for element {element[ELEMENT_IDENTIFIER]}"
+            )
+            default_config = generate_schema_default_dict(element[CONFIGURATION_SCHEMA])
+            config[element[ELEMENT_IDENTIFIER]] = default_config
+        else:
+            print(
+                f"No configuration schema found for element {element[ELEMENT_IDENTIFIER]}"
+            )
+            pass
+    return config

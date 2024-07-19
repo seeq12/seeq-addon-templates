@@ -45,9 +45,48 @@
               "sortKey",
               "windowDetails"
             ]
+          },
+          "project": {
+            "type": "object",
+            "properties": {
+              "my special value": {
+                "type": "string",
+                "default": "My Project"
+              },
+              "signal": {
+                "type": "string",
+                "default": "My Signal"
+              },
+              "My configuration": {
+                "type": "object",
+                "properties": {
+                  "my second value value": {
+                    "type": "string",
+                    "default": "My thing"
+                  },
+                  "signal2": {
+                    "type": "string",
+                    "default": "My second signal"
+                  }
+                },
+                "required": [
+                ]
+
+              }
+            },
+            "required": [
+            ]
+
           }
-        }
-      }
+
+        },
+        "required": [
+          "display",
+          "project"
+        ]
+      },
+      "configuration_filename": "config",
+      "configuration_converter": "json"
     }
   ],
   "previews": [],

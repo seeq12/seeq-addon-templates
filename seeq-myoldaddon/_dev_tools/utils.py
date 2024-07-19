@@ -10,8 +10,10 @@ from .element_protocol import ElementProtocol
 
 PROJECT_PATH = pathlib.Path(__file__).parent.parent.resolve()
 WHEELS_PATH = PROJECT_PATH / '.wheels'
+DIST_FOLDER = PROJECT_PATH / 'dist'
 ADDON_JSON_FILE = PROJECT_PATH / "addon.json"
-BOOTSTRAP_JSON_FILE = PROJECT_PATH / ".bootstrap.json"
+ADD_ON_EXTENSION = '.addon'
+DEPLOY_JSON_FILE = PROJECT_PATH / ".credentials.json"
 
 ELEMENT_ACTION_FILE = 'element'
 
@@ -130,9 +132,6 @@ def topological_sort(graph: Dict[str, List[str]]) -> List[str]:
     return result
 
 
-
-
-
 def file_matches_criteria(root: str,
                           file: str,
                           excluded_files: Set[str] = None,
@@ -245,3 +244,21 @@ def find_files_in_folder_recursively(root: str,
                 continue
             files_to_deploy.append(relative_path)
     return files_to_deploy
+
+
+def get_credentials_json() -> Optional[dict]:
+    return load_json(DEPLOY_JSON_FILE)
+
+
+def parse_url_username_password(args):
+    credentials_json = None
+    if args.username is None or args.password is None or args.url is None:
+        credentials_json = get_credentials_json()
+        print("credentials_json", credentials_json)
+        if (credentials_json is None or credentials_json.get('username') is None or
+                credentials_json.get('password') is None or credentials_json.get('url') is None):
+            raise Exception('deploy: error: the following arguments are required: --username, --password, --url')
+    url = args.url if args.url else credentials_json.get('url')
+    username = args.username if args.username else credentials_json.get('username')
+    password = args.password if args.password else credentials_json.get('password')
+    return url, username, password

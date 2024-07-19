@@ -11,7 +11,8 @@ from typing import Optional, List
 from _dev_tools import (
     bootstrap as bootstrapping,
     build as building,
-    package as packaging
+    package as packaging,
+    deploy as deploying,
 )
 
 
@@ -27,6 +28,8 @@ def package(args=None):
     packaging(args)
 
 
+def deploy(args):
+    deploying(args)
 
 
 
@@ -37,13 +40,12 @@ def package(args=None):
 
 
 
-def get_bootstrap_json() -> Optional[dict]:
-    return load_json(BOOTSTRAP_JSON_FILE)
 
 
-def get_add_on_identifier() -> str:
-    add_on_json = get_add_on_json()
-    return add_on_json[IDENTIFIER]
+
+
+
+
 
 
 def get_element_types() -> List[str]:
@@ -102,62 +104,62 @@ def get_configuration():
 
 
 
-def deploy(args):
-    url, username, password = _parse_url_username_password(args)
-    add_on_identifier = get_add_on_identifier()
-    session = AddOnManagerSession(url, username, password)
-
-    package(args)
-
-    if args.clean:
-        uninstall(args)
-
-    # upload the add-on
-    print("Uploading add-on")
-    filename = f"{get_add_on_package_name()}{ADD_ON_EXTENSION}"
-    with open(
-            DIST_FOLDER / f"{filename}",
-            "rb",
-    ) as f:
-        # file must be base64 encoded
-        encoded_file = base64.b64encode(f.read())
-        upload_response = session.upload_add_on(filename, encoded_file)
-    upload_response.raise_for_status()
-    print("Add-on uploaded")
-    upload_response_body = upload_response.json()
-    print(f"Add-on status is: {upload_response_body['add_on_status']}")
-
-    print("Fetching configuration")
-    configuration = get_configuration()
-    print("Installing Add-on")
-    install_response = session.install_add_on(
-        add_on_identifier, upload_response_body["binary_filename"], configuration
-    )
-    if not install_response.ok:
-        error = install_response.json()["error"]
-        error_message = error["message"]
-        raise Exception(f"Error installing Add-on: {error_message}")
-    install_response.raise_for_status()
-    print("Deployment to Add On Manager Complete")
-
-
-
-
-
-    if args.dir is None:
-        path_to_python = get_module('data-lab-functions', "XXX").PATH_TO_PYTHON
-        command_to_run = (f"{path_to_python} data-lab-functions/deploy.py"
-                          f" --username {username} --password {password} --url {url}")
-        if args.clean:
-            command_to_run += ' --clean'
-        if args.replace:
-            command_to_run += ' --replace'
-        subprocess.run(command_to_run, shell=True, check=True)
-    else:
-        target_elements = filter_element_paths(get_element_paths_with_type(), get_folders_from_args(args))
-        for element_path, element_type in target_elements.items():
-            print(f'Deploying element: {element_path}')
-            get_module(element_path, element_type).deploy(url, username, password)
+# def deploy(args):
+#     url, username, password = _parse_url_username_password(args)
+#     add_on_identifier = get_add_on_identifier()
+#     session = AddOnManagerSession(url, username, password)
+#
+#     package(args)
+#
+#     if args.clean:
+#         uninstall(args)
+#
+#     # upload the add-on
+#     print("Uploading add-on")
+#     filename = f"{get_add_on_package_name()}{ADD_ON_EXTENSION}"
+#     with open(
+#             DIST_FOLDER / f"{filename}",
+#             "rb",
+#     ) as f:
+#         # file must be base64 encoded
+#         encoded_file = base64.b64encode(f.read())
+#         upload_response = session.upload_add_on(filename, encoded_file)
+#     upload_response.raise_for_status()
+#     print("Add-on uploaded")
+#     upload_response_body = upload_response.json()
+#     print(f"Add-on status is: {upload_response_body['add_on_status']}")
+#
+#     print("Fetching configuration")
+#     configuration = get_configuration()
+#     print("Installing Add-on")
+#     install_response = session.install_add_on(
+#         add_on_identifier, upload_response_body["binary_filename"], configuration
+#     )
+#     if not install_response.ok:
+#         error = install_response.json()["error"]
+#         error_message = error["message"]
+#         raise Exception(f"Error installing Add-on: {error_message}")
+#     install_response.raise_for_status()
+#     print("Deployment to Add On Manager Complete")
+#
+#
+#
+#
+#
+#     if args.dir is None:
+#         path_to_python = get_module('data-lab-functions', "XXX").PATH_TO_PYTHON
+#         command_to_run = (f"{path_to_python} data-lab-functions/deploy.py"
+#                           f" --username {username} --password {password} --url {url}")
+#         if args.clean:
+#             command_to_run += ' --clean'
+#         if args.replace:
+#             command_to_run += ' --replace'
+#         subprocess.run(command_to_run, shell=True, check=True)
+#     else:
+#         target_elements = filter_element_paths(get_element_paths_with_type(), get_folders_from_args(args))
+#         for element_path, element_type in target_elements.items():
+#             print(f'Deploying element: {element_path}')
+#             get_module(element_path, element_type).deploy(url, username, password)
 
 
 
@@ -188,16 +190,7 @@ def elements_test(args):
         get_module(element_path, element_type).test()
 
 
-def _parse_url_username_password(args):
-    bootstrap_json = None
-    if args.username is None or args.password is None or args.url is None:
-        bootstrap_json = get_bootstrap_json()
-        if bootstrap_json is None:
-            raise Exception('Please run the bootstrap command.')
-    url = args.url if args.url else bootstrap_json.get('url')
-    username = args.username if args.username else bootstrap_json.get('username')
-    password = args.password if args.password else bootstrap_json.get('password')
-    return url, username, password
+
 
 
 if __name__ == "__main__":
@@ -219,11 +212,12 @@ if __name__ == "__main__":
     parser_build.set_defaults(func=build)
 
     parser_deploy = subparsers.add_parser('deploy', help='Deploy your add-on')
-    parser_deploy.add_argument('--username', type=str, required=True)
-    parser_deploy.add_argument('--password', type=str, required=True)
-    parser_deploy.add_argument('--url', type=str)
+    parser_deploy.add_argument('--username', type=str, required=False)
+    parser_deploy.add_argument('--password', type=str, required=False)
+    parser_deploy.add_argument('--url', type=str, required=False)
     parser_deploy.add_argument('--clean', action='store_true', default=False, help='Uninstall')
     parser_deploy.add_argument('--replace', action='store_true', default=False, help='Replace elements')
+    parser_deploy.add_argument('--skip-build', action='store_true', default=True, help='Skip build step')
     parser_deploy.add_argument('--dir', type=str, nargs='*', default=None,
                                help='Execute the command for the subset of the element directories specified.')
     parser_deploy.set_defaults(func=deploy)
