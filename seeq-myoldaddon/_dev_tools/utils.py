@@ -46,6 +46,11 @@ def get_add_on_json() -> Optional[dict]:
     return load_json(ADDON_JSON_FILE)
 
 
+def get_add_on_identifier() -> str:
+    add_on_json = get_add_on_json()
+    return add_on_json[IDENTIFIER]
+
+
 def get_add_on_package_name() -> str:
     add_on_json = get_add_on_json()
     return f"{create_package_filename(add_on_json[IDENTIFIER], add_on_json[VERSION])}"
@@ -186,6 +191,8 @@ def generate_schema_default_dict(schema, path=""):
         required_fields = schema.get("required", [])
 
         for key, value in properties.items():
+            print("key", key)
+            print("value", value)
             if key in required_fields or "default" in value:
                 # Construct the new path for nested objects
                 new_path = f"{path}.{key}" if path else key

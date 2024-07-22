@@ -4,8 +4,7 @@ from .utils import (
     get_folders_from_args,
     get_element_paths_with_type,
     get_module,
-    save_json,
-    parse_url_username_password
+    save_json
 )
 
 

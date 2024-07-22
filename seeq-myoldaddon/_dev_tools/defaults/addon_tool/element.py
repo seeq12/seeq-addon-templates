@@ -8,14 +8,18 @@ from typing import List
 
 from _dev_tools import package
 from _dev_tools.add_on_manager_session import AddOnManagerSession
+from _dev_tools.uninstall import uninstall
 from _dev_tools.utils import (
-    IDENTIFIER,
     ADD_ON_EXTENSION,
     DIST_FOLDER,
     CONFIGURATION_SCHEMA,
+    ELEMENT_IDENTIFIER,
+    ELEMENT_PATH,
+    ELEMENTS,
     get_add_on_json,
     get_add_on_package_name,
-    generate_schema_default_dict, ELEMENT_IDENTIFIER, ELEMENT_PATH, ELEMENTS
+    generate_schema_default_dict,
+    get_add_on_identifier
 )
 
 FILE_EXTENSIONS = {".py", ".txt", ".ipynb", ".json", ".vue"}
@@ -50,8 +54,8 @@ def deploy(args) -> None:
 
     package(args)
 
-    # if args.clean:
-    #     uninstall(args)
+    if args.clean:
+        uninstall(args)
 
     # upload the add-on
     print("Uploading add-on")
@@ -149,11 +153,6 @@ def get_venv_paths(element_path: pathlib.Path):
     path_to_python = path_to_scripts / "python"
 
     return venv_path, windows_os, path_to_python, path_to_pip, path_to_scripts, wheels_path
-
-
-def get_add_on_identifier() -> str:
-    add_on_json = get_add_on_json()
-    return add_on_json[IDENTIFIER]
 
 
 def get_configuration():
