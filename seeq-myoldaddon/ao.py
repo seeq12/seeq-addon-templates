@@ -13,6 +13,7 @@ from _dev_tools import (
     build as building,
     package as packaging,
     deploy as deploying,
+    watch as watching,
 )
 
 
@@ -32,6 +33,8 @@ def deploy(args):
     deploying(args)
 
 
+def watch(args):
+    watching(args)
 
 
 
@@ -48,11 +51,6 @@ def deploy(args):
 
 
 
-def get_element_types() -> List[str]:
-    add_on_json = get_add_on_json()
-    if add_on_json is None or ELEMENTS not in add_on_json:
-        return []
-    return [element.get(ELEMENT_TYPE) for element in add_on_json.get(ELEMENTS)]
 
 
 
@@ -61,41 +59,57 @@ def get_element_types() -> List[str]:
 
 
 
-def get_configuration():
-    """
-    Fetch the configuration of the add-on, used when deploying the add-on to add-on-manager.
-    If a configuration.json file is present in an element, it will use that instead of the default configuration.
-    """
-    addon_json = get_add_on_json()
-    config = {}
-    for element in addon_json[ELEMENTS]:
-        # check if there's a configuration.json file in each element. If yes, use that instead of default
-        configuration_file_path = (
-                pathlib.Path(element[ELEMENT_PATH]) / "configuration.json"
-        )
-        if configuration_file_path.exists():
-            print(f"Using configuration.json for element {element[ELEMENT_IDENTIFIER]}")
-            with open(configuration_file_path, "r") as f:
-                config[element[ELEMENT_IDENTIFIER]] = json.load(f)
-        elif "configuration_schema" in element:
-            print(
-                f"Using default configuration for element {element[ELEMENT_IDENTIFIER]}"
-            )
-            default_config = utils.generate_schema_default_dict(element[CONFIGURATION_SCHEMA])
-            config[element[ELEMENT_IDENTIFIER]] = default_config
-        else:
-            print(
-                f"No configuration schema found for element {element[ELEMENT_IDENTIFIER]}"
-            )
-            pass
-    return config
+
+
+
+# def get_element_types() -> List[str]:
+#     add_on_json = get_add_on_json()
+#     if add_on_json is None or ELEMENTS not in add_on_json:
+#         return []
+#     return [element.get(ELEMENT_TYPE) for element in add_on_json.get(ELEMENTS)]
 
 
 
 
 
 
-
+#
+#
+# def get_configuration():
+#     """
+#     Fetch the configuration of the add-on, used when deploying the add-on to add-on-manager.
+#     If a configuration.json file is present in an element, it will use that instead of the default configuration.
+#     """
+#     addon_json = get_add_on_json()
+#     config = {}
+#     for element in addon_json[ELEMENTS]:
+#         # check if there's a configuration.json file in each element. If yes, use that instead of default
+#         configuration_file_path = (
+#                 pathlib.Path(element[ELEMENT_PATH]) / "configuration.json"
+#         )
+#         if configuration_file_path.exists():
+#             print(f"Using configuration.json for element {element[ELEMENT_IDENTIFIER]}")
+#             with open(configuration_file_path, "r") as f:
+#                 config[element[ELEMENT_IDENTIFIER]] = json.load(f)
+#         elif "configuration_schema" in element:
+#             print(
+#                 f"Using default configuration for element {element[ELEMENT_IDENTIFIER]}"
+#             )
+#             default_config = utils.generate_schema_default_dict(element[CONFIGURATION_SCHEMA])
+#             config[element[ELEMENT_IDENTIFIER]] = default_config
+#         else:
+#             print(
+#                 f"No configuration schema found for element {element[ELEMENT_IDENTIFIER]}"
+#             )
+#             pass
+#     return config
+#
+#
+#
+#
+#
+#
+#
 
 
 
@@ -163,24 +177,10 @@ def get_configuration():
 
 
 
-def watch(args):
-    url, username, password = _parse_url_username_password(args)
-    target_elements = filter_element_paths(get_element_paths_with_type(), get_folders_from_args(args))
-    processes = {}
-    for element_path, element_type in target_elements.items():
-        print(f'watching element: {element_path}')
-        processes[element_path] = get_module(element_path, element_type).watch(url, username, password)
-    while True:
-        try:
-            for process in processes.values():
-                process.wait(timeout=1)
-        except subprocess.TimeoutExpired:
-            pass
-        except KeyboardInterrupt:
-            print('Stopping watch')
-            for process in processes.values():
-                process.terminate()
-            break
+
+
+
+
 
 
 def elements_test(args):

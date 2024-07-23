@@ -20,7 +20,6 @@ class DataLabFunctionSession(Session):
         self.spy_session = spy.Session()
         self.authenticate(username, password)
         self.project_id = self.get_project_id(project_name)
-        print(f"Project ID: {self.project_id}")
         self.mount("http://", _http_adapter)
         self.mount("https://", _http_adapter)
         self.auth_header = None
@@ -59,7 +58,6 @@ class DataLabFunctionSession(Session):
 
     def dlf_request(self, method, notebook, endpoint, *args, **kwargs):
         joined_url = f"{self.base_url}/data-lab/{self.project_id}/functions/notebooks/{notebook}/endpoints/{endpoint}"
-        print(f"Requesting: {joined_url}")
         return super().request(
             method,
             joined_url,
@@ -117,6 +115,19 @@ class AddOnManagerSession(DataLabFunctionSession):
         return self.aom_request(
             "POST",
             f"add-ons/install",
+            data=json.dumps(
+                {
+                    "add_on_identifier": add_on_identifier,
+                    "binary_filename": binary_filename,
+                    "configuration": configuration,
+                }
+            ),
+        )
+
+    def update_add_on(self, add_on_identifier, binary_filename, configuration):
+        return self.aom_request(
+            "POST",
+            f"add-ons/update",
             data=json.dumps(
                 {
                     "add_on_identifier": add_on_identifier,

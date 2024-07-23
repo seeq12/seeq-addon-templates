@@ -1,9 +1,11 @@
+import base64
 import json
 import os
 import sys
 import importlib
 import pathlib
 import stat
+from datetime import datetime
 from typing import Optional, Dict, List, Set
 from .element_protocol import ElementProtocol
 
@@ -28,6 +30,9 @@ PREVIEWS = "previews"
 
 DEFAULT_ADD_ON_TOOL_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.name}.defaults.addon_tool'
 ADD_ON_TOOL_TYPE = "AddOnTool"
+
+TIMESTAMP_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
+
 
 
 def load_json(path: pathlib.Path) -> Optional[dict]:
@@ -84,7 +89,6 @@ def get_element_paths_with_type() -> Dict[str, str]:
     for element_path in element_paths:
         if not pathlib.Path(element_path).exists():
             raise Exception(f'Element path does not exist: {element_path}')
-    print(f'Element paths: {element_paths}')
     return element_paths
 
 
@@ -191,8 +195,6 @@ def generate_schema_default_dict(schema, path=""):
         required_fields = schema.get("required", [])
 
         for key, value in properties.items():
-            print("key", key)
-            print("value", value)
             if key in required_fields or "default" in value:
                 # Construct the new path for nested objects
                 new_path = f"{path}.{key}" if path else key
@@ -261,7 +263,6 @@ def parse_url_username_password(args):
     credentials_json = None
     if args.username is None or args.password is None or args.url is None:
         credentials_json = get_credentials_json()
-        print("credentials_json", credentials_json)
         if (credentials_json is None or credentials_json.get('username') is None or
                 credentials_json.get('password') is None or credentials_json.get('url') is None):
             raise Exception('deploy: error: the following arguments are required: --username, --password, --url')
@@ -269,3 +270,91 @@ def parse_url_username_password(args):
     username = args.username if args.username else credentials_json.get('username')
     password = args.password if args.password else credentials_json.get('password')
     return url, username, password
+
+
+def _parse_url_username_password(args=None):
+    credentials_json = {}
+    if (
+            args is None
+            or args.username is None
+            or args.password is None
+            or args.url is None
+    ):
+        credentials_json = get_credentials_json()
+        if credentials_json is None:
+            raise Exception("Please provide --user --password and -url arguments.")
+
+    url = get_non_none_attr(args, "url", credentials_json.get("url"))
+    username = get_non_none_attr(args, "username", credentials_json.get("username"))
+    password = get_non_none_attr(args, "password", credentials_json.get("password"))
+
+    return url, username, password
+
+
+def get_non_none_attr(obj, attr, default):
+    value = getattr(obj, attr, default)
+    return value if value is not None else default
+
+
+def get_element_identifier_from_path(element_path: pathlib.Path) -> str:
+    """Used from inside an element to get its identifier from addon.json"""
+    add_on_json = get_add_on_json()
+    elements = add_on_json[ELEMENTS]
+    return next(
+        element[IDENTIFIER]
+        for element in elements
+        if (PROJECT_PATH / element[ELEMENT_PATH]).resolve() == element_path.resolve()
+    )
+
+
+def _get_jupyter_contents_api_path(url, project_id, path):
+    return f'{url}/data-lab/{project_id}/api/contents/' + path.replace('\\', '//')
+
+
+def _get_timestamp():
+    return datetime.now().astimezone().strftime(TIMESTAMP_FORMAT)
+
+
+def _upload_file(server_url, request_session, auth_header, project_id, source, destination):
+    from requests.exceptions import RetryError
+
+    jupyter_path = _get_jupyter_contents_api_path(server_url, project_id, destination)
+    base_name = os.path.basename(source)
+    with open(source, 'rb') as file:
+        contents = file.read() or b''
+    body = json.dumps({'path': jupyter_path.replace('//', r'/'),
+                       'content': base64.b64encode(contents).decode('ascii'),
+                       'format': 'base64',
+                       'name': base_name,
+                       'type': 'file'})
+    response = None
+    try:
+        response = request_session.put(jupyter_path, data=body, headers=auth_header, cookies=auth_header,
+                                       verify=True, timeout=60)
+    except RetryError:
+        pass
+    if response is None or response.status_code == 500:
+        _upload_directory(server_url, auth_header, request_session, project_id, destination)
+        try:
+            response = request_session.put(jupyter_path, data=body, headers=auth_header, cookies=auth_header,
+                                           verify=True, timeout=60)
+        except RetryError:
+            pass
+
+    status = "Success" if (response is not None) else "Failure"
+    print(f"    {_get_timestamp()} Attempt to Upload {base_name} : {status}")
+
+
+def _upload_directory(server_url, request_session, auth_header, project_id, full_path):
+    from requests.exceptions import RetryError
+    path_parts = pathlib.Path(full_path).parts
+    paths_to_create = [list(path_parts[:i]) for i in range(1, len(path_parts))]
+    body = json.dumps({'type': 'directory'})
+    base = [server_url, 'data-lab', project_id, 'api', 'contents']
+    for path in paths_to_create:
+        try:
+            request_session.put('/'.join(base + path), data=body,
+                                headers=auth_header, cookies=auth_header,
+                                verify=True, timeout=60)
+        except RetryError:
+            pass

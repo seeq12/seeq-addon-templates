@@ -12,7 +12,6 @@ from .utils import (
 
 def bootstrap(args):
     target_elements = filter_element_paths(get_element_paths_with_type(), get_folders_from_args(args))
-    print(f'Bootstrapping elements: {target_elements}')
     check_dependencies(target_elements)
     for element_path, element_type in target_elements.items():
         print(f'Bootstrapping element: {element_path}')

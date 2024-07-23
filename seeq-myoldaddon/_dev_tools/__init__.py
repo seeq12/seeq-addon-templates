@@ -3,6 +3,7 @@ from .bootstrap import bootstrap
 from .build import build
 from .package import package
 from .deploy import deploy
+from .watch import watch
 
 
 __all__ = [
@@ -10,6 +11,6 @@ __all__ = [
     'bootstrap',
     'build',
     'package',
-    'deploy'
-
+    'deploy',
+    'watch'
 ]

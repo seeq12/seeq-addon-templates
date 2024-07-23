@@ -1,26 +1,22 @@
+import argparse
+import asyncio
 import base64
 import json
 import os
 import pathlib
 import subprocess
+import sys
 import venv
 from typing import List
 
 from _dev_tools import package
 from _dev_tools.add_on_manager_session import AddOnManagerSession
-from _dev_tools.uninstall import uninstall
 from _dev_tools.utils import (
-    ADD_ON_EXTENSION,
-    DIST_FOLDER,
-    CONFIGURATION_SCHEMA,
-    ELEMENT_IDENTIFIER,
-    ELEMENT_PATH,
-    ELEMENTS,
-    get_add_on_json,
-    get_add_on_package_name,
-    generate_schema_default_dict,
-    get_add_on_identifier
+    _parse_url_username_password,
+    get_element_identifier_from_path, _upload_file
 )
+
+CURRENT_FILE = pathlib.Path(__file__)
 
 FILE_EXTENSIONS = {".py", ".txt", ".ipynb", ".json", ".vue"}
 EXCLUDED_FILES = {"element.py", "requirements.dev.txt"}
@@ -48,45 +44,16 @@ def build() -> None:
           'This operation is skipped for this add-on element')
 
 
-def deploy(args) -> None:
-    add_on_identifier = get_add_on_identifier()
-    session = AddOnManagerSession(args.url, args.username, args.password)
-
-    package(args)
-
-    if args.clean:
-        uninstall(args)
-
-    # upload the add-on
-    print("Uploading add-on")
-    filename = f"{get_add_on_package_name()}{ADD_ON_EXTENSION}"
-    print(DIST_FOLDER / f"{filename}")
-    with open(DIST_FOLDER / f"{filename}", "rb") as f:
-        # file must be base64 encoded
-        encoded_file = base64.b64encode(f.read())
-        upload_response = session.upload_add_on(filename, encoded_file)
-    upload_response.raise_for_status()
-    print("Add-on uploaded")
-    upload_response_body = upload_response.json()
-    print(f"Add-on status is: {upload_response_body['add_on_status']}")
-
-    print("Fetching configuration")
-    configuration = get_configuration()
-    print("Installing Add-on")
-    install_response = session.install_add_on(
-        add_on_identifier, upload_response_body["binary_filename"], configuration
-    )
-    print(install_response.json())
-    if not install_response.ok:
-        error = install_response.json()["error"]
-        error_message = error["message"]
-        raise Exception(f"Error installing Add-on: {error_message}")
-    install_response.raise_for_status()
-    print("Deployment to Add On Manager Complete")
-
-
-def watch(self, url: str, username: str, password: str) -> subprocess.Popen:
+def deploy(username: str, password: str, url: str, element_path: pathlib.Path) -> None:
     pass
+
+
+def watch(element_path: pathlib.Path, url, username, password) -> subprocess.Popen:
+
+    venv_path, windows_os, path_to_python, path_to_pip, path_to_scripts, wheels_path = get_venv_paths(element_path)
+
+    return subprocess.Popen(f"{path_to_python} {CURRENT_FILE} --action watch --element {element_path}"
+                            f" --url {url} --username {username} --password {password}", shell=True)
 
 
 def test(self) -> None:
@@ -155,31 +122,59 @@ def get_venv_paths(element_path: pathlib.Path):
     return venv_path, windows_os, path_to_python, path_to_pip, path_to_scripts, wheels_path
 
 
-def get_configuration():
-    """
-    Fetch the configuration of the add-on, used when deploying the add-on to add-on-manager.
-    If a configuration.json file is present in an element, it will use that instead of the default configuration.
-    """
-    addon_json = get_add_on_json()
-    config = {}
-    for element in addon_json[ELEMENTS]:
-        # check if there's a configuration.json file in each element. If yes, use that instead of default
-        configuration_file_path = (
-                pathlib.Path(element[ELEMENT_PATH]) / "configuration.json"
-        )
-        if configuration_file_path.exists():
-            print(f"Using configuration.json for element {element[ELEMENT_IDENTIFIER]}")
-            with open(configuration_file_path, "r") as f:
-                config[element[ELEMENT_IDENTIFIER]] = json.load(f)
-        elif "configuration_schema" in element:
-            print(
-                f"Using default configuration for element {element[ELEMENT_IDENTIFIER]}"
-            )
-            default_config = generate_schema_default_dict(element[CONFIGURATION_SCHEMA])
-            config[element[ELEMENT_IDENTIFIER]] = default_config
-        else:
-            print(
-                f"No configuration schema found for element {element[ELEMENT_IDENTIFIER]}"
-            )
-            pass
-    return config
+# def _deploy_from_environment(url: str, username: str, password: str, element_path: pathlib.Path):
+#     requests_session, auth_header, project_id = _get_authenticated_session(element_path, url, username, password)
+#     for destination in get_files_to_package(element_path):
+#         source = element_path / destination
+#         _upload_file(url, requests_session, auth_header, project_id, source, destination)
+#
+#
+# def _get_authenticated_session(element_path, url, username, password):
+#     from seeq import sdk, spy
+#     spy.login(username=username, password=password, url=url, quiet=True)
+#     auth_header = {'sq-auth': spy.client.auth_token}
+#     items_api = sdk.ItemsApi(spy.client)
+#     element_project_name = get_element_identifier_from_path(element_path)
+#     response = items_api.search_items(filters=[f'name=={element_project_name}'], types=['Project'])
+#     if len(response.items) == 0:
+#         raise Exception(f"Could not find a project with name {element_project_name}")
+#     project_id = response.items[0].id
+#     requests_session = _create_requests_session()
+#     return requests_session, auth_header, project_id
+#
+#
+# def _create_requests_session():
+#     import requests
+#     from requests.adapters import HTTPAdapter, Retry
+#     max_request_retries = 5
+#     request_retry_status_list = [502, 503, 504]
+#     _http_adapter = HTTPAdapter(
+#         max_retries=Retry(total=max_request_retries, backoff_factor=0.5, status_forcelist=request_retry_status_list))
+#     request_session = requests.Session()
+#     request_session.mount("http://", _http_adapter)
+#     request_session.mount("https://", _http_adapter)
+#     return request_session
+#
+#
+# if __name__ == "__main__":
+#     parser = argparse.ArgumentParser(description="Element scripts. Must be run from the virtual environment.")
+#     parser.add_argument('--url', type=str, help='URL to the Seeq server')
+#     parser.add_argument('--username', type=str, help='Username for authentication')
+#     parser.add_argument('--password', type=str, help='Password for authentication')
+#     parser.add_argument('--element', type=str, help='Element path')
+#     parser.add_argument('--action', type=str, choices=['deploy', 'watch'], help='Action to perform')
+#     args = parser.parse_args()
+#
+#     # make the add-on package available to the deploy script
+#     sys.path.append(os.path.abspath(os.path.join(ELEMENT_PATH, os.path.pardir)))
+#     if args.action == 'deploy':
+#         if args.url is None or args.username is None or args.password is None:
+#             raise Exception("Must provide url, username, and password arguments when deploying")
+#         _deploy_from_environment(args.url, args.username, args.password, args.element)
+#     elif args.action == 'watch':
+#         if args.url is None or args.username is None or args.password is None:
+#             raise Exception("Must provide url, username, and password arguments when watching")
+#         try:
+#             asyncio.run(_watch_from_environment(args.url, args.username, args.password))
+#         except KeyboardInterrupt:
+#             pass
