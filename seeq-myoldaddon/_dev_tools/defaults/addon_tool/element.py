@@ -12,8 +12,10 @@ CURRENT_FILE = pathlib.Path(__file__)
 # make the add-on package available to the `deploy` script
 sys.path.append(os.path.abspath(CURRENT_FILE.parent.parent.parent.parent.resolve()))
 
-from _dev_tools.utils import _upload_file, get_element_identifier_from_path
-
+from _dev_tools.utils import (
+    _upload_file,
+    _get_authenticated_session, _watch_from_environment
+)
 
 FILE_EXTENSIONS = {".py", ".txt", ".ipynb", ".json", ".vue"}
 EXCLUDED_FILES = {"element.py", "requirements.dev.txt"}
@@ -43,13 +45,12 @@ def build() -> None:
 
 def deploy(element_path: pathlib.Path, url: str, username: str, password: str) -> None:
     venv_path, windows_os, path_to_python, path_to_pip, path_to_scripts, wheels_path = get_venv_paths(element_path)
-    subprocess.run(f"{path_to_python} {CURRENT_FILE} --action deploy"
-                   f" --url {url} --username {username} --password {password} --element {element_path}",
-                   shell=True, check=True)
+    subprocess.run(f"{path_to_python} {CURRENT_FILE} --action deploy --element {element_path}"
+                   f" --url {url} --username {username} --password {password}",  shell=True, check=True)
 
 
 def watch(element_path: pathlib.Path, url, username, password) -> subprocess.Popen:
-
+    deploy(element_path, url, username, password)
     venv_path, windows_os, path_to_python, path_to_pip, path_to_scripts, wheels_path = get_venv_paths(element_path)
 
     return subprocess.Popen(f"{path_to_python} {CURRENT_FILE} --action watch --element {element_path}"
@@ -129,33 +130,6 @@ def _deploy_from_environment(url: str, username: str, password: str, element_pat
         _upload_file(url, requests_session, auth_header, project_id, source, destination)
 
 
-def _get_authenticated_session(element_path, url, username, password):
-    from seeq import sdk, spy
-    spy.login(username=username, password=password, url=url, quiet=True)
-    auth_header = {'sq-auth': spy.client.auth_token}
-    items_api = sdk.ItemsApi(spy.client)
-    element_project_name = get_element_identifier_from_path(element_path)
-    response = items_api.search_items(filters=[f'name=={element_project_name}'], types=['Project'])
-    if len(response.items) == 0:
-        raise Exception(f"Could not find a project with name {element_project_name}")
-    project_id = response.items[0].id
-    requests_session = _create_requests_session()
-    return requests_session, auth_header, project_id
-
-
-def _create_requests_session():
-    import requests
-    from requests.adapters import HTTPAdapter, Retry
-    max_request_retries = 5
-    request_retry_status_list = [502, 503, 504]
-    _http_adapter = HTTPAdapter(
-        max_retries=Retry(total=max_request_retries, backoff_factor=0.5, status_forcelist=request_retry_status_list))
-    request_session = requests.Session()
-    request_session.mount("http://", _http_adapter)
-    request_session.mount("https://", _http_adapter)
-    return request_session
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Element scripts. Must be run from the virtual environment.")
     parser.add_argument('--url', type=str, help='URL to the Seeq server')
@@ -174,6 +148,7 @@ if __name__ == "__main__":
             raise Exception("Must provide url, username, and password arguments when watching")
         try:
             pass
-            # asyncio.run(_watch_from_environment(args.url, args.username, args.password))
+            asyncio.run(_watch_from_environment(pathlib.Path(args.element), args.url, args.username, args.password,
+                                                FILE_EXTENSIONS, EXCLUDED_FILES, EXCLUDED_FOLDERS))
         except KeyboardInterrupt:
             pass

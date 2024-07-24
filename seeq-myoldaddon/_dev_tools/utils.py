@@ -5,7 +5,9 @@ import base64
 import importlib
 import pathlib
 import stat
+import asyncio
 from datetime import datetime
+from os.path import isdir, relpath
 from typing import Optional, Dict, List, Set
 from .element_protocol import ElementProtocol
 
@@ -290,6 +292,33 @@ def _parse_url_username_password(args=None):
     return url, username, password
 
 
+def _get_authenticated_session(element_path, url, username, password):
+    from seeq import sdk, spy
+    spy.login(username=username, password=password, url=url, quiet=True)
+    auth_header = {'sq-auth': spy.client.auth_token}
+    items_api = sdk.ItemsApi(spy.client)
+    element_project_name = get_element_identifier_from_path(element_path)
+    response = items_api.search_items(filters=[f'name=={element_project_name}'], types=['Project'])
+    if len(response.items) == 0:
+        raise Exception(f"Could not find a project with name {element_project_name}")
+    project_id = response.items[0].id
+    requests_session = _create_requests_session()
+    return requests_session, auth_header, project_id
+
+
+def _create_requests_session():
+    import requests
+    from requests.adapters import HTTPAdapter, Retry
+    max_request_retries = 5
+    request_retry_status_list = [502, 503, 504]
+    _http_adapter = HTTPAdapter(
+        max_retries=Retry(total=max_request_retries, backoff_factor=0.5, status_forcelist=request_retry_status_list))
+    request_session = requests.Session()
+    request_session.mount("http://", _http_adapter)
+    request_session.mount("https://", _http_adapter)
+    return request_session
+
+
 def get_non_none_attr(obj, attr, default):
     value = getattr(obj, attr, default)
     return value if value is not None else default
@@ -358,3 +387,58 @@ def _upload_directory(server_url, request_session, auth_header, project_id, full
                                 verify=True, timeout=60)
         except RetryError:
             pass
+
+
+def _delete_file(server_url, request_session, auth_header, project_id, source, destination):
+    from requests.exceptions import RetryError
+    base_name = os.path.basename(source)
+    jupyter_path = _get_jupyter_contents_api_path(server_url, project_id, destination)
+    response = None
+    try:
+        response = request_session.delete(jupyter_path,
+                                          headers=auth_header, cookies=auth_header,
+                                          verify=True, timeout=60)
+    except RetryError:
+        pass
+    status = "Success" if (response is not None) else "Failure"
+    print(f"    {_get_timestamp()} Attempt to delete {base_name} : {status}")
+
+
+async def _watch_from_environment(element_path: pathlib.Path, url: str, username: str, password: str,
+                                  file_extensions: set, excluded_files: set, excluded_folders: set):
+    print(f"Watching {element_path}")
+    await asyncio.gather(hot_reload(element_path, url, username, password,
+                                    file_extensions, excluded_files, excluded_folders))
+
+
+async def hot_reload(element_path: pathlib.Path, url: str, username: str, password: str,
+                     file_extensions: set, excluded_files: set, excluded_folders: set):
+
+    from watchfiles import awatch, Change
+    requests_session, auth_header, project_id = _get_authenticated_session(element_path, url, username, password)
+    async for changes in awatch(element_path):
+        for change in changes:
+            if isdir(change[1]):
+                continue  # folder creation handled in _upload_directory
+
+            deleted = change[0] == Change.deleted
+            absolute_file_path = change[1]
+            destination = relpath(absolute_file_path, element_path)
+
+            if file_matches_criteria(str(element_path),
+                                     absolute_file_path,
+                                     file_extensions=file_extensions,
+                                     excluded_files=excluded_files,
+                                     excluded_folders=excluded_folders):
+                if deleted:
+                    _delete_file(url, requests_session, auth_header, project_id,
+                                 absolute_file_path, destination)
+                else:
+                    _upload_file(url, requests_session, auth_header, project_id,
+                                 absolute_file_path, destination)
+                _shut_down_kernel(url, requests_session, auth_header, project_id)
+
+
+def _shut_down_kernel(url: str, requests_session, auth_header, project_id):
+    shut_down_endpoint = f'{url}/data-lab/{project_id}/functions/shutdown'
+    requests_session.post(shut_down_endpoint, headers=auth_header, cookies=auth_header)
