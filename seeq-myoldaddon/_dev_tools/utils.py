@@ -1,7 +1,7 @@
-import base64
 import json
 import os
 import sys
+import base64
 import importlib
 import pathlib
 import stat
@@ -32,7 +32,6 @@ DEFAULT_ADD_ON_TOOL_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.name}.defaul
 ADD_ON_TOOL_TYPE = "AddOnTool"
 
 TIMESTAMP_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
-
 
 
 def load_json(path: pathlib.Path) -> Optional[dict]:
@@ -296,23 +295,24 @@ def get_non_none_attr(obj, attr, default):
     return value if value is not None else default
 
 
-def get_element_identifier_from_path(element_path: pathlib.Path) -> str:
-    """Used from inside an element to get its identifier from addon.json"""
-    add_on_json = get_add_on_json()
-    elements = add_on_json[ELEMENTS]
-    return next(
-        element[IDENTIFIER]
-        for element in elements
-        if (PROJECT_PATH / element[ELEMENT_PATH]).resolve() == element_path.resolve()
-    )
-
-
 def _get_jupyter_contents_api_path(url, project_id, path):
     return f'{url}/data-lab/{project_id}/api/contents/' + path.replace('\\', '//')
 
 
 def _get_timestamp():
     return datetime.now().astimezone().strftime(TIMESTAMP_FORMAT)
+
+
+def get_element_identifier_from_path(element_path: pathlib.Path) -> str:
+    """Used from inside an element to get its identifier from addon.json"""
+    add_on_json = get_add_on_json()
+    elements = add_on_json[ELEMENTS]
+    print(f"Looking for element with path: {element_path.resolve()}")
+    return next(
+        element[IDENTIFIER]
+        for element in elements
+        if (PROJECT_PATH / element[ELEMENT_PATH]).resolve() == element_path.resolve()
+    )
 
 
 def _upload_file(server_url, request_session, auth_header, project_id, source, destination):

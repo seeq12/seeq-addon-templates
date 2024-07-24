@@ -28,10 +28,11 @@ def deploy(args):
     if args.dir is None:
         _deploy_entire_package(args)
     else:
+        url, username, password = _parse_url_username_password(args)
         target_elements = filter_element_paths(get_element_paths_with_type(), get_folders_from_args(args))
-        for element_path, element_type in target_elements:
+        for element_path, element_type in target_elements.items():
             print(f'Deploying element: {element_path}')
-            get_module(element_path, element_type).deploy(pathlib.Path(element_path), args)
+            get_module(element_path, element_type).deploy(pathlib.Path(element_path), url, username, password)
 
 
 def _deploy_entire_package(args):
