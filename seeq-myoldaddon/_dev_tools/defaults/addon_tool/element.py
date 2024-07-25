@@ -44,7 +44,7 @@ def build() -> None:
 
 
 def deploy(element_path: pathlib.Path, url: str, username: str, password: str) -> None:
-    venv_path, windows_os, path_to_python, path_to_pip, path_to_scripts, wheels_path = get_venv_paths(element_path)
+    path_to_python = get_venv_paths(element_path, path_requested="path_to_python")
     subprocess.run(f"{path_to_python} {CURRENT_FILE} --action deploy --element {element_path}"
                    f" --url {url} --username {username} --password {password}",  shell=True, check=True)
 
@@ -57,8 +57,15 @@ def watch(element_path: pathlib.Path, url, username, password) -> subprocess.Pop
                             f" --url {url} --username {username} --password {password}", shell=True)
 
 
-def test(self) -> None:
-    pass
+def test(element_path: pathlib.Path) -> None:
+    path_to_test = get_venv_paths(element_path, path_requested="test")
+    process = subprocess.run(f"{path_to_test.resolve()} -m unit", cwd=element_path.resolve(),
+                             check=False, shell=True, stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+
+    print("TEST PROCESS\n", process.stdout.decode())
+    if process.stderr:
+        print("TEST ERRORS\n", process.stderr.decode())
 
 
 def get_build_dependencies() -> List[str]:
@@ -111,7 +118,7 @@ def _create_virtual_environment(element_path: pathlib.Path, clean: bool = False)
     print("Virtual environment created.")
 
 
-def get_venv_paths(element_path: pathlib.Path):
+def get_venv_paths(element_path: pathlib.Path, path_requested=None):
 
     venv_path = element_path / ".venv"
     wheels_path = element_path / ".wheels"
@@ -119,8 +126,24 @@ def get_venv_paths(element_path: pathlib.Path):
     path_to_scripts = venv_path / ("Scripts" if windows_os else "bin")
     path_to_pip = path_to_scripts / "pip"
     path_to_python = path_to_scripts / "python"
+    path_to_test = path_to_scripts / "pytest"
 
-    return venv_path, windows_os, path_to_python, path_to_pip, path_to_scripts, wheels_path
+    if path_requested is None:
+        return venv_path, windows_os, path_to_python, path_to_pip, path_to_scripts, wheels_path
+    if path_requested == "venv":
+        return venv_path
+    if path_requested == "windows_os":
+        return windows_os
+    if path_requested == "path_to_python":
+        return path_to_python
+    if path_requested == "path_to_pip":
+        return path_to_pip
+    if path_requested == "path_to_scripts":
+        return path_to_scripts
+    if path_requested == "wheels":
+        return wheels_path
+    if path_requested == "test":
+        return path_to_test
 
 
 def _deploy_from_environment(url: str, username: str, password: str, element_path: pathlib.Path):

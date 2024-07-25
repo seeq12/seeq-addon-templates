@@ -4,6 +4,7 @@ from .build import build
 from .package import package
 from .deploy import deploy
 from .watch import watch
+from .testing import elements_testing
 
 
 __all__ = [
@@ -12,5 +13,6 @@ __all__ = [
     'build',
     'package',
     'deploy',
-    'watch'
+    'watch',
+    'elements_testing'
 ]
