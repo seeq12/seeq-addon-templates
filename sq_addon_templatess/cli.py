@@ -7,7 +7,7 @@ from collections import OrderedDict
 from pathlib import Path
 import cookiecutter as cookie
 from cookiecutter.main import cookiecutter
-from sq_addon_template import __version__
+from sq_addon_templatess import __version__
 
 
 NAME_REGEX = r'^[a-zA-Z][_a-zA-Z0-9]+$'

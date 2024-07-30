@@ -1,7 +1,0 @@
-include LICENSE
-global-exclude *.pyc
-global-exclude .ipynb_checkpoints
-graft sq_addon_template/hooks
-graft sq_addon_template/{{cookiecutter.project_slug}}
-include sq_addon_template/cookiecutter.json
-prune tests

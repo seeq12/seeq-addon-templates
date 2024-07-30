@@ -1,0 +1,84 @@
+{
+  "identifier": "com.seeq.addon.example",
+  "name": "Example Add-on",
+  "description": "An example Add-on with all element types",
+  "version": "1.0.0",
+  "maintainer": "Seeq",
+  "license": "Seeq",
+  "icon": "fa fa-ghost",
+  "previews":["additional_content/previewImage.png"],
+  "elements": [
+    {
+      "name": "Example Plugin",
+      "identifier": "com.seeq.addon.example.frontend",
+      "type": "Plugin",
+      "path": "frontend"
+    },
+    {
+      "name": "ExampleCalc",
+      "identifier": "com.seeq.addon.example.udf",
+      "type": "FormulaPackage",
+      "path": "udf"
+    },
+    {
+      "name": "Example Data Lab Functions",
+      "identifier": "com.seeq.addon.example.datalabfunctions",
+      "type": "DataLabFunctions",
+      "path": "data-lab-functions"
+    },
+    {
+      "name": "Example Add-On Test Tool",
+      "description": "A test Add-on Tool",
+      "identifier": "com.seeq.addon.example.tool",
+      "type": "AddOnTool",
+      "path": "test_tool",
+      "notebook_file_path": "TestTool.ipynb",
+      "resource_size": "GP_S",
+      "extensions": [],
+      "configuration_schema": {
+
+        "type": "object",
+        "properties": {
+          "icon": {
+            "type": "string",
+            "default": "fa fa-wrench"
+          },
+          "linkType": {
+            "enum": [
+              "window",
+              "tab",
+              "none"
+            ],
+            "default": "window"
+          },
+          "sortKey": {
+            "type": "string",
+            "default": "a"
+          },
+          "windowDetails": {
+            "type": "string",
+            "default": "toolbar=0,location=0,scrollbars=0,statusbar=0,menubar=0,resizable=0,height=550,width=420"
+          },
+          "reuseWindow": {
+            "type": "boolean",
+            "default": true
+          },
+          "includeWorkbookParameters": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "icon",
+          "linkType",
+          "sortKey",
+          "windowDetails",
+          "reuseWindow",
+          "includeWorkbookParameters"
+        ]
+      },
+      "configuration_filename": "configuration",
+      "configuration_converter": "json"
+    }
+  ]
+}

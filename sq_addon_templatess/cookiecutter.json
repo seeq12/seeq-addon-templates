@@ -1,0 +1,16 @@
+{
+    "project_name": "Add-on project name",
+    "project_slug": "{{ cookiecutter.project_name|lower|replace(' ', '-') }}",
+    "project_license": ["open-source", "no-license"],
+    "author": "",
+    "author_email": "",
+    "current_year": "2024",
+    "project_pypi_description": "This description will show if you publish your artifact on a PyPI server",
+    "addon_name" : "Add-on name on Workbench",
+    "addon_description" : "This is a very cool add-on",
+    "addon_icon" : "fa fa-th",
+    "addon_window_details" : "toolbar=0,location=0,left=800,top=400,height=1000,width=1400",
+    "demo_addon_class": "MyAddOnClassName",
+    "template_type": ["add-on_code_and_documentation", "add-on_code_only", "documentation_only"],
+    "include_tests": ["yes", "no"]
+}

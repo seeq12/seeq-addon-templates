@@ -1,6 +1,6 @@
 {
   "identifier": "com.seeq.signal-math",
-  "name": "Signal Math",
+  "name": "{{ }}",
   "description": "This is a dummy add-on that is painful to install",
   "version": "0.0.1",
   "maintainer": "Seeq Corporation https://seeq.com/",
