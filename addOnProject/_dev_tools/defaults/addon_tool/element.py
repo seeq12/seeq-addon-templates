@@ -11,10 +11,13 @@ CURRENT_FILE = pathlib.Path(__file__)
 # make the add-on package available to the `deploy` script
 sys.path.append(os.path.abspath(CURRENT_FILE.parent.parent.parent.parent.resolve()))
 
-from _dev_tools import (
+from _dev_tools.ao_tasks.utils import (
     _upload_file,
     _get_authenticated_session,
     _watch_from_environment,
+)
+
+from _dev_tools.utils import (
     get_venv_paths,
     create_virtual_environment
 )
@@ -75,7 +78,7 @@ def get_build_dependencies() -> List[str]:
 
 
 def get_files_to_package(element_path: pathlib.Path) -> List[str]:
-    from _dev_tools import find_files_in_folder_recursively
+    from _dev_tools.ao_tasks.utils import find_files_in_folder_recursively
     files_to_deploy = find_files_in_folder_recursively(
         str(element_path),
         file_extensions=FILE_EXTENSIONS,

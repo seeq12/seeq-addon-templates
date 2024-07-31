@@ -29,7 +29,7 @@ ELEMENT_IDENTIFIER = 'identifier'
 CONFIGURATION_SCHEMA = "configuration_schema"
 PREVIEWS = "previews"
 
-DEFAULT_ADD_ON_TOOL_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.name}.defaults.addon_tool'
+DEFAULT_ADD_ON_TOOL_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.addon_tool'
 ADD_ON_TOOL_TYPE = "AddOnTool"
 
 TIMESTAMP_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
@@ -162,6 +162,84 @@ def get_element_identifier_from_path(element_path: pathlib.Path) -> str:
         for element in elements
         if (PROJECT_PATH / element[ELEMENT_PATH]).resolve() == element_path.resolve()
     )
+
+
+def filter_element_paths(element_paths_with_type: Optional[Dict[str, str]], subset_folders: Optional[List[str]]):
+    if subset_folders is None:
+        return element_paths_with_type
+    return {element_path: element_type for element_path, element_type in element_paths_with_type.items()
+            if element_path in subset_folders}
+
+
+def topological_sort(graph: Dict[str, List[str]]) -> List[str]:
+    """
+    Topological sort algorithm.
+    :param graph: a dictionary of nodes and their dependencies
+    :return: a list of nodes in topological order
+    """
+    result = []
+    visited = set()
+
+    def dfs(graph_node: str):
+        if graph_node in visited:
+            return
+        visited.add(graph_node)
+        for dependency in graph.get(graph_node, []):
+            dfs(dependency)
+        result.append(graph_node)
+
+    for node in graph:
+        dfs(node)
+    return result
+
+
+def generate_schema_default_dict(schema, path=""):
+    """
+    Recursively generate a valid instance dictionary from a given JSON schema
+    that includes only the fields that are required or have a default value.
+
+    :param schema: The JSON schema dictionary.
+    :param path: The path to the current position in the schema (for nested objects).
+    :return: A valid instance dictionary according to the schema.
+    """
+    if "type" not in schema:
+        schema["type"] = "any"
+    if schema["type"] == "object":
+        obj = {}
+        properties = schema.get("properties", {})
+        required_fields = schema.get("required", [])
+
+        for key, value in properties.items():
+            if key in required_fields or "default" in value:
+                # Construct the new path for nested objects
+                new_path = f"{path}.{key}" if path else key
+                # Recursive call for nested objects or fields with default values
+                obj[key] = generate_schema_default_dict(value, path=new_path)
+        return obj
+    elif schema["type"] == "string":
+        # Return the default value if specified, otherwise an empty string if required
+        return schema.get("default", "")
+    elif schema["type"] == "boolean":
+        # Return the default value if specified, otherwise False if required
+        return schema.get("default", False)
+    elif schema["type"] == "array":
+        # Return an empty list or the default value if specified
+        return schema.get("default", [])
+    elif schema["type"] == "number":
+        # Return the default value if specified, otherwise 0 if required
+        return schema.get("default", 0)
+    elif schema["type"] == "integer":
+        # Return the default value if specified, otherwise 0 if required
+        return schema.get("default", 0)
+    elif schema["type"] == "null":
+        # Just return None for null types
+        return None
+    elif schema["type"] == "any":
+        # return None for any type if no default
+        return schema.get("default", None)
+    else:
+        # Extend with additional types as needed
+        raise ValueError(f"Unsupported type in path {path}: {schema['type']}")
 
 
 def _get_authenticated_session(element_path, url, username, password):

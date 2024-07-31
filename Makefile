@@ -3,7 +3,7 @@ LOCAL_DIR := $(CURDIR)
 VENV := $(LOCAL_DIR)/.venv
 
 addonEnv:
-	#python entrypoint.py
+	python entrypoint.py
 	@echo "\n|********* Virtual Environment Created *********|"
 	@echo "  To activate the environment, run: \n"
 	@echo "      source $(VENV)/bin/activate"
