@@ -12,7 +12,7 @@ from .ui_components import AppLayout
 warnings.filterwarnings('ignore')
 
 
-class OldAddOn(AppLayout):
+class MyAddonToolExample(AppLayout):
     """
     This is the main class for the User Interface of the <Add on Name> Add-on.
     To create an instance, either a Seeq Data Lab project URL with appropriate
@@ -30,11 +30,11 @@ class OldAddOn(AppLayout):
 
         self.signal_plot = go.FigureWidget()
 
-        super(OldAddOn, self).__init__(first_signal_on_change=self.first_signal_dropdown,
-                                      second_signal_on_change=self.second_signal_dropdown,
-                                      math_operator_on_change=self.math_operator_dropdown,
-                                      push_to_seeq_on_click=self.push_to_seeq
-                                      )
+        super(MyAddonToolExample, self).__init__(first_signal_on_change=self.first_signal_dropdown,
+                                                 second_signal_on_change=self.second_signal_dropdown,
+                                                 math_operator_on_change=self.math_operator_dropdown,
+                                                 push_to_seeq_on_click=self.push_to_seeq
+                                                 )
         self.first_dropdown_items = list(self.df.columns)
         self.second_dropdown_items = list(self.df.columns)
         self.create_displayed_fig(df_plot(pd.DataFrame))

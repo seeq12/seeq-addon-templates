@@ -1,0 +1,13 @@
+_exclude:
+    - name-slug
+# questions
+project_name:
+    type: str
+    help: what is the name of the project?
+    default: My Project
+
+addon_tool_element_name:
+    type: str
+    help: what is the name of the addon tool element?
+
+_subdirectory: "my_project"
