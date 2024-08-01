@@ -82,3 +82,4 @@ TEST*.xml
 # Credentials and test config
 credentials.key
 test_config.ini
+.credentials.json

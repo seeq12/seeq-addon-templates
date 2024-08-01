@@ -1,13 +1,16 @@
 _exclude:
+    - "*.*"
+    - ".git"
+    - includes
+    - Makefile
     - name-slug
+
 # questions
 project_name:
     type: str
     help: what is the name of the project?
-    default: My Project
+    default: My Addon Project
 
 addon_tool_element_name:
     type: str
     help: what is the name of the addon tool element?
-
-_subdirectory: "my_project"
