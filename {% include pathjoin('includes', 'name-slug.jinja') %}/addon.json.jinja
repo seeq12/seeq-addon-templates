@@ -1,15 +1,16 @@
+{%- set identifier = project_name|replace(' ', '-')|regex_replace('(?<=[a-zA-Z])([A-Z])', '-\\1')|lower -%}
 {
-  "identifier": "com.seeq.signal-math",
-  "name": "{{ }}",
-  "description": "This is a dummy add-on that is painful to install",
-  "version": "0.0.1",
-  "maintainer": "Seeq Corporation https://seeq.com/",
-  "license": "Apache License 2.0",
-  "icon": "fa-bullseye",
+  "identifier": "com.seeq.{{ identifier }}",
+  "name": "{{ project_name }}",
+  "description": "{{ project_description }}",
+  "version": "{{ project_version }}",
+  "maintainer": "{{ project_maintainer }}",
+  "license": "{{ project_license }}",
+  "icon": "{{ project_icon }}",
   "elements": [
     {
       "name": "Signal Math Add-on",
-      "identifier": "com.seeq.signal-math.addontool",
+      "identifier": "com.seeq.{{identifier}}.addontool",
       "description": "What does this describe?",
       "type": "AddOnTool",
       "path": "addOnToolElement",
