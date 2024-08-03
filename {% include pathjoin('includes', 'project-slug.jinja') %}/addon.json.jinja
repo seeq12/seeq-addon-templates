@@ -1,4 +1,8 @@
-{%- set identifier = project_name|replace(' ', '-')|regex_replace('(?<=[a-zA-Z])([A-Z])', '-\\1')|lower -%}
+{%- set project_slug -%}
+{% include pathjoin('includes', 'project-slug.jinja') %}
+{%- endset -%}
+{%- set identifier = project_slug | trim -%}
+
 {
   "identifier": "com.seeq.{{ identifier }}",
   "name": "{{ project_name }}",
@@ -8,14 +12,21 @@
   "license": "{{ project_license }}",
   "icon": "{{ project_icon }}",
   "elements": [
+    {% if 'AddOnTool' in elements_to_include %}
+
+    {%- set addon_tool_slug -%}
+    {% include pathjoin('includes', 'addon-tool-slug.jinja') %}
+    {%- endset -%}
+    {%- set add_on_path = addon_tool_slug | trim -%}
+
     {
-      "name": "Signal Math Add-on",
+      "name": "{{ addOnTool_name }}",
       "identifier": "com.seeq.{{identifier}}.addontool",
-      "description": "What does this describe?",
+      "description": "{{ addOnTool_description }}",
       "type": "AddOnTool",
-      "path": "addOnToolElement",
-      "notebook_file_path": "myOldAddOn_deployment.ipynb",
-      "resource_size": "GP_S",
+      "path": "{{ add_on_path }}",
+      "notebook_file_path": "addon_tool_example_target_notebook.ipynb",
+      "resource_size": "{{ addOnTool_resource_size }}",
       "extensions": ["ipyvuetify", "widgetsnbextension", "ipyvue"],
       "configuration_schema": {
         "type": "object",
@@ -25,7 +36,7 @@
             "properties": {
               "icon": {
                 "type": "string",
-                "default": "fa-bullseye"
+                "default": "{{ addOnTool_icon }}"
               },
               "linkType": {
                 "enum": ["window", "tab", "none"],
@@ -90,6 +101,7 @@
       "configuration_filename": "config",
       "configuration_converter": "json"
     }
+    {% endif %}
   ],
   "previews": [],
   "tags": {}

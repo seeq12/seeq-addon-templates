@@ -1,0 +1,2 @@
+{# For simplicity ... -#}
+{{ addOnTool_name|replace(' ', '_')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower}}

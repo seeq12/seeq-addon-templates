@@ -40,7 +40,7 @@ project_name:
     placeholder: "(e.g.: My Addon Project)"
     validator: >-
         {% if not (project_name | regex_search('^[A-Za-z][A-Za-z0-9 _-]*$')) %}
-        project_name must start with a letter and cannot contain any symbols.
+        add-on name must start with a letter and cannot contain any symbols.
         {% endif %}
 
 project_description:
@@ -95,19 +95,6 @@ element_prompts:
     when: "{% if elements_to_include %}true{% endif %}"
 
 
-addOnTool_prompts:
-    type: str
-    help: "The following questions are related to the AddOnTool element"
-    default: Press enter to continue
-    when: "{{ 'AddOnTool' in elements_to_include }}"
-
-
-
-
-
-
-
-
-addon_tool_element_name:
-    type: str
-    help: what is the name of the addon tool element?
+---
+# Add-on Tool element questions
+  !include add_on_tool.yaml
