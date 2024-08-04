@@ -40,7 +40,7 @@
               },
               "linkType": {
                 "enum": ["window", "tab", "none"],
-                "default": "window"
+                "default": "{{ addOnTool_location }}"
               },
               "sortKey": {
                 "type": "string",
@@ -48,7 +48,7 @@
               },
               "windowDetails": {
                 "type": "string",
-                "default": "toolbar=0,location=0,scroll"
+                "default": "{{ addOnTool_window_details }}"
               }
             },
             "required": [
@@ -60,36 +60,8 @@
           },
           "project": {
             "type": "object",
-            "properties": {
-              "my special value": {
-                "type": "string",
-                "default": "My Project"
-              },
-              "signal": {
-                "type": "string",
-                "default": "My Signal"
-              },
-              "My configuration": {
-                "type": "object",
-                "properties": {
-                  "my second value value": {
-                    "type": "string",
-                    "default": "My improved value"
-                  },
-                  "signal2": {
-                    "type": "string",
-                    "default": "My second signal"
-                  }
-                },
-                "required": [
-                ]
-
-              }
-            },
-            "required": [
-              "My configuration"
-            ]
-
+            "properties": {{ addOnTool_project_properties | tojson }},
+            "required": [{{ addOnTool_project_required_properties }}]
           }
 
         },

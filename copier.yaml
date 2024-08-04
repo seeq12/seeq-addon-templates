@@ -5,6 +5,8 @@ _exclude:
     - Makefile
     - name-slug
 
+#_jinja_extensions:
+#    - jinja2_jsonschema.JsonSchemaExtension
 
 _message_before_copy: |
     
@@ -47,32 +49,52 @@ project_description:
     type: str
     help: What is the description of this add-on?
     placeholder: "(e.g. Gets signals from workbench and does simply math with them)"
+    validator: >-
+        {% if not project_description %}
+        add-on description cannot be empty.
+        {% endif %}
 
 project_version:
     type: str
     help: What is the (semantic) version of this add-on?
     placeholder: "(e.g.: 0.0.1)"
+    validator: >-
+        {% if not (project_version | regex_search('^(0|[0-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$')) %}
+        add-on version must follow semantic versioning format.
+        {% endif %}
 
 project_icon:
     type: str
     help: What icon should Add-on Manager use to identify your add-on?
     default: fa-bullseye
+    validator: >-
+        {% if not project_icon %}
+        icon cannot be empty 
+        {% endif %}
 
 project_maintainer:
     type: str
     help: Who is the maintainer of this add-on?
     placeholder: "(e.g.: Seeq Corporation, https://seeq.com)"
+    validator: >-
+        {% if not project_maintainer %}
+        maintainer field cannot be empty.
+        {% endif %}
 
 project_license:
     type: str
     help: What type of license does this add-on have?
-    default: Apache License 2.0
+    default: "Apache License 2.0"
     choices:
-        - Apache License 2.0
-        - MIT License
-        - GNU General Public License
-        - 3-clause BSD License
-        - No license
+        - "Apache License 2.0"
+        - "MIT License"
+        - "GNU General Public License"
+        - "3-clause BSD License"
+        - "No license"
+    validator: >-
+        {% if not project_license %}
+        Please choose at least one option
+        {% endif %}
 
 elements_to_include:
     type: str
