@@ -1,7 +1,4 @@
-{%- set project_slug -%}
-{% include pathjoin('includes', 'project-slug.jinja') %}
-{%- endset -%}
-{%- set identifier = project_slug | trim -%}
+{%- set identifier = project_name|replace(' ', '_')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower|trim -%}
 
 {
   "identifier": "com.seeq.{{ identifier }}",
@@ -14,10 +11,7 @@
   "elements": [
     {% if 'AddOnTool' in elements_to_include %}
 
-    {%- set addon_tool_slug -%}
-    {% include pathjoin('includes', 'addon-tool-slug.jinja') %}
-    {%- endset -%}
-    {%- set add_on_path = addon_tool_slug | trim -%}
+    {%- set add_on_path = addOnTool_name|replace(' ', '_')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower|trim  -%}
 
     {
       "name": "{{ addOnTool_name }}",

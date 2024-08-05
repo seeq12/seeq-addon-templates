@@ -20,7 +20,7 @@ addOnTool_description:
   placeholder: (This is the description of the Add-on Tool just below the name in workbench under Tools > Add-ons )
   validator: >-
     {% if not addOnTool_description %}
-    description cannot be empty 
+    description cannot be empty
     {% endif %}
   when: "{{ 'AddOnTool' in elements_to_include }}"
 
@@ -32,7 +32,7 @@ addOnTool_resource_size:
   placeholder: (We need to change our KB to have a sharable link here!! https://support.seeq.com/kb/latest/cloud/elements#Element-Specific-Properties)
   validator: >-
     {% if not addOnTool_resource_size %}
-    resource size cannot be empty 
+    resource size cannot be empty
     {% endif %}
   when: "{{ 'AddOnTool' in elements_to_include }}"
 
@@ -43,7 +43,7 @@ addOnTool_icon:
   placeholder: (This icon will be shown next to the Add-on Tool name in workbench under Tools > Add-ons )
   validator: >-
     {% if not addOnTool_icon %}
-    icon cannot be empty 
+    icon cannot be empty
     {% endif %}
   when: "{{ 'AddOnTool' in elements_to_include }}"
 

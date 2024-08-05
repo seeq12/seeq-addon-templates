@@ -1,12 +1,22 @@
 _exclude:
-    - "*.*"
     - ".git"
+    - "copier.yaml"
+    - "add_on_tool.yaml"
+    - "requirements.txt"
+    - "entrypoint.py"
+    - _dev_tools
     - includes
     - Makefile
-    - name-slug
 
 #_jinja_extensions:
 #    - jinja2_jsonschema.JsonSchemaExtension
+
+_tasks:
+#    - command: mkdir -p {{ _copier_conf.dst_path }}/{% from pathjoin('includes', 'slug.jinja') import slugify %}{{ slugify(project_name) }}/_dev_tools
+    - command: cp -R {{ _copier_conf.src_path }}/_dev_tools {{ _copier_conf.dst_path }}/{% from pathjoin('includes', 'slug.jinja') import slugify %}{{ slugify(project_name) }}
+
+
+
 
 _message_before_copy: |
     
@@ -69,7 +79,7 @@ project_icon:
     default: fa-bullseye
     validator: >-
         {% if not project_icon %}
-        icon cannot be empty 
+        icon cannot be empty
         {% endif %}
 
 project_maintainer:
