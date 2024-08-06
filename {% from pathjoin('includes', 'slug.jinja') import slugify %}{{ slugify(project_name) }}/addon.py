@@ -35,7 +35,7 @@ def elements_test(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(prog='ao.py', description='Add-on Manager')
+    parser = argparse.ArgumentParser(prog='addon.py', description='Add-on Manager')
     subparsers = parser.add_subparsers(help='sub-command help', required=True)
 
     parser_bootstrap = subparsers.add_parser('bootstrap', help='Bootstrap your add-on development environment')
