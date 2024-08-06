@@ -12,7 +12,7 @@ _exclude:
 #    - jinja2_jsonschema.JsonSchemaExtension
 
 _tasks:
-    - command: cp -R {{ _copier_conf.src_path }}/_dev_tools {{ _copier_conf.dst_path }}/{% from pathjoin('includes', 'slug.jinja') import slugify %}{{ slugify(project_name) }}
+    - command: cp -R {{ _copier_conf.src_path }}/_dev_tools ./{% from pathjoin('includes', 'slug.jinja') import slugify %}{{ slugify(project_name) }}
 
 
 
