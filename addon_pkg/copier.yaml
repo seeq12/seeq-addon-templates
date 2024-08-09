@@ -6,7 +6,6 @@ _exclude:
     - "entrypoint.py"
     - _dev_tools
     - includes
-    - Makefile
 
 #_jinja_extensions:
 #    - jinja2_jsonschema.JsonSchemaExtension

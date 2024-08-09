@@ -5,15 +5,18 @@ import pathlib
 import venv
 
 
+VENV_NAME = ".venv"
+WHEELS_NAME = ".wheels"
+
+
 def save_json(path: pathlib.Path, values: dict) -> None:
     with open(path, mode='w', encoding='utf-8') as json_file:
         json.dump(values, json_file, indent=2, ensure_ascii=False)
 
 
 def get_venv_paths(element_path: pathlib.Path, path_requested=None):
-
-    venv_path = element_path / ".venv"
-    wheels_path = element_path / ".wheels"
+    venv_path = element_path / VENV_NAME
+    wheels_path = element_path / WHEELS_NAME
     windows_os = os.name == "nt"
     path_to_scripts = venv_path / ("Scripts" if windows_os else "bin")
     path_to_pip = path_to_scripts / "pip"

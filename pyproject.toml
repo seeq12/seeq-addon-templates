@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "addon"
+version = "0.0.1"
+
+[project.entry-points.console_scripts]
+addon = "addon_pkg.addon:main"
+
+[tool.setuptools.packages.find]

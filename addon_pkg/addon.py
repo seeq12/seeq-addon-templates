@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import argparse
 import copier
 
@@ -16,7 +17,7 @@ def modify_args(args):
 
 def create_addon(args):
     args = modify_args(args)
-    copier.run_copy('.', data=None, **vars(args))
+    copier.run_copy('..', data=None, **vars(args))
 
 
 def update_addon(args=None):
@@ -24,7 +25,7 @@ def update_addon(args=None):
     copier.run_recopy(data=None, **vars(args))
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(prog='addon.py', description='Template generator for Seeq Add-ons')
     subparsers = parser.add_subparsers(description='sub-command help', required=True)
 
@@ -88,3 +89,7 @@ if __name__ == "__main__":
 
     options, unknown = parser.parse_known_args()
     options.func(options)
+
+
+if __name__ == "__main__":
+    main()

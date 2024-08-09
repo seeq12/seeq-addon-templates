@@ -1,0 +1,50 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+# Get the local directory (where the script is located)
+LOCAL_DIR="$(pwd)"
+VENV="$LOCAL_DIR/.venv"
+ADDON_SCRIPT_PATH="$LOCAL_DIR/addon"
+ADDON_VENV_FILE="$LOCAL_DIR/addon_venv"
+
+# Function to create a virtual environment
+create_env() {
+	echo -e "\n********* Creating Virtual Environment **********************"
+	echo "  Creating virtual environment in $VENV"
+	echo -e "Using shell: $SHELL"
+  # Check if python3 exists
+   if command -v python3 &> /dev/null
+   then
+      python3 entrypoint.py
+   elif command -v python &> /dev/null
+   then
+      python entrypoint.py
+   else
+      echo "Python is not installed. Please install Python and try again."
+      exit 1
+   fi
+	echo -e "\n************************************************************"
+	echo -e "\nVirtual environment created and activated"
+	echo -e "\n************************************************************\n"
+}
+
+info() {
+  	echo -e "\n************************************************************"
+  	echo -e "\n To generate your example add-on, run the command"
+  	echo -e "\n   addon create <destination_dir>"
+  	echo -e "\n************************************************************"
+}
+
+# Call the function
+create_env
+
+# Write the path of the virtual environment to a file
+echo "$VENV" > "$ADDON_VENV_FILE"
+
+"$VENV"/bin/pip install .
+
+
+chmod +x "$ADDON_SCRIPT_PATH"
+cp "$ADDON_SCRIPT_PATH" /usr/local/bin/addon
+cp "$ADDON_VENV_FILE" /usr/local/bin/addon_venv
