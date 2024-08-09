@@ -25,7 +25,7 @@ create_env() {
       exit 1
    fi
 	echo -e "\n************************************************************"
-	echo -e "\nVirtual environment created and activated"
+	echo -e "\nVirtual environment created"
 	echo -e "\n************************************************************\n"
 }
 
@@ -48,3 +48,6 @@ echo "$VENV" > "$ADDON_VENV_FILE"
 chmod +x "$ADDON_SCRIPT_PATH"
 cp "$ADDON_SCRIPT_PATH" /usr/local/bin/addon
 cp "$ADDON_VENV_FILE" /usr/local/bin/addon_venv
+
+
+info

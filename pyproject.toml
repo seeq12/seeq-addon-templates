@@ -10,3 +10,11 @@ version = "0.0.1"
 addon = "addon_pkg.addon:main"
 
 [tool.setuptools.packages.find]
+
+[tool.setuptools.package-data]
+addon_pkg = [
+    "**/*",
+    "includes/*",
+    "addon_example/**/*",
+    "addon_example/{% if 'AddOnTool' in elements_to_include %}{% from pathjoin('includes', 'slug.jinja') import slugify %}{{ slugify(addOnTool_name) }}{% endif %}/**/*",
+]
