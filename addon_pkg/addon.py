@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 import argparse
+import pathlib
+
 import copier
+
+
+CURRENT_DIRECTORY = pathlib.Path(__file__).parent.resolve()
 
 
 def modify_args(args):
@@ -17,7 +22,8 @@ def modify_args(args):
 
 def create_addon(args):
     args = modify_args(args)
-    copier.run_copy('..', data=None, **vars(args))
+    print("THIS IS THE FOLDER: ", pathlib.Path(__file__).parent.resolve())
+    copier.run_copy(str(CURRENT_DIRECTORY), data=None, **vars(args))
 
 
 def update_addon(args=None):

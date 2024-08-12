@@ -1,17 +1,20 @@
-_exclude:
-    - ".git"
-    - "copier.yaml"
-    - "add_on_tool.yaml"
-    - "requirements.txt"
-    - "entrypoint.py"
-    - _dev_tools
-    - includes
+#_exclude:
+#    - ".git"
+#    - "copier.yaml"
+#    - "add_on_tool.yaml"
+#    - "requirements.txt"
+#    - "entrypoint.py"
+#    - addon_example
+#    - includes
+
+
+_subdirectory: addon_example
 
 #_jinja_extensions:
 #    - jinja2_jsonschema.JsonSchemaExtension
 
 _tasks:
-    - command: cp -R {{ _copier_conf.src_path }}/_dev_tools ./{% from pathjoin('includes', 'slug.jinja') import slugify %}{{ slugify(project_name) }}
+    - command: cp -R {{ _copier_conf.src_path }}/_dev_tools ./
 
 
 

@@ -42,7 +42,12 @@ create_env
 # Write the path of the virtual environment to a file
 echo "$VENV" > "$ADDON_VENV_FILE"
 
-"$VENV"/bin/pip install .
+"$VENV"/bin/python -m build
+
+version=$(grep 'version =' pyproject.toml | sed 's/version = //g' | tr -d '"')
+echo "seeq-addon-template version: $version"
+
+"$VENV"/bin/pip install dist/addon-"$version"-py3-none-any.whl -U
 
 
 chmod +x "$ADDON_SCRIPT_PATH"
