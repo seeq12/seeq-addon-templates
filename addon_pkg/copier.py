@@ -32,7 +32,7 @@ def update_addon(args=None):
 
 
 def main():
-    parser = argparse.ArgumentParser(prog='addon.py', description='Template generator for Seeq Add-ons')
+    parser = argparse.ArgumentParser(prog='copier.py', description='Template generator for Seeq Add-ons')
     subparsers = parser.add_subparsers(description='sub-command help', required=True)
 
     copier_options = {

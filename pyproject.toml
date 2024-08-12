@@ -7,7 +7,7 @@ name = "addon"
 version = "0.0.1"
 
 [project.entry-points.console_scripts]
-addon = "addon_pkg.addon:main"
+addon = "addon_pkg.copier:main"
 
 [tool.setuptools.packages.find]
 
