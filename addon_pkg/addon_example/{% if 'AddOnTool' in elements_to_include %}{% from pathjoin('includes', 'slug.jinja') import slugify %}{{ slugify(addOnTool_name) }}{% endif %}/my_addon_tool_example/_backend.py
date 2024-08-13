@@ -55,7 +55,7 @@ def pull_only_signals(url, grid='auto'):
     else:
         raise AttributeError(
             "A call to `spy.pull` was successful but the response object does not contain the `spy.query_df` property "
-            "required for `myOldAddOn")
+            "required for this Add-on")
     return df
 
 
