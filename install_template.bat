@@ -3,11 +3,10 @@ setlocal enabledelayedexpansion
 
 :: Get the local directory (where the script is located)
 set "LOCAL_DIR=%~dp0"
-set "HOMEDIR=%USERPROFILE%"
 set "VENV=%LOCAL_DIR%.venv"
-set "ADDON_SCRIPT_PATH=%LOCAL_DIR%\addon"
+set "ADDON_SCRIPT_PATH=%LOCAL_DIR%\addon.bat"
 set "ADDON_VENV_FILE=%LOCAL_DIR%\addon_venv"
-set "ADDON_TEMPLATE_FOLDER=ADDON_TEMPLATE_GENERATOR"
+set "ADDON_TEMPLATE_FOLDER=seeqAddonsTemplate"
 
 :: Create a virtual environment
 call :CreateEnv
@@ -29,9 +28,9 @@ echo "seeq-addon-template version: %version%"
 "%VENV%\Scripts\pip.exe" install "dist\addon-%version%-py3-none-any.whl" --force-reinstall
 
 
-mkdir "%HOMEDIR%\%ADDON_TEMPLATE_FOLDER%"
-copy "%ADDON_SCRIPT_PATH%" "%HOMEDIR%\%ADDON_TEMPLATE_FOLDER%\addon.bat"
-copy "%ADDON_VENV_FILE%" "%HOMEDIR%\%ADDON_TEMPLATE_FOLDER%\addon_venv"
+mkdir "%USERPROFILE%\%ADDON_TEMPLATE_FOLDER%"
+copy "%ADDON_SCRIPT_PATH%" "%USERPROFILE%\%ADDON_TEMPLATE_FOLDER%\addon.bat"
+copy "%ADDON_VENV_FILE%" "%USERPROFILE%\%ADDON_TEMPLATE_FOLDER%\addon_venv"
 
 call :AddToPath
 call :Info
@@ -62,7 +61,7 @@ goto :eof
 
 :: Function to add a directory to the PATH
 :AddToPath
-set "DIR_TO_ADD=%HOMEDIR%\%ADDON_TEMPLATE_FOLDER%"
+set "DIR_TO_ADD=%USERPROFILE%\%ADDON_TEMPLATE_FOLDER%"
 
 REM Check if the directory is already in the PATH
 echo %PATH% | findstr /I /C:"%DIR_TO_ADD%" >nul
@@ -74,6 +73,7 @@ if %ERRORLEVEL% NEQ 0 (
 ) else (
     echo %DIR_TO_ADD% is already in the PATH
 )
+
 goto :eof
 
 
@@ -83,7 +83,7 @@ echo ************************************************************
 echo.
 echo  To generate your example add-on, run the command
 echo.
-echo    addon create <destination_dir>
+echo    addon create "<destination_dir>"
 echo.
 echo ************************************************************
 goto :eof
