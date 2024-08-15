@@ -95,7 +95,8 @@ goto :eof
 echo.
 echo ************************************************************
 echo.
-echo  To generate your example add-on, run the command
+echo  To generate your example add-on run the following command
+echo  in a new terminal:
 echo.
 echo    addon create "<destination_dir>"
 echo.

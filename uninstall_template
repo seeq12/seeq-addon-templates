@@ -1,0 +1,26 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+# Get the local directory (where the script is located)
+LOCAL_DIR="$(pwd)"
+VENV="$LOCAL_DIR/.venv"
+ADDON_VENV_FILE="$LOCAL_DIR/addon_venv"
+
+if [ -f "$ADDON_VENV_FILE" ]; then
+  echo "Removing $ADDON_VENV_FILE"
+  rm -f "$ADDON_VENV_FILE"; fi
+
+if [ -f "/usr/local/bin/addon" ]; then
+  echo "Removing /usr/local/bin/addon"
+  rm -f "/usr/local/bin/addon"
+fi
+
+if [ -f "/usr/local/bin/addon_venv" ]; then
+  echo "Removing /usr/local/bin/addon_venv"
+  rm -f "/usr/local/bin/addon_venv"; fi
+
+if [ -d "$VENV" ]; then
+  echo "Removing $VENV"
+  rm -rf "$VENV";
+fi
