@@ -22,7 +22,6 @@ def modify_args(args):
 
 def create_addon(args):
     args = modify_args(args)
-    print("THIS IS THE FOLDER: ", pathlib.Path(__file__).parent.resolve())
     copier.run_copy(str(CURRENT_DIRECTORY), data=None, **vars(args))
 
 
