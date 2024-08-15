@@ -1,0 +1,4 @@
+{% macro slugify(name) -%}
+    {%- set project_slug = name|replace(' ', '_')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower -%}
+    {{ project_slug | trim }}
+{%- endmacro %}

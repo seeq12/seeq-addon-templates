@@ -1,0 +1,133 @@
+#_exclude:
+#    - ".git"
+#    - "copier.yaml"
+#    - "add_on_tool.yaml"
+#    - "requirements.txt"
+#    - "entrypoint.py"
+#    - addon_example
+#    - includes
+
+
+_subdirectory: addon_example
+
+#_jinja_extensions:
+#    - jinja2_jsonschema.JsonSchemaExtension
+
+_tasks:
+    - command: cp -R {{ _copier_conf.src_path }}/_dev_tools ./
+
+
+
+
+_message_before_copy: |
+    
+    ****************** Welcome to the Seeq Add-on Template! ******************************************
+    
+    This template generates a working example that can be easily deployed to the Seeq Add-on Manager.
+    Once that example is generated, you can modify it to fit your needs.
+    
+    An Add-on in the Add-on Manager is composed of ELEMENTS. There are four element types:
+    `AddOnTool`, `Plugin`, `DataLabFunctions` and `FormulaPackage`. An Add-on must have at
+    least one element, but it may have any combination of element types and any number of each element 
+    type.
+    
+    This template allows you to get started creating an add-on project with any combination
+    of elements that you choose. We will start by asking questions whose answers will be used as 
+    metadata for the Add-on Manager Interface. Next, we we will ask you for the ELEMENTS you want to add 
+    to the add-on example, as well as specific questions for each one of those ELEMENTS. 
+    
+    Let's get started...
+    --------------------------------------------------------------------------------------------------
+
+
+# questions
+
+add_on_manager_prompts:
+    type: str
+    help: 1. These prompts ask for the information of this add-on that will appear on the Add-on Manager interface
+    default: Press enter to continue
+
+project_name:
+    type: str
+    help: What is the name of this add-on?
+    placeholder: "(e.g.: My Addon Project)"
+    validator: >-
+        {% if not (project_name | regex_search('^[A-Za-z][A-Za-z0-9 _-]*$')) %}
+        add-on name must start with a letter and cannot contain any symbols.
+        {% endif %}
+
+project_description:
+    type: str
+    help: What is the description of this add-on?
+    placeholder: "(e.g. Gets signals from workbench and does simply math with them)"
+    validator: >-
+        {% if not project_description %}
+        add-on description cannot be empty.
+        {% endif %}
+
+project_version:
+    type: str
+    help: What is the (semantic) version of this add-on?
+    placeholder: "(e.g.: 0.0.1)"
+    validator: >-
+        {% if not (project_version | regex_search('^(0|[0-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$')) %}
+        add-on version must follow semantic versioning format.
+        {% endif %}
+
+project_icon:
+    type: str
+    help: What icon should Add-on Manager use to identify your add-on?
+    default: fa-bullseye
+    validator: >-
+        {% if not project_icon %}
+        icon cannot be empty
+        {% endif %}
+
+project_maintainer:
+    type: str
+    help: Who is the maintainer of this add-on?
+    placeholder: "(e.g.: Seeq Corporation, https://seeq.com)"
+    validator: >-
+        {% if not project_maintainer %}
+        maintainer field cannot be empty.
+        {% endif %}
+
+project_license:
+    type: str
+    help: What type of license does this add-on have?
+    default: "Apache License 2.0"
+    choices:
+        - "Apache License 2.0"
+        - "MIT License"
+        - "GNU General Public License"
+        - "3-clause BSD License"
+        - "No license"
+    validator: >-
+        {% if not project_license %}
+        Please choose at least one option
+        {% endif %}
+
+elements_to_include:
+    type: str
+    help: what element types do you want to include in this add-on?
+    choices:
+        - AddOnTool
+        - DataLabFunctions
+        - Plugin
+        - FormulaPackage
+    multiselect: true
+    validator: >-
+        {% if not elements_to_include %}
+        Please choose at least one option
+        {% endif %}
+
+element_prompts:
+    type: str
+    help: "\n\n\n 2. Now let's go over each one of the elements you selected"
+    default: Press enter to continue
+    when: "{% if elements_to_include %}true{% endif %}"
+
+
+---
+# Add-on Tool element questions
+  !include add_on_tool.yaml

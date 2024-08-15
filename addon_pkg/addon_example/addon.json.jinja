@@ -1,0 +1,74 @@
+{%- set identifier = project_name|replace(' ', '_')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower|trim -%}
+
+{
+  "identifier": "com.seeq.{{ identifier }}",
+  "name": "{{ project_name }}",
+  "description": "{{ project_description }}",
+  "version": "{{ project_version }}",
+  "maintainer": "{{ project_maintainer }}",
+  "license": "{{ project_license }}",
+  "icon": "{{ project_icon }}",
+  "elements": [
+    {% if 'AddOnTool' in elements_to_include %}
+
+    {%- set add_on_path = addOnTool_name|replace(' ', '_')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower|trim  -%}
+
+    {
+      "name": "{{ addOnTool_name }}",
+      "identifier": "com.seeq.{{identifier}}.addontool",
+      "description": "{{ addOnTool_description }}",
+      "type": "AddOnTool",
+      "path": "{{ add_on_path }}",
+      "notebook_file_path": "addon_tool_example_target_notebook.ipynb",
+      "resource_size": "{{ addOnTool_resource_size }}",
+      "extensions": ["ipyvuetify", "widgetsnbextension", "ipyvue"],
+      "configuration_schema": {
+        "type": "object",
+        "properties": {
+          "display": {
+            "type": "object",
+            "properties": {
+              "icon": {
+                "type": "string",
+                "default": "{{ addOnTool_icon }}"
+              },
+              "linkType": {
+                "enum": ["window", "tab", "none"],
+                "default": "{{ addOnTool_location }}"
+              },
+              "sortKey": {
+                "type": "string",
+                "default": "S"
+              },
+              "windowDetails": {
+                "type": "string",
+                "default": "{{ addOnTool_window_details }}"
+              }
+            },
+            "required": [
+              "icon",
+              "linkType",
+              "sortKey",
+              "windowDetails"
+            ]
+          },
+          "project": {
+            "type": "object",
+            "properties": {{ addOnTool_project_properties | tojson }},
+            "required": [{{ addOnTool_project_required_properties }}]
+          }
+
+        },
+        "required": [
+          "display",
+          "project"
+        ]
+      },
+      "configuration_filename": "config",
+      "configuration_converter": "json"
+    }
+    {% endif %}
+  ],
+  "previews": [],
+  "tags": {}
+}

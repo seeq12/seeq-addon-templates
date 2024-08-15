@@ -1,0 +1,9 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+
+ADDON_VENV_FILE="/usr/local/bin/addon_venv"
+VENV=$(cat $ADDON_VENV_FILE)
+
+"$VENV"/bin/python "$VENV"/bin/addon "$@"

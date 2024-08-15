@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "addon"
+version = "0.0.1"
+
+[project.entry-points.console_scripts]
+addon = "addon_pkg.copier:main"
+
+[tool.setuptools.packages.find]
+
+[tool.setuptools.package-data]
+addon_pkg = [
+    "**/*",
+    "includes/*",
+    "addon_example/**/*",
+    "addon_example/{% if 'AddOnTool' in elements_to_include %}{% from pathjoin('includes', 'slug.jinja') import slugify %}{{ slugify(addOnTool_name) }}{% endif %}/**/*",
+]
