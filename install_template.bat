@@ -65,14 +65,26 @@ goto :eof
 :: Function to add a directory to the PATH
 :AddToPath
 set "DIR_TO_ADD=%USERPROFILE%\%ADDON_TEMPLATE_FOLDER%"
-
-REM Check if the directory is already in the PATH
+:: Check if the directory is already in the PATH
 echo %PATH% | findstr /I /C:"%DIR_TO_ADD%" >nul
 
-REM If the directory is not in the PATH, add it
-if %ERRORLEVEL% NEQ 0 (
-    setx /M PATH "%PATH%;%DIR_TO_ADD%"
-    echo %DIR_TO_ADD% added to PATH
+:: If the directory is not in the PATH, add it
+if !ERRORLEVEL! NEQ 0 (
+	:: reset ERRORLEVEL
+	ver >nul
+
+	setx /M PATH "%PATH%;%DIR_TO_ADD%"
+
+    :: Check the ERRORLEVEL after setx
+    if !ERRORLEVEL! NEQ 0 (
+		echo !ERRORLEVEL!
+        echo Error: Couldn't add %DIR_TO_ADD% to registry path.
+		pause
+        exit /b !ERRORLEVEL!
+    ) else (
+        echo %DIR_TO_ADD% added to PATH
+    )
+
 ) else (
     echo %DIR_TO_ADD% is already in the PATH
 )
