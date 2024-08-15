@@ -35,6 +35,9 @@ copy "%ADDON_VENV_FILE%" "%USERPROFILE%\%ADDON_TEMPLATE_FOLDER%\addon_venv"
 call :AddToPath
 call :Info
 
+echo Press any key to exit
+pause >nul
+
 
 :: Function to create a virtual environment
 :CreateEnv
