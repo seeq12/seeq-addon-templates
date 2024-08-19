@@ -18,7 +18,7 @@ addOnTool_name:
     {% if not (addOnTool_name | regex_search('^[A-Za-z][A-Za-z0-9 _-]*$')) %}
     name of the AddOnTool element must start with a letter and cannot contain any symbols.
     {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include }} and not addOnTool_simplified"
+  when: "{{ 'AddOnTool' in elements_to_include and not addOnTool_simplified }}"
 
 addOnTool_description:
   type: str
@@ -29,7 +29,7 @@ addOnTool_description:
     {% if not addOnTool_description %}
     description cannot be empty
     {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include }} and not addOnTool_simplified"
+  when: "{{ 'AddOnTool' in elements_to_include and not addOnTool_simplified }}"
 
 # TODO: KB for sharable link
 addOnTool_resource_size:
