@@ -4,57 +4,65 @@ addOnTool_prompts:
   default: Press enter to continue
   when: "{{ 'AddOnTool' in elements_to_include }}"
 
+addOnTool_simplified:
+  type: bool
+  default: True
+  help: "Do you want to use streamlined settings?"
+
 addOnTool_name:
   type: str
-  help: What is the name of the AddOnTool element?
-  placeholder: (This is the name of the Add-on Tool in workbench under Tools > Add-ons )
+  help: Enter AddOnTool element name
+  placeholder: (This is the name of the Add-on Tool in workbench or the homescreen )
+  default: "{{ project_name }}"
   validator: >-
     {% if not (addOnTool_name | regex_search('^[A-Za-z][A-Za-z0-9 _-]*$')) %}
     name of the AddOnTool element must start with a letter and cannot contain any symbols.
     {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include }}"
+  when: "{{ 'AddOnTool' in elements_to_include }} and not addOnTool_simplified"
 
 addOnTool_description:
   type: str
-  help: What is the description of the AddOnTool element?
-  placeholder: (This is the description of the Add-on Tool just below the name in workbench under Tools > Add-ons )
+  help: Enter description of the AddOnTool element
+  placeholder: (This is the description of the Add-on Tool just below the name in workbench or the homescreen )
+  default: "{{ project_description }}"
   validator: >-
     {% if not addOnTool_description %}
     description cannot be empty
     {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include }}"
+  when: "{{ 'AddOnTool' in elements_to_include }} and not addOnTool_simplified"
 
 # TODO: KB for sharable link
 addOnTool_resource_size:
   type: str
-  help: What resource size do you need for the DataLab project that will host the add-on?
-  default: GP_S
+  help: Enter resource size of the Data Lab Project
+  default: GP_S # TODO: If selection is GP_S, don't include it in the addon.json
   placeholder: (We need to change our KB to have a sharable link here!! https://support.seeq.com/kb/latest/cloud/elements#Element-Specific-Properties)
   validator: >-
     {% if not addOnTool_resource_size %}
     resource size cannot be empty
     {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include }}"
+  when: "{{ 'AddOnTool' in elements_to_include and not addonTool_simplified }}"
 
 addOnTool_icon:
   type: str
-  help: What will be the icon to show next to the Add-on tool name? (see https://fontawesome.com/v4.7.0/icons/)
-  default: fa-bullseye
+  help: Enter icon (see https://fontawesome.com/v4.7.0/icons/) # TODO: I don't think this list is correct
+  default: "{{ project_icon }}"
   placeholder: (This icon will be shown next to the Add-on Tool name in workbench under Tools > Add-ons )
   validator: >-
     {% if not addOnTool_icon %}
     icon cannot be empty
     {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include }}"
+  when: "{{ 'AddOnTool' in elements_to_include and not addOnTool_simplified }}"
 
 addOnTool_location:
   type: str
-  help: Where do you want the Add-on tool to display?
+  help: Enter how the add-on should be launched
   default: window
   choices:
     - window
     - tab
-    - none
+    - homescreen
+    - none # TODO: is this a valid option?
   validator: >-
     {% if not addOnTool_location %}
     Please choose at least one option
@@ -78,13 +86,13 @@ addOnTool_project_properties_question:
     {% if not addOnTool_project_properties_question %}
     Please choose one option
     {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include }}"
+  when: "{{ 'AddOnTool' in elements_to_include and not addOnTool_simplified }}"
 
 addOnTool_project_properties:
   type: json
   help: "You can pass configuration properties as an arbitrary json object that will appeared in the Data Lab project hosting the Add-on tool. Paste your json object here:"
   default:
-#  validator: "{ addOnTool_project_properties is jsonschema({'type': 'integer', 'minimum': 0}) }}"
+  #  validator: "{ addOnTool_project_properties is jsonschema({'type': 'integer', 'minimum': 0}) }}"
   when: "{{ 'AddOnTool' in elements_to_include and addOnTool_project_properties_question == 'Yes'}}"
 
 addOnTool_project_required_properties_question:
