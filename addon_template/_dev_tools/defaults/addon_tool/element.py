@@ -39,10 +39,10 @@ def check_dependencies() -> None:
     pass
 
 
-def bootstrap(element_path: pathlib.Path, clean: bool) -> None:
+def bootstrap(element_path: pathlib.Path, clean: bool, global_env: pathlib.Path) -> None:
     print(element_path)
-    create_virtual_environment(element_path, clean)
-    update_venv(element_path)
+    create_virtual_environment(element_path, clean, global_env)
+    update_venv(element_path, global_env)
 
 
 def build() -> None:

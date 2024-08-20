@@ -15,7 +15,8 @@ def bootstrap(args):
     check_dependencies(target_elements)
     for element_path, element_type in target_elements.items():
         print(f'Bootstrapping element: {element_path}')
-        get_module(element_path, element_type).bootstrap(pathlib.Path(element_path), args.clean)
+        (get_module(element_path, element_type).
+         bootstrap(pathlib.Path(element_path), args.clean, pathlib.Path(args.global_env)))
 
 
 def check_dependencies(element_paths_with_type: Dict[str, str]):

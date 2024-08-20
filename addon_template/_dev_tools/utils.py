@@ -41,9 +41,12 @@ def get_venv_paths(element_path: pathlib.Path, path_requested=None):
         return path_to_test
 
 
-def create_virtual_environment(element_path: pathlib.Path, clean: bool = False):
+def create_virtual_environment(element_path: pathlib.Path, clean: bool = False, global_path: pathlib.Path = None):
+    if global_path is None:
+        global_path = element_path
 
-    venv_path, windows_os, path_to_python, path_to_pip, path_to_scripts, wheels_path = get_venv_paths(element_path)
+    print("global_path", global_path)
+    venv_path, windows_os, path_to_python, path_to_pip, path_to_scripts, wheels_path = get_venv_paths(global_path)
     if (
             not clean
             and venv_path.exists()
@@ -86,8 +89,10 @@ def pip_install_dependencies(
     )
 
 
-def update_venv(element_path: pathlib.Path):
-    venv_path, windows_os, path_to_python, path_to_pip, path_to_scripts, wheels_path = get_venv_paths(element_path)
+def update_venv(element_path: pathlib.Path, global_path: pathlib.Path = None):
+    if global_path is None:
+        global_path = element_path
+    venv_path, windows_os, path_to_python, path_to_pip, path_to_scripts, wheels_path = get_venv_paths(global_path)
     if not venv_path.exists() or not venv_path.is_dir():
         print("Virtual environment does not exist.")
         return
