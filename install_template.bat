@@ -44,7 +44,7 @@ call :Info
 echo Press any key to exit
 pause >nul
 
-goto :eof
+exit /b
 
 
 :: Function to create a virtual environment
