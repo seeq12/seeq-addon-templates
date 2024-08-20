@@ -59,11 +59,23 @@ def create_virtual_environment(element_path: pathlib.Path, clean: bool = False):
         f"{path_to_python} -m pip install --upgrade pip", shell=True, check=True
     )
 
+    pip_install_dependencies(element_path, path_to_pip, wheels_path)
+
+    print("Virtual environment created.")
+
+
+def pip_install_dependencies(
+        element_path: pathlib.Path,
+        path_to_pip: pathlib.Path,
+        wheels_path: pathlib.Path,
+        upgrade=True
+):
+    upgrade = "--upgrade" if upgrade else ""
     command = f"{path_to_pip} install "
     if (element_path / 'requirements.dev.txt').exists():
-        command += f"-r {element_path / 'requirements.dev.txt'}"
+        command += f"-r {element_path / 'requirements.dev.txt'} {upgrade} "
     if (element_path / 'requirements.txt').exists():
-        command += f" -r {element_path / 'requirements.txt'}"
+        command += f" -r {element_path / 'requirements.txt'} {upgrade}"
     if wheels_path.exists():
         command += f" -f {wheels_path}"
 
@@ -73,4 +85,17 @@ def create_virtual_environment(element_path: pathlib.Path, clean: bool = False):
         check=True,
     )
 
-    print("Virtual environment created.")
+
+def update_venv(element_path: pathlib.Path):
+    venv_path, windows_os, path_to_python, path_to_pip, path_to_scripts, wheels_path = get_venv_paths(element_path)
+    if not venv_path.exists() or not venv_path.is_dir():
+        print("Virtual environment does not exist.")
+        return
+
+    subprocess.run(
+        f"{path_to_python} -m pip install --upgrade pip", shell=True, check=True
+    )
+
+    pip_install_dependencies(element_path, path_to_pip, wheels_path)
+
+    print("Virtual environment updated.")

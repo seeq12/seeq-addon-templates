@@ -1,11 +1,16 @@
 #!/usr/bin/env python
+import os
 import argparse
 import pathlib
+import subprocess
+
 
 import copier
+from addon_template._dev_tools.utils import create_virtual_environment
 
 
 CURRENT_DIRECTORY = pathlib.Path(__file__).parent.resolve()
+WINDOWS_OS = os.name == 'nt'
 
 
 def modify_args(args):
@@ -20,9 +25,24 @@ def modify_args(args):
     return args
 
 
+def info_open_ide(destination_path):
+    return (f"\n{'*' * 80}\n"
+            f"Please open the IDE of your choice and navigate to {destination_path}"
+            f"\n{'*' * 80}")
+
+
 def create_addon(args):
     args = modify_args(args)
     copier.run_copy(str(CURRENT_DIRECTORY), data=None, **vars(args))
+    destination_path = pathlib.Path(args.dst_path).resolve()
+    print(f"Creating virtual environment in {destination_path / '.venv'}")
+    create_virtual_environment(destination_path, clean=True)
+    path_to_python = destination_path / ".venv" / ("Scripts" if WINDOWS_OS else "bin") / "python"
+    command_to_run = f"{path_to_python} {destination_path}/addon.py bootstrap"
+
+    subprocess.run(command_to_run, shell=True, check=True, cwd=destination_path)
+
+    print(info_open_ide(destination_path))
 
 
 def update_addon(args=None):
@@ -81,10 +101,21 @@ def main():
                  'may be given multiple times')
     }
 
-    parser_create = subparsers.add_parser('create', description='create a new Seeq Add-on example')
+    subparsers_info = {
+        'create': 'create a new Seeq Add-on example. '
+                  'It will re-create everything from scratch but prompts for previously entered values',
+        'update': 'update an existing Seeq Add-on example with the latest template. '
+                  'It can be used to update the template or to re-run the template with new values. '
+                  'It will not create a new virtual environment, but will re-run `pip install -r requirements.txt`.'
+    }
+
+    parser_create = subparsers.add_parser('create',
+                                          description=subparsers_info['create'],
+                                          help=subparsers_info['create'])
 
     parser_update = subparsers.add_parser('update',
-                                          description='update an existing Seeq Add-on example with the latest template')
+                                          description=subparsers_info['update'],
+                                          help=subparsers_info['update'])
     for option, option_args in copier_options.items():
         parser_create.add_argument(option, **option_args)
         parser_update.add_argument(option, **option_args)
