@@ -3,7 +3,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 
-ADDON_VENV_FILE="/usr/local/bin/addon_venv"
-VENV=$(cat $ADDON_VENV_FILE)
+ADDON_VENV_FILE_LOCAL_PATH="$HOME/.local/bin/addon_venv"
+VENV=$(cat "$ADDON_VENV_FILE_LOCAL_PATH")
 
 "$VENV"/bin/python "$VENV"/bin/addon "$@"

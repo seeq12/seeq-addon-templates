@@ -3,24 +3,40 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # Get the local directory (where the script is located)
-LOCAL_DIR="$(pwd)"
-VENV="$LOCAL_DIR/.venv"
-ADDON_VENV_FILE="$LOCAL_DIR/addon_venv"
+source variables.sh
 
 if [ -f "$ADDON_VENV_FILE" ]; then
   echo "Removing $ADDON_VENV_FILE"
   rm -f "$ADDON_VENV_FILE"; fi
 
-if [ -f "/usr/local/bin/addon" ]; then
-  echo "Removing /usr/local/bin/addon"
-  rm -f "/usr/local/bin/addon"
+if [ -f "$ADDON_SCRIPT_LOCAL_PATH" ]; then
+  echo "Removing $ADDON_SCRIPT_LOCAL_PATH"
+  rm -f "$ADDON_SCRIPT_LOCAL_PATH"
 fi
 
-if [ -f "/usr/local/bin/addon_venv" ]; then
-  echo "Removing /usr/local/bin/addon_venv"
-  rm -f "/usr/local/bin/addon_venv"; fi
+if [ -f "$ADDON_VENV_FILE_LOCAL_PATH" ]; then
+  echo "Removing $ADDON_VENV_FILE_LOCAL_PATH"
+  rm -f "$ADDON_VENV_FILE_LOCAL_PATH"; fi
 
 if [ -d "$VENV" ]; then
   echo "Removing $VENV"
   rm -rf "$VENV";
 fi
+
+
+# Define the files to check
+files_to_check=(~/.bashrc ~/.zshrc)
+
+# Loop over the files
+for file in "${files_to_check[@]}"; do
+    # Check if the markers exist in the file
+    if grep -Fxq "$PATH_START_MARKER" "$file" && grep -Fxq "$PATH_END_MARKER" "$file"; then
+        # If they exist, remove the lines between them
+        echo "Cleaning up $file"
+        if [[ "$(uname)" == "Darwin" ]]; then
+            sed -i "" "/$PATH_START_MARKER/,/$PATH_END_MARKER/d" "$file"
+        else
+            sed -i "/$PATH_START_MARKER/,/$PATH_END_MARKER/d" "$file"
+        fi
+    fi
+done
