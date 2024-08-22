@@ -46,23 +46,19 @@ echo "seeq-addon-template version: $version"
 
 "$VENV"/bin/pip install dist/addon-"$version"-py3-none-any.whl -U
 
-
 chmod +x "$ADDON_SCRIPT_PATH"
 cp "$ADDON_SCRIPT_PATH" "$ADDON_SCRIPT_LOCAL_PATH"
 cp "$ADDON_VENV_FILE" "$ADDON_VENV_FILE_LOCAL_PATH"
-
-
-echo "$ADD_TO_PATH" >> ~/.bashrc
-echo "$ADD_TO_PATH" >> ~/.zshrc
 
 files_to_check=(~/.bashrc ~/.zshrc)
 
 # Loop over the files
 for file in "${files_to_check[@]}"; do
-    # Check if the lines already exist in the file
-    if ! grep -Fxq "$ADD_TO_PATH" "$file"; then
-        # If they don't exist, append them
-        echo "$ADD_TO_PATH" >> "$file"
+    if grep -Fxq "$PATH_START_MARKER" "$file"; then
+      echo "Path already in $file"
+    else
+      echo "Adding path to $file"
+      echo "$ADD_TO_PATH" >> "$file"
     fi
 done
 
