@@ -4,12 +4,12 @@ formulaPackage_prompts:
   default: Press enter to continue
   when: "{{ 'FormulaPackage' in elements_to_include }}"
 
-formulaPackage_name:
-  type: str
-  help: What is the name of the FormulaPackage element?
-  placeholder: "(e.g.: FormulaPackage)"
-  validator: >-
-    {% if not (formulaPackage_name | regex_search('^[A-Za-z][A-Za-z0-9 _-]*$')) %}
-    name of the formulaPackage_name element must start with a letter and cannot contain any symbols.
-    {% endif %}
-  when: "{{ 'FormulaPackage' in elements_to_include }}"
+#formulaPackage_name:
+#  type: str
+#  help: What is the name of the FormulaPackage element?
+#  placeholder: "(e.g.: FormulaPackage)"
+#  validator: >-
+#    {% if not (formulaPackage_name | regex_search('^[A-Za-z][A-Za-z0-9 _-]*$')) %}
+#    name of the formulaPackage_name element must start with a letter and cannot contain any symbols.
+#    {% endif %}
+#  when: "{{ 'FormulaPackage' in elements_to_include }}"

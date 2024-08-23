@@ -58,7 +58,7 @@ project_name:
 
 project_description:
     type: str
-    help: What is the description of this add-on?
+    help: What is the long description of this add-on?
     placeholder: "(e.g. Gets signals from workbench and does simply math with them)"
     validator: >-
         {% if not project_description %}

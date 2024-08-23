@@ -16,7 +16,7 @@ addOnTool_prompts:
 
 addOnTool_description:
   type: str
-  help: What is the description of the AddOnTool element?
+  help: What is the short description of the AddOnTool element?
   placeholder: (This is the description of the Add-on Tool just below the name in workbench under Tools > Add-ons )
   validator: >-
     {% if not addOnTool_description %}
@@ -38,7 +38,7 @@ addOnTool_resource_size:
 
 addOnTool_icon:
   type: str
-  help: What will be the icon to show next to the Add-on tool name? (see https://fontawesome.com/v4.7.0/icons/)
+  help: What will be the icon to show next to the Add-on tool name in Workbench? (see https://fontawesome.com/v4.7.0/icons/)
   default: fa-bullseye
   placeholder: (This icon will be shown next to the Add-on Tool name in workbench under Tools > Add-ons )
   validator: >-

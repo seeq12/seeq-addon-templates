@@ -24,7 +24,10 @@ def check_dependencies() -> None:
     print(f'NPM version: {npm_version}')
 
 
-def bootstrap(element_path: pathlib.Path, url: str, username: str, password: str, clean: bool, global_env: pathlib.Path) -> None:
+def bootstrap(element_path: pathlib.Path, url: str, username: str, password: str, clean: bool, global_python_env: pathlib.Path) -> None:
+    if global_python_env:
+        # Global python environment is not supported for this element.
+        return
     if url is None or username is None or password is None:
         raise Exception("Please provide --user --password and -url arguments.")
     subprocess.run('npm ci', cwd=element_path, shell=True, check=True)

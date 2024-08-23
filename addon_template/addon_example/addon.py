@@ -45,8 +45,8 @@ if __name__ == "__main__":
     parser_bootstrap.add_argument('--clean', action='store_true', default=False, help='Clean bootstrap')
     parser_bootstrap.add_argument('--dir', type=str, nargs='*', default=None,
                                   help='Execute the command for the subset of the element directories specified.')
-    parser_bootstrap.add_argument('--global-env', type=str, nargs='?', default=None,
-                                  help='Installs all dependencies in the same global environment.')
+    parser_bootstrap.add_argument('--global-python-env', type=str, nargs='?', default=None,
+                                  help='Installs all python dependencies in the same global environment.')
     parser_bootstrap.set_defaults(func=bootstrap)
 
     parser_build = subparsers.add_parser('build', help='Build your add-on')

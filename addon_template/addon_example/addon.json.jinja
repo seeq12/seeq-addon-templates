@@ -1,4 +1,5 @@
 {%- set identifier = project_name|replace(' ', '_')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower|trim -%}
+{%- set add_on_path = project_name|replace(' ', '_')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower|trim  -%}
 
 {
   "identifier": "com.seeq.{{ identifier }}",
@@ -11,14 +12,12 @@
   "elements": [
     {% if 'AddOnTool' in elements_to_include %}
 
-    {%- set add_on_path = project_name|replace(' ', '_')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower|trim  -%}
-
     {
       "name": "{{ project_name }}",
       "identifier": "com.seeq.{{identifier}}.addontool",
       "description": "{{ addOnTool_description }}",
       "type": "AddOnTool",
-      "path": "{{ add_on_path }}",
+      "path": "{{ add_on_path }}-addon-tool",
       "notebook_file_path": "addon_tool_example_target_notebook.ipynb",
       "resource_size": "{{ addOnTool_resource_size }}",
       "extensions": ["ipyvuetify", "widgetsnbextension", "ipyvue"],
@@ -69,13 +68,11 @@
     {% endif %}
     {% if 'Plugin' in elements_to_include %}
 
-    {%- set add_on_path = plugin_name|replace(' ', '_')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower|trim  -%}
-
     {
       "name": "{{ project_name }} Plugin",
       "identifier": "com.seeq.{{identifier}}.plugin",
       "type": "Plugin",
-      "path": "{{ add_on_path }}"
+      "path": "{{ add_on_path }}-plugin"
     }
     {% endif %}
 
