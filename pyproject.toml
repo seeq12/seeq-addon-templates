@@ -7,7 +7,7 @@ name = "addon"
 version = "0.0.1"
 
 [project.entry-points.console_scripts]
-addon = "addon_template.copier:main"
+addon = "addon_template.generator:main"
 
 [tool.setuptools.packages.find]
 
