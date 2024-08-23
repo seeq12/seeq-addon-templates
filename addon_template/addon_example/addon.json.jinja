@@ -11,10 +11,10 @@
   "elements": [
     {% if 'AddOnTool' in elements_to_include %}
 
-    {%- set add_on_path = addOnTool_name|replace(' ', '_')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower|trim  -%}
+    {%- set add_on_path = project_name|replace(' ', '_')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower|trim  -%}
 
     {
-      "name": "{{ addOnTool_name }}",
+      "name": "{{ project_name }}",
       "identifier": "com.seeq.{{identifier}}.addontool",
       "description": "{{ addOnTool_description }}",
       "type": "AddOnTool",
@@ -65,8 +65,20 @@
       },
       "configuration_filename": "config",
       "configuration_converter": "json"
+    }{% if 'Plugin' in elements_to_include or 'DataLabFunctions' in elements_to_include or 'FormulaPackage' in elements_to_include %}, {% endif %}
+    {% endif %}
+    {% if 'Plugin' in elements_to_include %}
+
+    {%- set add_on_path = plugin_name|replace(' ', '_')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower|trim  -%}
+
+    {
+      "name": "{{ project_name }} Plugin",
+      "identifier": "com.seeq.{{identifier}}.plugin",
+      "type": "Plugin",
+      "path": "{{ add_on_path }}"
     }
     {% endif %}
+
   ],
   "previews": [],
   "tags": {}

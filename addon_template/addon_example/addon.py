@@ -39,6 +39,9 @@ if __name__ == "__main__":
     subparsers = parser.add_subparsers(help='sub-command help', required=True)
 
     parser_bootstrap = subparsers.add_parser('bootstrap', help='Bootstrap your add-on development environment')
+    parser_bootstrap.add_argument('--username', type=str, required=False, default=None)
+    parser_bootstrap.add_argument('--password', type=str, required=False, default=None)
+    parser_bootstrap.add_argument('--url', type=str, required=False, default=None)
     parser_bootstrap.add_argument('--clean', action='store_true', default=False, help='Clean bootstrap')
     parser_bootstrap.add_argument('--dir', type=str, nargs='*', default=None,
                                   help='Execute the command for the subset of the element directories specified.')

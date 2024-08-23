@@ -16,7 +16,7 @@ WHEELS_PATH = PROJECT_PATH / '.wheels'
 DIST_FOLDER = PROJECT_PATH / 'dist'
 ADDON_JSON_FILE = PROJECT_PATH / "addon.json"
 ADD_ON_EXTENSION = '.addon'
-DEPLOY_JSON_FILE = PROJECT_PATH / ".credentials.json"
+CREDENTIALS_JSON_FILE = PROJECT_PATH / ".credentials.json"
 
 ELEMENT_ACTION_FILE = 'element'
 
@@ -31,8 +31,15 @@ PREVIEWS = "previews"
 
 DEFAULT_ADD_ON_TOOL_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.addon_tool'
 ADD_ON_TOOL_TYPE = "AddOnTool"
+DEFAULT_PLUGIN_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.plugin'
+PLUGIN_TYPE = "Plugin"
 
 TIMESTAMP_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
+
+
+def save_json(path: pathlib.Path, values: dict) -> None:
+    with open(path, mode='w', encoding='utf-8') as json_file:
+        json.dump(values, json_file, indent=2, ensure_ascii=False)
 
 
 def load_json(path: pathlib.Path) -> Optional[dict]:
@@ -43,7 +50,7 @@ def load_json(path: pathlib.Path) -> Optional[dict]:
 
 
 def get_credentials_json() -> Optional[dict]:
-    return load_json(DEPLOY_JSON_FILE)
+    return load_json(CREDENTIALS_JSON_FILE)
 
 
 def get_add_on_json() -> Optional[dict]:
@@ -79,6 +86,10 @@ def get_module(element_path: str, element_type: str) -> ElementProtocol:
             module = load_module(f"{DEFAULT_ADD_ON_TOOL_ELEMENT_PATH}.{ELEMENT_ACTION_FILE}")
             assert isinstance(module, ElementProtocol)
             return module
+        elif element_type == PLUGIN_TYPE:
+            module = load_module(f"{DEFAULT_PLUGIN_ELEMENT_PATH}.{ELEMENT_ACTION_FILE}")
+            assert isinstance(module, ElementProtocol)
+            return module
         else:
             raise ModuleNotFoundError(
                 f'Neither {element_path}.{ELEMENT_ACTION_FILE} nor '
@@ -111,20 +122,7 @@ def get_files_to_package() -> List[str]:
     return ["addon.json"] + preview_files
 
 
-def parse_url_username_password(args):
-    credentials_json = None
-    if args.username is None or args.password is None or args.url is None:
-        credentials_json = get_credentials_json()
-        if (credentials_json is None or credentials_json.get('username') is None or
-                credentials_json.get('password') is None or credentials_json.get('url') is None):
-            raise Exception('deploy: error: the following arguments are required: --username, --password, --url')
-    url = args.url if args.url else credentials_json.get('url')
-    username = args.username if args.username else credentials_json.get('username')
-    password = args.password if args.password else credentials_json.get('password')
-    return url, username, password
-
-
-def _parse_url_username_password(args=None):
+def parse_url_username_password(args=None):
     credentials_json = {}
     if (
             args is None
@@ -134,7 +132,7 @@ def _parse_url_username_password(args=None):
     ):
         credentials_json = get_credentials_json()
         if credentials_json is None:
-            raise Exception("Please provide --user --password and -url arguments.")
+            return None, None, None
 
     url = get_non_none_attr(args, "url", credentials_json.get("url"))
     username = get_non_none_attr(args, "username", credentials_json.get("username"))

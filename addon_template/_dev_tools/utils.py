@@ -9,11 +9,6 @@ VENV_NAME = ".venv"
 WHEELS_NAME = ".wheels"
 
 
-def save_json(path: pathlib.Path, values: dict) -> None:
-    with open(path, mode='w', encoding='utf-8') as json_file:
-        json.dump(values, json_file, indent=2, ensure_ascii=False)
-
-
 def get_venv_paths(element_path: pathlib.Path, path_requested=None):
     venv_path = element_path / VENV_NAME
     wheels_path = element_path / WHEELS_NAME
@@ -45,7 +40,6 @@ def create_virtual_environment(element_path: pathlib.Path, clean: bool = False, 
     if global_path is None:
         global_path = element_path
 
-    print("global_path", global_path)
     venv_path, windows_os, path_to_python, path_to_pip, path_to_scripts, wheels_path = get_venv_paths(global_path)
     if (
             not clean

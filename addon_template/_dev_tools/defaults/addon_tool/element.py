@@ -15,6 +15,8 @@ from _dev_tools.ao_tasks.utils import (
     _upload_file,
     _get_authenticated_session,
     _watch_from_environment,
+    save_json,
+    CREDENTIALS_JSON_FILE
 )
 
 from _dev_tools.utils import (
@@ -39,13 +41,13 @@ def check_dependencies() -> None:
     pass
 
 
-def bootstrap(element_path: pathlib.Path, clean: bool, global_env: pathlib.Path) -> None:
+def bootstrap(element_path: pathlib.Path, url: str, username: str, password: str, clean: bool, global_env: pathlib.Path) -> None:
     print(element_path)
     create_virtual_environment(element_path, clean, global_env)
     update_venv(element_path, global_env)
 
 
-def build() -> None:
+def build(element_path: pathlib.Path) -> None:
     print('There is no need to build add-on tools that are based on Jupyter notebooks. '
           'This operation is skipped for this add-on element')
 

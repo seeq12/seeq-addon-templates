@@ -131,3 +131,12 @@ element_prompts:
 ---
 # Add-on Tool element questions
   !include add_on_tool.yaml
+---
+# DataLab Functions element questions
+  !include data_lab_functions.yaml
+---
+# Plugin element questions
+  !include plugin.yaml
+---
+# Formula package element questions
+  !include formula_package.yaml
