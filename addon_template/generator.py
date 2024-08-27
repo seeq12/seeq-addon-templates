@@ -49,9 +49,10 @@ def create_addon(args):
 
 def update_addon(args=None):
     args = modify_args(args)
+    destination_path = pathlib.Path(args.dst_path).resolve()
+
     try:
         copier.run_recopy(data=None, **vars(args))
-        destination_path = pathlib.Path(args.dst_path).resolve()
         print(info_open_ide(destination_path))
     except KeyboardInterrupt as e:
         print(f"\nError: Operation canceled by user")
