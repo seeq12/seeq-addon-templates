@@ -19,7 +19,8 @@ from _dev_tools.ao_tasks.utils import (
 
 from _dev_tools.utils import (
     get_venv_paths,
-    create_virtual_environment
+    create_virtual_environment,
+    update_venv
 )
 
 FILE_EXTENSIONS = {".py", ".txt", ".ipynb", ".json", ".vue"}
@@ -41,6 +42,7 @@ def check_dependencies() -> None:
 def bootstrap(element_path: pathlib.Path, clean: bool) -> None:
     print(element_path)
     create_virtual_environment(element_path, clean)
+    update_venv(element_path)
 
 
 def build() -> None:
