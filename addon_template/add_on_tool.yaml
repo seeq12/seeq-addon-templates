@@ -1,13 +1,49 @@
 addOnTool_prompts:
   type: str
-  help: "\n\n ******* AddOnTool element configuration *******"
+  help: "\n\n ================= AddOnTool Element Configuration ================="
   default: Press enter to continue
   when: "{{ 'AddOnTool' in elements_to_include }}"
 
-addOnTool_simplified:
+addOnTool_description:
+  type: str
+  help: Enter description of the AddOnTool element
+  placeholder: (This is the description of the Add-on Tool just below the name in workbench or the homescreen
+  validator: >-
+    {% if not addOnTool_description %}
+    description cannot be empty
+    {% endif %}
+  when: "{{ 'AddOnTool' in elements_to_include }}"
+
+addOnTool_location:
+  type: str
+  help: Enter how the add-on should be launched
+  default: window
+  choices:
+    - window
+    - tab
+    - homescreen
+  validator: >-
+    {% if not addOnTool_location %}
+    Please choose one option
+    {% endif %}
+  when: "{{ 'AddOnTool' in elements_to_include }}"
+
+addOnTool_window_details:
+  type: str
+  help: You can optionally pass window (comma-separated) settings.
+  default: toolbar=0,location=0,scroll
+  when: "{{ 'AddOnTool' in elements_to_include and addOnTool_location == 'window'}}"
+
+addOnTool_advanced:
   type: bool
-  default: True
-  help: "Do you want to use streamlined settings?"
+  default: False
+  help: >-
+    Do you want to specify any of these advanced settings for the AddOnTool? If unsure, press enter.
+
+        - Add-on Tool Name: Show a different name for the AddOnTool in the Add-on Manager vs. Workbench
+        - Add-on Tool Icon: Show a different icon for the AddOnTool in the Add-on Manager vs. Workbench
+        - Resource Size
+        - Project Properties: Add additional configuration values during runtime
 
 addOnTool_name:
   type: str
@@ -18,30 +54,7 @@ addOnTool_name:
     {% if not (addOnTool_name | regex_search('^[A-Za-z][A-Za-z0-9 _-]*$')) %}
     name of the AddOnTool element must start with a letter and cannot contain any symbols.
     {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include and not addOnTool_simplified }}"
-
-addOnTool_description:
-  type: str
-  help: Enter description of the AddOnTool element
-  placeholder: (This is the description of the Add-on Tool just below the name in workbench or the homescreen )
-  default: "{{ project_description }}"
-  validator: >-
-    {% if not addOnTool_description %}
-    description cannot be empty
-    {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include and not addOnTool_simplified }}"
-
-# TODO: KB for sharable link
-addOnTool_resource_size:
-  type: str
-  help: Enter resource size of the Data Lab Project
-  default: GP_S # TODO: If selection is GP_S, don't include it in the addon.json
-  placeholder: (We need to change our KB to have a sharable link here!! https://support.seeq.com/kb/latest/cloud/elements#Element-Specific-Properties)
-  validator: >-
-    {% if not addOnTool_resource_size %}
-    resource size cannot be empty
-    {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include and not addonTool_simplified }}"
+  when: "{{ 'AddOnTool' in elements_to_include and addOnTool_advanced }}"
 
 addOnTool_icon:
   type: str
@@ -52,28 +65,18 @@ addOnTool_icon:
     {% if not addOnTool_icon %}
     icon cannot be empty
     {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include and not addOnTool_simplified }}"
+  when: "{{ 'AddOnTool' in elements_to_include and addOnTool_advanced }}"
 
-addOnTool_location:
+addOnTool_resource_size:
   type: str
-  help: Enter how the add-on should be launched
-  default: window
-  choices:
-    - window
-    - tab
-    - homescreen
-    - none # TODO: is this a valid option?
+  help: Enter resource size of the Data Lab Project
+  default: GP_S
+  placeholder: (We need to change our KB to have a sharable link here!! https://support.seeq.com/kb/latest/cloud/elements#Element-Specific-Properties)
   validator: >-
-    {% if not addOnTool_location %}
-    Please choose at least one option
+    {% if not addOnTool_resource_size %}
+    resource size cannot be empty
     {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include }}"
-
-addOnTool_window_details:
-  type: str
-  help: You can optionally pass windows (comma-separated) settings
-  default: toolbar=0,location=0,scroll
-  when: "{{ 'AddOnTool' in elements_to_include and addOnTool_location == 'window'}}"
+  when: "{{ 'AddOnTool' in elements_to_include and addOnTool_advanced }}"
 
 addOnTool_project_properties_question:
   type: str
@@ -86,7 +89,7 @@ addOnTool_project_properties_question:
     {% if not addOnTool_project_properties_question %}
     Please choose one option
     {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include and not addOnTool_simplified }}"
+  when: "{{ 'AddOnTool' in elements_to_include and addOnTool_advanced }}"
 
 addOnTool_project_properties:
   type: json

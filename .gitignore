@@ -83,3 +83,6 @@ TEST*.xml
 credentials.key
 test_config.ini
 .credentials.json
+
+# add-on template generated files
+addon_venv
