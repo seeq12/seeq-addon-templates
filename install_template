@@ -28,7 +28,9 @@ create_env() {
 
 info() {
   	echo -e "\n************************************************************"
-  	echo -e "\n To generate your example add-on, run the command"
+  	echo -e "\n Installation complete"
+  	echo -e "\n Run `addon --help` to see the available options"
+  	echo -e "\n For example, to create an example Add-on, run the command"
   	echo -e "\n   addon create <destination_dir>"
   	echo -e "\n************************************************************"
 }

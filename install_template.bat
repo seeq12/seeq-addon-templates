@@ -95,10 +95,11 @@ goto :eof
 echo.
 echo ************************************************************
 echo.
-echo  To generate your example add-on run the following command
-echo  in a new terminal:
+echo  Installation complete
 echo.
-echo    addon create "<destination_dir>"
+echo  Run `addon --help` to see the available options
 echo.
-echo ************************************************************
+echo  For example, to create an example Add-on, run the command
+echo     addon create <destination_dir>
+echo \n************************************************************
 goto :eof

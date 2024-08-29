@@ -11,16 +11,13 @@
   "icon": "{{ project_icon }}",
   "elements": [
     {% if 'AddOnTool' in elements_to_include %}
-
     {
       "name": "{{ project_name }}",
       "identifier": "com.seeq.{{identifier}}.addontool",
       "description": "{{ addOnTool_description }}",
       "type": "AddOnTool",
       "path": "{{ add_on_path }}-addon-tool",
-      "notebook_file_path": "addon_tool_example_target_notebook.ipynb",
-      "resource_size": "{{ addOnTool_resource_size }}",
-      "extensions": ["ipyvuetify", "widgetsnbextension", "ipyvue"],
+      "notebook_file_path": "addon_tool_example_target_notebook.ipynb"
       "configuration_schema": {
         "type": "object",
         "properties": {
@@ -67,15 +64,21 @@
     }{% if 'Plugin' in elements_to_include or 'DataLabFunctions' in elements_to_include or 'FormulaPackage' in elements_to_include %}, {% endif %}
     {% endif %}
     {% if 'Plugin' in elements_to_include %}
-
     {
       "name": "{{ project_name }} Plugin",
       "identifier": "com.seeq.{{identifier}}.plugin",
       "type": "Plugin",
       "path": "{{ add_on_path }}-plugin"
+    }{% if  'FormulaPackage' in elements_to_include %}, {% endif %}
+    {% endif %}
+    {% if 'FormulaPackage' in elements_to_include %}
+    {
+      "name": "{{ project_name }} Formula Package",
+      "identifier": "com.seeq.{{identifier}}.formulapackage",
+      "type": "FormulaPackage",
+      "path": "{{ add_on_path }}-formula-package"
     }
     {% endif %}
-
   ],
   "previews": [],
   "tags": {}

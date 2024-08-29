@@ -1,0 +1,66 @@
+{
+  "formulaPackage": {
+    "name": "ExampleFormulaPackage",
+    "creatorName": "Your Name",
+    "creatorContactInfo": "your.name@seeq.com"
+  },
+  "functions": [
+    {
+      "name": "SignalMultiplier",
+      "id": "FormulaPackageExample-SignalMultiplier",
+      "description": "<p>This function multiplies two signals and doubles the result of the multiplication </p>",
+      "formula": "($signal1  * $signal2) * 2",
+      "type": "UserDefinedFormulaFunction",
+      "parameters": [
+        {
+          "unbound": true,
+          "name": "signal1",
+          "formula": "1.toSignal()"
+        },
+        {
+          "unbound": true,
+          "name": "signal2",
+          "formula": "1.toSignal()"
+        }
+      ]
+    },
+    {
+      "name": "SignalAdder",
+      "id": "FormulaPackageExample-SignalAdder",
+      "description": "<p>This functions adds two signals</p>",
+      "formula": "$signal1 + $signal2",
+      "type": "UserDefinedFormulaFunction",
+      "parameters": [
+        {
+          "unbound": true,
+          "name": "signal1",
+          "formula": "1.toSignal()"
+        },
+        {
+          "unbound": true,
+          "name": "signal2",
+          "formula": "1.toSignal()"
+        }
+      ]
+    }
+  ],
+  "docs": [
+    {
+      "name": "index",
+      "description": "This function package contains examples of how to create and use formula functions in Seeq Formula.",
+      "title": "Example Formula Package",
+      "examples": {
+        "examples": [
+          {
+            "description": "Multiply two signals and double the result.",
+            "formula": "SignalMultiplier($signal1, $signal2)"
+          },
+          {
+            "description": "Add two signals.",
+            "formula": "SignalAdder($signal1, $signal2)"
+          }
+        ]
+      }
+    }
+  ]
+}
