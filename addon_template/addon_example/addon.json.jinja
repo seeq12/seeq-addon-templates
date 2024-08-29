@@ -55,12 +55,23 @@
           "project": {
             "type": "object",
             "required": [{{ addOnTool_project_required_properties }}]
+          },
+          "advanced_project_configuration" : {
+            "type": "object",
+            "required": ["kernel_name"],
+            "properties" : {
+              "kernel_name": {
+                "type": "string",
+                "default": "python311"
+              }
+            }
           }
 
         },
         "required": [
           "display",
-          "project"
+          "project",
+          "advanced_project_configuration"
         ]
       },
       "configuration_filename": "config",
