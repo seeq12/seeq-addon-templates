@@ -2,14 +2,30 @@
 <html>
 
 <head>
-  <meta charset="UTF-8" />
-  <title>Example Visualization Plugin</title>
+
+  <link rel="stylesheet" href="styles.css">
+  <title>Signal Combiner Tool Plugin</title>
 </head>
 
 <body>
-  <div id="root"></div>
-  <script src="/api/plugins/sdk/seeq.js"></script>
-  <script src="bundle.js"></script>
+  <div class="container">
+    <h1>Signal Combiner Tool</h1>
+    <div class="dropdowns">
+        <select id="number1" class="dropdown"></select>
+        <select id="operator" class="dropdown">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option>
+        </select>
+        <select id="number2" class="dropdown"></select>
+    </div>
+    <div class="buttons">
+        <button id="cancelButton" class="btn cancel">Cancel</button>
+        <button id="executeButton" class="btn execute">Execute</button>
+    </div>
+  </div>
+  <script src="/plugins/sdk/seeq.js"></script>
+  <script crossorigin src="script.js"></script>
 </body>
-
 </html>

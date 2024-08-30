@@ -162,8 +162,6 @@ async function commandBootstrap() {
 
   log(chalk.green.bold('Bootstrap Complete:'));
   log(` - Use ${chalk.bold('"npm run watch"')} to update the plugin on the server as you make changes`);
-  log(` - Use ${chalk.bold('"npm run tsc"')} to run the typechecker`);
-  log(` - Use ${chalk.bold('"npm run lint"')} to run the code style linter`);
   log(` - Use ${chalk.bold('"npm run build"')} to build a plugin file that can be uploaded to another Seeq Server`);
   log('');
 }

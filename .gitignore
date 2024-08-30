@@ -86,3 +86,4 @@ test_config.ini
 
 addon_venv
 **node_modules/
+.DS_Store

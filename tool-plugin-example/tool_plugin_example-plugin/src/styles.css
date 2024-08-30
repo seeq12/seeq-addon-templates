@@ -1,0 +1,78 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;
+}
+
+.container {
+    flex: 1;
+    background-color: white;
+    padding: 15px;
+    padding-right: 25px;
+    border-radius: 8px;
+    color: #007960;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #007960;
+}
+
+.dropdowns {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.dropdown {
+    width: 30%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    color: #007960;
+    appearance: none;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center; 
+    margin-top: 50px;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    min-width: 100px;
+}
+
+.btn.cancel {
+    background-color: transparent;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.btn.cancel:hover {
+    background-color: #f8f9fa;
+    border-color: #ccc;
+}
+
+.btn.execute {
+    margin-left: 20px;
+    background-color: #218838;
+    color: white;
+    border: 1px solid #218838;
+}
+
+.btn.execute:hover {
+    background-color: #1e7e34;
+    border-color: #1e7e34;
+}
