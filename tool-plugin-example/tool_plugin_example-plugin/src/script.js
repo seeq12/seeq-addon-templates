@@ -1,23 +1,47 @@
-const MAX_VALUE = 10; // Define the maximum value for the dropdowns
 
 document.addEventListener("DOMContentLoaded", function() {
     const number1 = document.getElementById("number1");
     const number2 = document.getElementById("number2");
 
-    // Populate dropdowns with numbers from 1 to MAX_VALUE
-    for (let i = 1; i <= MAX_VALUE; i++) {
-        let option1 = document.createElement("option");
-        let option2 = document.createElement("option");
-        option1.value = option2.value = i;
-        option1.text = option2.text = i;
-        number1.appendChild(option1);
-        number2.appendChild(option2);
-    }
+    registerHandlers();
 
-    // Set up event listeners for buttons
     document.getElementById("cancelButton").addEventListener("click", clearSelections);
     document.getElementById("executeButton").addEventListener("click", calculate);
 });
+
+function registerHandlers() {
+    getSeeqApi().then(seeq => {
+        seeq.subscribeToSignals(signals => syncSignals(signals));
+    });
+}
+
+function syncSignals(signals) {
+    const newSignals = signals.filter(s => s.valueUnitOfMeasure !== 'string')
+    updateOptionSignals("number1", newSignals);
+    updateOptionSignals("number2", newSignals); 
+}
+
+function updateOptionSignals(id, signals) {
+    optionElement = document.getElementById(id);
+    removeChildren(optionElement);
+    const placeholderOption = new Option('Select an option', '', true, true);
+    placeholderOption.hidden = true;
+    optionElement.appendChild(placeholderOption);
+
+    signals.forEach(signal => {
+        let option = document.createElement("option");
+        option.value = signal.id;
+        option.text = signal.name;
+        optionElement.appendChild(option);
+    });
+}
+
+function removeChildren(element) {
+    while (element.firstChild) {
+        element.removeChild(element.firstChild);
+    }
+    return element;
+}
 
 function clearSelections() {
     document.getElementById("number1").selectedIndex = 0;

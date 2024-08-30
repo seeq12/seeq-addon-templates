@@ -25,18 +25,23 @@ h1 {
 
 .dropdowns {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     margin-bottom: 20px;
 }
 
 .dropdown {
-    width: 30%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 16px;
     color: #007960;
-    appearance: none;
+}
+
+.dropdown#operator {
+    margin: 20px 0;
+    align-self: center;
+    width: 55px;
 }
 
 .buttons {
