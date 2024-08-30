@@ -18,6 +18,16 @@ To install the Add-on Example Generator, follow these steps:
 Once the installation is complete you can run `addon --help` from a terminal window (bash/zsh on Mac or Command 
 Prompt in Windows) to see the available commands.
 
+# Updates
+To update the Add-on Example Generator, follow these steps:
+1. Run `git checkout develop` in the root directory of the cloned repository to get the latest version of the Add-on 
+   Example Generator.
+2. Run `git pull` to update your local repository with the latest changes.
+3. Run `./install_template` (Linux/Mac) or double-click on `install_template.bat` (Windows) to re-install the utility.
+
+Once the installation is complete you can run `addon --help` from a terminal window (bash/zsh on Mac or Command
+Prompt in Windows) to see the available commands.
+
 # Usage
 There are two main commands available in the Add-on Example Generator:
 - `addon create` - This command generates a new Add-on project in the specified directory. 
@@ -32,20 +42,10 @@ To create a new Add-on project, follow these steps:
 3. Navigate to the destination folder and follow the instructions in the README.md file of your newly created Add-on 
    project.
 
-### Some things to keep in mind
+### After creating your Add-on project
 * Open the project in your favorite IDE to start developing your Add-on. VS Code is a good choice if you don't have 
   a favorite IDE. 
-* The Add-on Example Generator creates a virtual environment in the project folder. 
-  * If you are using a Terminal, you can activate the virtual environment by running `source .venv/bin/activate` 
-	(Linux/Mac) or `.venv\Scripts\activate` (Windows). 
-  * If you are using an IDE, you can configure the IDE to use the virtual environment.
-  * You will notice that the folder structure matches the elements you selected in the prompts with their 
-	corresponding names.
-  * You can also see that the `addon.json` configuration has been filled with the answers to the questions you 
-	provided in the CLI. 
-  * Finally, you will notice a `_dev_tools` folder that hosts all the utility functions that are helpful to develop,
-	debug, package and deploy your Add-on. This folder is not meant to be manipulated, but you are welcome 
-	to look inside for more complex configurations. 
+* Open the README.md file in the project folder to get started with the Add-on project.
 
 
 # Developer notes
@@ -57,5 +57,5 @@ everytime you make a change. To make this process easier, follow these steps:
 2. Activate your virtual environment by running `source .venv/bin/activate` (Linux/Mac) or `.venv\Scripts\activate` 
    or from the IDE.
 3. Make the changes to the templates of this project.
-4. Test your changes by running `python addon_template/generate.py --help` from the root. For example, you can run 
-   `python addon_template/generate.py create <path/to/destination/folder>` to test the `create` command.
+4. Test your changes by running `python addon_template/generator.py --help` from the root. For example, you can run 
+   `python addon_template/generator.py create <path/to/destination/folder>` to test the `create` command.
