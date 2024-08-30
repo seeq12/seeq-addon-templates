@@ -10,7 +10,8 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function registerHandlers() {
-    getSeeqApi().then(seeq => {
+    getSeeqApi().then(_seeq => {
+        seeq = _seeq;
         seeq.subscribeToSignals(signals => syncSignals(signals));
     });
 }
@@ -47,6 +48,7 @@ function clearSelections() {
     document.getElementById("number1").selectedIndex = 0;
     document.getElementById("operator").selectedIndex = 0;
     document.getElementById("number2").selectedIndex = 0;
+    seeq.closeActiveTool();
 }
 
 function calculate() {
