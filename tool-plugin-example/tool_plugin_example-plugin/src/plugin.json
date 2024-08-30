@@ -1,0 +1,17 @@
+{
+  "category": "DisplayPane",
+  "identifier": "com.seeq.plugin.exampleplugin",
+  "name": "Example Plugin",
+  "description": "A plugin that displays a pie chart",
+  "version": "0.0.1",
+  "icon": "fa fa-superpowers",
+  "security": "not used",
+  "entryPoint": "",
+  "host": {
+    "hideDisplayRangeSelector": false,
+    "hideInvestigateRangeSelector": false,
+    "hideBottomPanels": false,
+    "hideCapsulesPanel": false
+  },
+  "options": {}
+}

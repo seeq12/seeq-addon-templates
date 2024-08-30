@@ -1,0 +1,3 @@
+seeq
+seeq-spy
+requests

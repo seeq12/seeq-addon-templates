@@ -1,0 +1,16 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_src_path: /Users/bryan/dev/seeq-addon-templates/.venv/lib/python3.11/site-packages/addon_template
+add_on_manager_prompts: Press enter to continue
+dataLabFunction_prompts: Press enter to continue
+element_prompts: Press enter to continue
+elements_to_include:
+- DataLabFunctions
+- Plugin
+plugin_prompts: Press enter to continue
+project_description: An Add-on with a plugin tool
+project_icon: fa-bullseye
+project_license: MIT License
+project_maintainer: Bryan Zimmerman
+project_name: Tool Plugin Example
+project_version: 0.0.1
+

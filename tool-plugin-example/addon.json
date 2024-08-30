@@ -1,0 +1,23 @@
+{
+  "identifier": "com.seeq.tool_plugin_example",
+  "name": "Tool Plugin Example",
+  "description": "An Add-on with a plugin tool",
+  "version": "0.0.1",
+  "maintainer": "Bryan Zimmerman",
+  "license": "MIT License",
+  "icon": "fa-bullseye",
+  "elements": [
+    
+    
+    {
+      "name": "Tool Plugin Example Plugin",
+      "identifier": "com.seeq.tool_plugin_example.plugin",
+      "type": "Plugin",
+      "path": "tool_plugin_example-plugin"
+    }
+    
+    
+  ],
+  "previews": [],
+  "tags": {}
+}

@@ -83,3 +83,6 @@ TEST*.xml
 credentials.key
 test_config.ini
 .credentials.json
+
+addon_venv
+**node_modules/
