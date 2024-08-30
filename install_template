@@ -29,9 +29,9 @@ create_env() {
 info() {
   	echo -e "\n************************************************************"
   	echo -e "\n Installation complete"
-  	echo -e "\n Run `addon --help` to see the available options"
+  	echo -e "\n Run 'addon --help' to see the available options"
   	echo -e "\n For example, to create an example Add-on, run the command"
-  	echo -e "\n   addon create <destination_dir>"
+  	echo -e "\n   'addon create <destination_dir>'"
   	echo -e "\n************************************************************"
 }
 
@@ -47,6 +47,12 @@ version=$(grep 'version =' pyproject.toml | sed 's/version = //g' | tr -d '"')
 echo "seeq-addon-template version: $version"
 
 "$VENV"/bin/pip install dist/addon-"$version"-py3-none-any.whl -U
+
+
+if [ ! -d "$ADDON_SCRIPT_LOCAL_PATH" ]; then
+  echo "Creating directory $ADDON_SCRIPT_LOCAL_PATH"
+  mkdir -p "$ADDON_SCRIPT_LOCAL_PATH"
+fi
 
 chmod +x "$ADDON_SCRIPT_PATH"
 cp "$ADDON_SCRIPT_PATH" "$ADDON_SCRIPT_LOCAL_PATH"
