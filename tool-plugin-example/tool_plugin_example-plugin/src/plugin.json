@@ -1,7 +1,7 @@
 {
   "category": "ToolPane",
   "identifier": "com.seeq.plugin.signal-combiner-tool",
-  "name": "Signal Combiner Tool Plugin",
+  "name": "Signal Combiner",
   "description": "A plugin that combines two signals",
   "version": "0.0.1",
   "icon": "fa fa-bullseye",
