@@ -15,17 +15,18 @@
     "watch": "rimraf ./dist && mkdirp ./dist && concurrently --kill-others \"npm run watch_build\" \"npm run watch_deploy\""
   },
   "dependencies": {
+    "axios": "1.7.6"
   },
   "devDependencies": {
-    "archiver": "^4.0.1",
-    "chalk": "^4.1.0",
-    "concurrently": "^5.2.0",
-    "formdata-node": "^2.2.1",
-    "inquirer": "^7.2.0",
-    "mkdirp": "^1.0.4",
-    "node-fetch": "^2.6.1",
-    "onchange": "^7.0.2",
-    "rimraf": "^3.0.2",
-    "cpx": "^1.5.0"
+    "archiver": "7.0.1",
+    "chalk": "5.3.0",
+    "concurrently": "8.2.2",
+    "formdata-node": "6.0.3",
+    "inquirer": "10.1.8",
+    "mkdirp": "3.0.1",
+    "node-fetch": "3.3.2",
+    "onchange": "7.1.0",
+    "rimraf": "6.0.1",
+    "cpx": "1.5.0"
   }
 }
