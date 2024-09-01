@@ -1,5 +1,6 @@
 {
   "main": "index.js",
+  "type": "module",
   "browserslist": [
     "> 1%",
     "IE 11"
@@ -14,14 +15,12 @@
     "watch_deploy": "onchange -k \"./dist/*\" -- node ./package-scripts.js deploy",
     "watch": "rimraf ./dist && mkdirp ./dist && concurrently --kill-others \"npm run watch_build\" \"npm run watch_deploy\""
   },
-  "dependencies": {
-    "axios": "1.7.6"
-  },
+  "dependencies": {},
   "devDependencies": {
     "archiver": "7.0.1",
     "chalk": "5.3.0",
     "concurrently": "8.2.2",
-    "formdata-node": "6.0.3",
+    "formdata-node": "2.2.1",
     "inquirer": "10.1.8",
     "mkdirp": "3.0.1",
     "node-fetch": "3.3.2",

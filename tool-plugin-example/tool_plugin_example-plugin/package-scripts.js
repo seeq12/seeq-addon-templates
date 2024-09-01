@@ -1,21 +1,27 @@
 'use strict';
 
-const { URL } = require('url');
-const { promisify } = require('util');
-const path = require('path');
-const fs = require('fs');
-const { promises: fsp } = fs;
-const stream = require('stream');
-const streamPipeline = promisify(stream.pipeline);
-const process = require('process');
+import url from 'url';
+import { promisify } from 'util';
+import path from 'path';
 
-const rimraf = promisify(require('rimraf'));
-const mkdirp = require('mkdirp');
-const archiver = require('archiver');
-const fetch = require('node-fetch');
-const FormData = require('formdata-node');
-const chalk = require('chalk');
-const inquirer = require('inquirer');
+import fs from 'node:fs';
+import fsp from 'node:fs/promises';
+import stream from 'stream';
+import { pipeline as streamPipeline } from 'stream'; 
+import process from 'process';
+
+import { rimraf } from 'rimraf';
+import { mkdirp } from 'mkdirp';
+import archiver from 'archiver';
+import FormData from 'formdata-node';
+import chalk from 'chalk';
+import inquirer from 'inquirer';
+import fetch from 'node-fetch';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const { log } = console;
 
@@ -391,7 +397,7 @@ async function postZip(url, auth) {
     log(`WARNING: ${err}`);
   });
   archive.pipe(innerStream);
-  archive.finalize();
+  await archive.finalize();
   form.append('file', innerStream, filename);
 
   const res = await fetch(`${base(url)}/api/plugins`, {
