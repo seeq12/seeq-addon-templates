@@ -308,7 +308,13 @@ async function downloadFile(url, filename, destination) {
     throw err;
   }
 
-  return await streamPipeline(res.body, fs.createWriteStream(path.resolve(destination, filename)));
+  return await streamPipeline(
+    res.body, 
+    fs.createWriteStream(path.resolve(destination, filename)), (err) => {
+      if (err) {
+        throw err;
+      }
+    });
 }
 
 async function downloadSdk(url) {
