@@ -10,10 +10,12 @@
     "bootstrap": "node ./package-scripts.js bootstrap",
     "//build": "Builds and packages the plugin so it can be uploaded to servers",
     "build": "cpx \"src/**/*\" dist && node ./package-scripts.js package",
+    "//deploy": "Uploads the plugin to the Seeq Server",
+    "deploy": "node ./package-scripts.js deploy",
     "//watch": "start webpack in watch mode and upload plugin to api",
     "watch_build": "onchange -k \"./src/*\" -- npm run build",
-    "watch_deploy": "onchange -k \"./dist/*\" -- node ./package-scripts.js deploy",
-    "watch": "rimraf ./dist && mkdirp ./dist && concurrently --kill-others \"npm run watch_build\" \"npm run watch_deploy\""
+    "watch_deploy": "onchange -k \"./dist/*\" -- npm run deploy",
+    "watch": "npm run build && npm run deploy && rimraf ./dist && mkdirp ./dist && concurrently --kill-others \"npm run watch_build\" \"npm run watch_deploy\""
   },
   "dependencies": {},
   "devDependencies": {
