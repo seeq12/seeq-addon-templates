@@ -1,8 +1,8 @@
 
-document.addEventListener("DOMContentLoaded", function() {
-    const number1 = document.getElementById("number1");
-    const number2 = document.getElementById("number2");
 
+const DLF_PROJECT_NAME = "signal-combiner-dlf";
+
+document.addEventListener("DOMContentLoaded", function() {
     registerHandlers();
 
     document.getElementById("cancelButton").addEventListener("click", clearSelections);
@@ -18,8 +18,8 @@ function registerHandlers() {
 
 function syncSignals(signals) {
     const newSignals = signals.filter(s => s.valueUnitOfMeasure !== 'string')
-    updateOptionSignals("number1", newSignals);
-    updateOptionSignals("number2", newSignals); 
+    updateOptionSignals("signalA", newSignals);
+    updateOptionSignals("signalB", newSignals); 
 }
 
 function updateOptionSignals(id, signals) {
@@ -45,44 +45,29 @@ function removeChildren(element) {
 }
 
 function clearSelections() {
-    document.getElementById("number1").selectedIndex = 0;
+    document.getElementById("signalA").selectedIndex = 0;
+    document.getElementById("signalB").selectedIndex = 0;
     document.getElementById("operator").selectedIndex = 0;
-    document.getElementById("number2").selectedIndex = 0;
     seeq.closeActiveTool();
 }
 
-function calculate() {
-    const num1 = parseInt(document.getElementById("number1").value);
-    const num2 = parseInt(document.getElementById("number2").value);
-    const operator = document.getElementById("operator").value;
+async function calculate() {
+    const idA = document.getElementById("signalA").value;
+    const idB = document.getElementById("signalB").value;
+    const op = document.getElementById("operator").value;
 
-    if (isNaN(num1) || isNaN(num2)) {
-        alert("Please select both numbers.");
-        return;
-    }
-
-    let result;
-    switch (operator) {
-        case '+':
-            result = num1 + num2;
-            break;
-        case '-':
-            result = num1 - num2;
-            break;
-        case '*':
-            result = num1 * num2;
-            break;
-        case '/':
-            if (num2 === 0) {
-                alert("Cannot divide by zero.");
-                return;
-            }
-            result = num1 / num2;
-            break;
-        default:
-            alert("Invalid operation.");
-            return;
-    }
-
-    console.log("Result: " + result);
+    const { projectId }= await seeq.getDataLabProject(DLF_PROJECT_NAME);
+    const response = await seeq.callDataLabApi({
+        projectId,
+        notebookName: "api",
+        method: "POST",
+        path: "/combine",
+        body: {
+            idA,
+            idB,
+            op,
+            workbookId: seeq.workbook.id,
+            worksheetId: seeq.worksheet.id
+        }
+    })
 }
