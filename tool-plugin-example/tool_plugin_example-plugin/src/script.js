@@ -20,9 +20,9 @@ function registerHandlers() {
 }
 
 function syncSignals(signals) {
-    const newSignals = signals.filter(s => s.valueUnitOfMeasure !== 'string')
-    updateOptionSignals("signalA", newSignals);
-    updateOptionSignals("signalB", newSignals); 
+    const currentSignals = signals.filter(s => s.valueUnitOfMeasure !== 'string') // Filter out string signals
+    updateOptionSignals("signalA", currentSignals);
+    updateOptionSignals("signalB", currentSignals); 
 }
 
 function updateOptionSignals(id, signals) {
@@ -47,12 +47,6 @@ function removeChildren(element) {
         element.removeChild(element.firstChild);
     }
     return element;
-}
-
-function updateExecuteButton() {
-    const signalA = document.getElementById("signalA").value;
-    const signalB = document.getElementById("signalB").value;
-    document.getElementById("executeButton").disabled = signalA === "" || signalB === "";
 }
 
 function clearSelections() {
@@ -92,6 +86,12 @@ async function calculate() {
         hideSpinner();
         enableButtons();
     }
+}
+
+function updateExecuteButton() {
+    const signalA = document.getElementById("signalA").value;
+    const signalB = document.getElementById("signalB").value;
+    document.getElementById("executeButton").disabled = signalA === "" || signalB === "";
 }
 
 function showSpinner() {
