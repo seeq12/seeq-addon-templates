@@ -32,7 +32,9 @@ PREVIEWS = "previews"
 DEFAULT_ADD_ON_TOOL_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.addon_tool'
 ADD_ON_TOOL_TYPE = "AddOnTool"
 DEFAULT_PLUGIN_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.plugin'
+DEFAULT_TOOL_PANE_PLUGIN_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.tool_pane_plugin'
 PLUGIN_TYPE = "Plugin"
+TOOL_PANE_PLUGIN_TYPE = "ToolPanePlugin"
 DEFAULT_FORMULA_PACKAGE_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.formula_package'
 FORMULA_PACKAGE_TYPE = "FormulaPackage"
 
@@ -94,6 +96,10 @@ def get_module(element_path: str, element_type: str) -> ElementProtocol:
             return module
         elif element_type == PLUGIN_TYPE:
             module = load_module(f"{DEFAULT_PLUGIN_ELEMENT_PATH}.{ELEMENT_ACTION_FILE}")
+            assert isinstance(module, ElementProtocol)
+            return module
+        elif element_type == TOOL_PANE_PLUGIN_TYPE:
+            module = load_module(f"{DEFAULT_TOOL_PANE_PLUGIN_ELEMENT_PATH}.{ELEMENT_ACTION_FILE}")
             assert isinstance(module, ElementProtocol)
             return module
         else:

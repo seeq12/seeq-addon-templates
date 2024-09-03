@@ -1,0 +1,3 @@
+*.plugin
+.bootstrap.json
+sdk/

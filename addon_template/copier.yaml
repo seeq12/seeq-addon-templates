@@ -114,6 +114,7 @@ elements_to_include:
         - AddOnTool
         - DataLabFunctions
         - Plugin
+        - ToolPanePlugin
         - FormulaPackage
     multiselect: true
     validator: >-

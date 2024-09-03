@@ -68,7 +68,17 @@
       "name": "{{ project_name }} Plugin",
       "identifier": "com.seeq.{{identifier}}.plugin",
       "type": "Plugin",
+      "category": "DisplayPane",
       "path": "{{ add_on_path }}-plugin"
+    }{% if  'FormulaPackage' in elements_to_include %}, {% endif %}
+    {% endif %}
+    {% if 'ToolPanePlugin' in elements_to_include %}
+    {
+      "name": "{{ project_name }} Tool Pane Plugin",
+      "identifier": "com.seeq.{{identifier}}.tool-pane-plugin",
+      "type": "Plugin",
+      "category": "ToolPane",
+      "path": "{{ add_on_path }}-tool-pane-plugin"
     }{% if  'FormulaPackage' in elements_to_include %}, {% endif %}
     {% endif %}
     {% if 'FormulaPackage' in elements_to_include %}
