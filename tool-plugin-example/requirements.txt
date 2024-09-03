@@ -1,3 +1,0 @@
-seeq
-seeq-spy
-requests
