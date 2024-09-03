@@ -1,0 +1,6 @@
+.copier-answers.yml
+__init__.py
+_dev_tools/
+addon.json
+addon.py
+requirements.txt
