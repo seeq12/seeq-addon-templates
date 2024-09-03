@@ -7,23 +7,72 @@ source variables.sh
 
 # Function to create a virtual environment
 create_env() {
-	echo -e "\n********* Creating Virtual Environment **********************"
-	echo "  Creating virtual environment in $VENV"
+	echo -e "\n*************************************************************"
+	echo "Creating virtual environment in $VENV"
 	echo -e "Using shell: $SHELL"
+	if [ ! -d "$DEST_DIR" ]; then
+    mkdir -p "$DEST_DIR"
+  fi
+  cp "$LOCAL_DIR/requirements.txt" "$DEST_DIR"
   # Check if python3 exists
    if command -v python3 &> /dev/null
    then
-      python3 entrypoint.py
+      python3 entrypoint.py "$DEST_DIR"
    elif command -v python &> /dev/null
    then
-      python entrypoint.py
+      python entrypoint.py "$DEST_DIR"
    else
       echo "Python is not installed. Please install Python and try again."
       exit 1
    fi
-	echo -e "\n************************************************************"
-	echo -e "\nVirtual environment created"
-	echo -e "\n************************************************************\n"
+   # Write the path of the virtual environment to a file
+   echo "$VENV" > "$ADDON_VENV_FILE"
+}
+
+build_project() {
+  echo -e "\n*************************************************************"
+  echo -e "\nBuilding seeq-addon-template project"
+  "$VENV"/bin/python -m build 2>&1 | grep -v "WARNING" > /dev/null
+
+}
+
+install_project() {
+  echo -e "\n*************************************************************"
+  echo -e "\nInstalling seeq-addon-template project"
+  version=$(grep 'version =' pyproject.toml | sed 's/version = //g' | tr -d '"')
+  echo "seeq-addon-template version: $version"
+
+  echo -e "\nInstalling in python environment"
+  "$VENV"/bin/pip install dist/addon-"$version"-py3-none-any.whl -U > /dev/null
+
+  if [ ! -d "$DEST_DIR/bin" ]; then
+    echo "Creating directory $DEST_DIR/bin"
+    mkdir -p "$DEST_DIR/bin"
+  fi
+
+  echo -e "\nCopying files to $DEST_DIR/bin"
+  chmod +x "$ADDON_SCRIPT_PATH"
+  chmod +x "$ADDON_VENV_FILE"
+  chmod +x "$VARIABLES_FILE"
+  cp "$ADDON_SCRIPT_PATH" "$ADDON_SCRIPT_LOCAL_PATH"
+  cp "$ADDON_VENV_FILE" "$ADDON_VENV_FILE_LOCAL_PATH"
+  cp "$VARIABLES_FILE" "$VARIABLES_FILE_LOCAL_PATH"
+}
+
+adding_to_path() {
+  echo -e "\n*************************************************************"
+  echo -e "\nAdding directories to your PATH"
+  files_to_check=(~/.bashrc ~/.zshrc)
+
+  # Loop over the files
+  for file in "${files_to_check[@]}"; do
+      if grep -Fxq "$PATH_START_MARKER" "$file"; then
+        echo "Path already in $file"
+      else
+        echo "Adding path to $file"
+        echo "$ADD_TO_PATH" >> "$file"
+      fi
+  done
 }
 
 info() {
@@ -35,40 +84,8 @@ info() {
   	echo -e "\n************************************************************"
 }
 
-# Call the function
 create_env
-
-# Write the path of the virtual environment to a file
-echo "$VENV" > "$ADDON_VENV_FILE"
-
-"$VENV"/bin/python -m build
-
-version=$(grep 'version =' pyproject.toml | sed 's/version = //g' | tr -d '"')
-echo "seeq-addon-template version: $version"
-
-"$VENV"/bin/pip install dist/addon-"$version"-py3-none-any.whl -U
-
-
-if [ ! -d "$ADDON_SCRIPT_LOCAL_PATH" ]; then
-  echo "Creating directory $ADDON_SCRIPT_LOCAL_PATH"
-  mkdir -p "$ADDON_SCRIPT_LOCAL_PATH"
-fi
-
-chmod +x "$ADDON_SCRIPT_PATH"
-cp "$ADDON_SCRIPT_PATH" "$ADDON_SCRIPT_LOCAL_PATH"
-cp "$ADDON_VENV_FILE" "$ADDON_VENV_FILE_LOCAL_PATH"
-
-files_to_check=(~/.bashrc ~/.zshrc)
-
-# Loop over the files
-for file in "${files_to_check[@]}"; do
-    if grep -Fxq "$PATH_START_MARKER" "$file"; then
-      echo "Path already in $file"
-    else
-      echo "Adding path to $file"
-      echo "$ADD_TO_PATH" >> "$file"
-    fi
-done
-
-
+build_project
+install_project
+adding_to_path
 info

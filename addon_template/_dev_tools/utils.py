@@ -35,7 +35,12 @@ def get_venv_paths(element_path: pathlib.Path, path_requested=None):
         return path_to_test
 
 
-def create_virtual_environment(element_path: pathlib.Path, clean: bool = False, global_path: pathlib.Path = None):
+def create_virtual_environment(
+        element_path: pathlib.Path,
+        clean: bool = False,
+        global_path: pathlib.Path = None,
+        hide_stdout: bool = False
+):
     if global_path is None:
         global_path = element_path
 
@@ -51,12 +56,13 @@ def create_virtual_environment(element_path: pathlib.Path, clean: bool = False, 
     venv.EnvBuilder(
         system_site_packages=False, with_pip=True, clear=True, symlinks=not windows_os
     ).create(venv_path)
+    stdout = subprocess.DEVNULL if hide_stdout else None
+    print("Installing pip...")
     subprocess.run(
-        f"{path_to_python} -m pip install --upgrade pip", shell=True, check=True
+        f"{path_to_python} -m pip install --upgrade pip", shell=True, check=True, stdout=stdout
     )
-
-    pip_install_dependencies(element_path, path_to_pip, wheels_path)
-
+    print("Installing dependencies...")
+    pip_install_dependencies(element_path, path_to_pip, wheels_path, hide_stdout)
     print("Virtual environment created.")
 
 
@@ -64,7 +70,8 @@ def pip_install_dependencies(
         element_path: pathlib.Path,
         path_to_pip: pathlib.Path,
         wheels_path: pathlib.Path,
-        upgrade=True
+        upgrade=True,
+        hide_stdout: bool = True
 ):
     upgrade = "--upgrade" if upgrade else ""
     command = f"{path_to_pip} install "
@@ -74,15 +81,15 @@ def pip_install_dependencies(
         command += f" -r {element_path / 'requirements.txt'} {upgrade}"
     if wheels_path.exists():
         command += f" -f {wheels_path}"
-
     subprocess.run(
         command,
         shell=True,
         check=True,
+        stdout=subprocess.DEVNULL if hide_stdout else None
     )
 
 
-def update_venv(element_path: pathlib.Path, global_path: pathlib.Path = None):
+def update_venv(element_path: pathlib.Path, global_path: pathlib.Path = None, hide_stdout: bool = True):
     if global_path is None:
         global_path = element_path
     venv_path, windows_os, path_to_python, path_to_pip, path_to_scripts, wheels_path = get_venv_paths(global_path)
@@ -90,10 +97,11 @@ def update_venv(element_path: pathlib.Path, global_path: pathlib.Path = None):
         print("Virtual environment does not exist.")
         return
 
+    print("Updating virtual environment...")
     subprocess.run(
-        f"{path_to_python} -m pip install --upgrade pip", shell=True, check=True
+        f"{path_to_python} -m pip install --upgrade pip", shell=True, check=True, stdout=subprocess.DEVNULL
     )
 
-    pip_install_dependencies(element_path, path_to_pip, wheels_path)
+    pip_install_dependencies(element_path, path_to_pip, wheels_path, hide_stdout=hide_stdout)
 
     print("Virtual environment updated.")

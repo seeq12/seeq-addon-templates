@@ -46,16 +46,3 @@ To create a new Add-on project, follow these steps:
 * Open the project in your favorite IDE to start developing your Add-on. VS Code is a good choice if you don't have 
   a favorite IDE. 
 * Open the README.md file in the project folder to get started with the Add-on project.
-
-
-# Developer notes
-If you are interested in modifying the templates of this project, it can be time-consuming to install the template 
-everytime you make a change. To make this process easier, follow these steps:
-
-1. Install the template only the first time following the instructions in the **[Installation(#Installation)]** 
-   section. 
-2. Activate your virtual environment by running `source .venv/bin/activate` (Linux/Mac) or `.venv\Scripts\activate` 
-   or from the IDE.
-3. Make the changes to the templates of this project.
-4. Test your changes by running `python addon_template/generator.py --help` from the root. For example, you can run 
-   `python addon_template/generator.py create <path/to/destination/folder>` to test the `create` command.
