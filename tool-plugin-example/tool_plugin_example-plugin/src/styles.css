@@ -27,7 +27,7 @@ h1 {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: 35px;
 }
 
 .dropdown {
@@ -47,7 +47,7 @@ h1 {
 .buttons {
     display: flex;
     justify-content: center; 
-    margin-top: 50px;
+    margin-top: 35px;
 }
 
 .btn {
@@ -80,4 +80,37 @@ h1 {
 .btn.execute:hover {
     background-color: #1e7e34;
     border-color: #1e7e34;
+}
+
+.btn.execute:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    border: 1px solid #ccc;
+}
+
+.spinner {
+    display: none;
+    width: 40px;
+    height: 40px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007960;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.error {
+    display: none;
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
