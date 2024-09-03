@@ -69,6 +69,7 @@ async function calculate() {
 
     hideError();
     showSpinner();
+    disableButtons();
     try {
         const { projectId }= await seeq.getDataLabProject(DLF_PROJECT_NAME);
         const response = await seeq.callDataLabApi({
@@ -89,6 +90,7 @@ async function calculate() {
         showError(error?.data?.statusMessage);
     } finally {
         hideSpinner();
+        enableButtons();
     }
 }
 
@@ -109,3 +111,13 @@ function hideError() {
     document.getElementById("error").innerText = "";
     document.getElementById("error").style.display = "none";
 }
+
+function disableButtons() {
+    document.getElementById("cancelButton").disabled = true;
+    document.getElementById("executeButton").disabled = true;
+}
+
+function enableButtons() {
+    document.getElementById("cancelButton").disabled = false;
+    document.getElementById("executeButton").disabled = false;
+} 

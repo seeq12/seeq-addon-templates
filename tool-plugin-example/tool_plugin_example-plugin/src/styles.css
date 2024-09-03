@@ -70,6 +70,13 @@ h1 {
     border-color: #ccc;
 }
 
+.btn.cancel:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    border: 1px solid #ccc;
+}
+
 .btn.execute {
     margin-left: 20px;
     background-color: #218838;
