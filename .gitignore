@@ -69,8 +69,9 @@ cover/
 # Sphinx documentation
 docs/_build/
 
-# JetBrains IDE
+# IDE
 .idea/
+.vscode/
 
 # Unit test reports
 TEST*.xml
@@ -83,6 +84,9 @@ TEST*.xml
 credentials.key
 test_config.ini
 .credentials.json
+
+# MacOS
+.DS_Store
 
 # Add-on template
 addon_venv

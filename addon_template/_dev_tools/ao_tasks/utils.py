@@ -37,6 +37,8 @@ PLUGIN_TYPE = "Plugin"
 TOOL_PANE_PLUGIN_TYPE = "ToolPanePlugin"
 DEFAULT_FORMULA_PACKAGE_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.formula_package'
 FORMULA_PACKAGE_TYPE = "FormulaPackage"
+DATA_LAB_FUNCTIONS_TYPE = "DataLabFunctions"
+DATA_LAB_FUNCTIONS_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.data_lab_functions'
 
 TIMESTAMP_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
 
@@ -100,6 +102,10 @@ def get_module(element_path: str, element_type: str) -> ElementProtocol:
             return module
         elif element_type == TOOL_PANE_PLUGIN_TYPE:
             module = load_module(f"{DEFAULT_TOOL_PANE_PLUGIN_ELEMENT_PATH}.{ELEMENT_ACTION_FILE}")
+            assert isinstance(module, ElementProtocol)
+            return module
+        elif element_type == DATA_LAB_FUNCTIONS_TYPE:
+            module = load_module(f"{DATA_LAB_FUNCTIONS_ELEMENT_PATH}.{ELEMENT_ACTION_FILE}")
             assert isinstance(module, ElementProtocol)
             return module
         else:

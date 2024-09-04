@@ -200,13 +200,13 @@ async function commandPackage() {
 }
 
 async function writeBootstrap({ url, accessKey, password }) {
-  await fsp.writeFile(resolve('.bootstrap.json'), JSON.stringify({ url, accessKey, password }, null, 2), 'utf8');
+  await fsp.writeFile(resolve('.credentials.json'), JSON.stringify({ url, accessKey, password }, null, 2), 'utf8');
 }
 
 async function readBootstrap() {
   let contents;
   try {
-    contents = JSON.parse(await fsp.readFile(resolve('.bootstrap.json'), 'utf8'));
+    contents = JSON.parse(await fsp.readFile(resolve('.credentials.json'), 'utf8'));
   } catch (ex) {
     if (ex.code === 'ENOENT') {
       contents = {};

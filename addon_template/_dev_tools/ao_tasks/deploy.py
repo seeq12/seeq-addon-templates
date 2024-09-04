@@ -91,7 +91,7 @@ def _deploy_entire_package(args):
     else:
         raise Exception(f"Can't install or update Add-on {get_add_on_identifier()}")
 
-    print("Deployment to Add On Manager Complete")
+    print("Deployment Complete.")
 
 
 def get_configuration():

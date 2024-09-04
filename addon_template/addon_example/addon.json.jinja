@@ -79,6 +79,32 @@
       "type": "Plugin",
       "category": "ToolPane",
       "path": "{{ add_on_path }}-tool-pane-plugin"
+    }{% if  'DataLabFunctions' in elements_to_include %}, {% endif %}
+    {% endif %}
+    {% if 'DataLabFunctions' in elements_to_include %}
+    {
+      "name": "{{ project_name }} Data Lab Functions",
+      "identifier": "com.seeq.{{identifier}}.data-lab-functions",
+      "type": "DataLabFunctions",
+      "path": "{{ add_on_path }}-data-lab-functions",
+      "configuration_schema": {    
+        "type": "object",
+        "properties": {
+          "advanced_project_configuration": {
+            "type": "object",
+            "properties": {
+              "kernel_name": {
+                "type": "string",
+                "default": "python311"
+              }
+            },
+            "required": ["kernel_name"]
+          }
+        },
+        "required": [
+          "advanced_project_configuration"
+        ]
+      }
     }{% if  'FormulaPackage' in elements_to_include %}, {% endif %}
     {% endif %}
     {% if 'FormulaPackage' in elements_to_include %}
