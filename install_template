@@ -62,7 +62,7 @@ install_project() {
 adding_to_path() {
   echo -e "\n*************************************************************"
   echo -e "\nAdding directories to your PATH"
-  files_to_check=(~/.bashrc ~/.zshrc)
+  files_to_check=(~/.bashrc ~/.zshrc ~/.bash_profile)
 
   # Loop over the files
   for file in "${files_to_check[@]}"; do
