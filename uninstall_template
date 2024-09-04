@@ -17,7 +17,7 @@ fi
 
 
 # Define the files to check
-files_to_check=(~/.bashrc ~/.zshrc)
+files_to_check=(~/.bashrc ~/.zshrc ~/.bash_profile)
 
 # Loop over the files
 for file in "${files_to_check[@]}"; do
