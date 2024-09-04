@@ -48,7 +48,7 @@ def bootstrap(element_path: pathlib.Path, url: str, username: str, password: str
 
 
 def build(element_path: pathlib.Path) -> None:
-    print('There is no need to build add-on tools that are based on Jupyter notebooks. '
+    print('There is no need to build Add-on Tools or Data Lab Functions elements. '
           'This operation is skipped for this add-on element')
 
 

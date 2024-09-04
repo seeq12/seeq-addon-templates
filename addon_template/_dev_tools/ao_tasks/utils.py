@@ -29,16 +29,16 @@ ELEMENT_IDENTIFIER = 'identifier'
 CONFIGURATION_SCHEMA = "configuration_schema"
 PREVIEWS = "previews"
 
-DEFAULT_ADD_ON_TOOL_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.addon_tool'
+DEFAULT_ADD_ON_TOOL_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.data_lab_project'
 ADD_ON_TOOL_TYPE = "AddOnTool"
 DEFAULT_PLUGIN_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.plugin'
-DEFAULT_TOOL_PANE_PLUGIN_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.tool_pane_plugin'
+DEFAULT_TOOL_PANE_PLUGIN_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.plugin'
 PLUGIN_TYPE = "Plugin"
 TOOL_PANE_PLUGIN_TYPE = "ToolPanePlugin"
 DEFAULT_FORMULA_PACKAGE_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.formula_package'
 FORMULA_PACKAGE_TYPE = "FormulaPackage"
 DATA_LAB_FUNCTIONS_TYPE = "DataLabFunctions"
-DATA_LAB_FUNCTIONS_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.data_lab_functions'
+DATA_LAB_FUNCTIONS_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.data_lab_project'
 
 TIMESTAMP_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
 
