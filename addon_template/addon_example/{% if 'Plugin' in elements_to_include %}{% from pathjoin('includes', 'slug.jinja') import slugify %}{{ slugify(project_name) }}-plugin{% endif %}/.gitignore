@@ -2,5 +2,5 @@ sdk
 image
 dist
 *.plugin
-.bootstrap.json
+.credentials.json
 node_modules

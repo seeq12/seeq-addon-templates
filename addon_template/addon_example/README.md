@@ -2,8 +2,9 @@
 
 This project includes the following Add-on elements:
 {% if 'AddOnTool' in elements_to_include %}- {{ project_name }}{% endif %}
-{% if 'DataLabFunctions' in elements_to_include %}- {{ project_name }} DataLab Functions {% endif %}
+{% if 'DataLabFunctions' in elements_to_include %}- {{ project_name }} Data Lab Functions {% endif %}
 {% if 'Plugin' in elements_to_include %}- {{ project_name }} Plugin {% endif %}
+{% if 'ToolPanePlugin' in elements_to_include %}- {{ project_name }} Tool Pane Plugin {% endif %}
 {% if 'FormulaPackage' in elements_to_include %}- {{ project_name }} Formula Package {% endif %}
 
 ## If this project was created by the [Add-on Example Generator](https://github.com/seeq12/seeq-addon-templates.git):
@@ -23,7 +24,7 @@ To deploy your Add-on package example to Add-on Manager, follow the steps below:
    * If you are using a Terminal, you can activate the virtual environment by running `source .venv/bin/activate` 
 	  (Linux/Mac) or `.venv\Scripts\activate` (Windows). 
    * If you are using an IDE, you can configure the IDE to use the virtual environment.
-{% if 'Plugin' in elements_to_include %}
+{% if 'Plugin' in elements_to_include or 'ToolPanePlugin' in elements_to_include %}
 2. Run `python addon.py bootstrap --url https://<my-seeq-server> --username <username> --password <password>` making 
    sure you pass the correct URL, username, and password to your Seeq server.
 3. Run `python addon.py build` to build the `Plugin` elements in the Add-on package.

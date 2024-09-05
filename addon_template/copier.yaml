@@ -114,11 +114,15 @@ elements_to_include:
         - AddOnTool
         - DataLabFunctions
         - Plugin
+        - ToolPanePlugin
         - FormulaPackage
     multiselect: true
     validator: >-
         {% if not elements_to_include %}
         Please choose at least one option
+        {% endif %}
+        {% if 'ToolPanePlugin' in elements_to_include and not 'DataLabFunctions' in elements_to_include %}
+        DataLabFunctions is required with ToolPanePlugin
         {% endif %}
 
 element_prompts:
@@ -137,6 +141,9 @@ element_prompts:
 ---
 # Plugin element questions
   !include plugin.yaml
+---
+# Tool Pane Plugin element questions
+  !include tool_pane_plugin.yaml
 ---
 # Formula package element questions
   !include formula_package.yaml

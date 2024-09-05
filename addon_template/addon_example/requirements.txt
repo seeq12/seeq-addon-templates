@@ -1,3 +1,4 @@
 seeq
 seeq-spy
 requests
+watchfiles
