@@ -1,12 +1,12 @@
 addOnTool_prompts:
   type: str
-  help: "\n\n ================= AddOnTool Element Configuration ================="
+  help: "\n\n ***************** AddOnTool Element Configuration *****************"
   default: Press enter to continue
   when: "{{ 'AddOnTool' in elements_to_include }}"
 
 addOnTool_description:
   type: str
-  help: Enter description of the AddOnTool element
+  help: Enter description of the Add-on Tool element
   placeholder: (This is the description of the Add-on Tool just below the name in workbench or the homescreen
   validator: >-
     {% if not addOnTool_description %}
@@ -16,7 +16,7 @@ addOnTool_description:
 
 addOnTool_location:
   type: str
-  help: Enter how the add-on should be launched
+  help: Enter how the Add-on Tool should be launched
   default: window
   choices:
     - window
@@ -38,12 +38,11 @@ addOnTool_advanced:
   type: bool
   default: False
   help: >-
-    Do you want to specify any of these advanced settings for the AddOnTool? If unsure, press enter.
+    Do you want to specify any of these advanced settings for the Add-on Tool element? If unsure, press enter.
 
         - Add-on Tool Name: Show a different name for the AddOnTool in the Add-on Manager vs. Workbench
         - Add-on Tool Icon: Show a different icon for the AddOnTool in the Add-on Manager vs. Workbench
-        - Resource Size
-        - Project Properties: Add additional configuration values during runtime
+        - Project Properties: Add additional configuration values required by the Add-on during runtime
 
 addOnTool_name:
   type: str
@@ -58,7 +57,7 @@ addOnTool_name:
 
 addOnTool_icon:
   type: str
-  help: Enter icon (see https://fontawesome.com/v4.7.0/icons/) # TODO: I don't think this list is correct
+  help: Enter icon (see https://fontawesome.com/v4.7.0/icons/) # TODO: This list is not correct
   default: "{{ project_icon }}"
   placeholder: (This icon will be shown next to the Add-on Tool name in workbench under Tools > Add-ons )
   validator: >-
@@ -67,20 +66,9 @@ addOnTool_icon:
     {% endif %}
   when: "{{ 'AddOnTool' in elements_to_include and addOnTool_advanced }}"
 
-addOnTool_resource_size:
-  type: str
-  help: Enter resource size of the Data Lab Project
-  default: GP_S
-  placeholder: (We need to change our KB to have a sharable link here!! https://support.seeq.com/kb/latest/cloud/elements#Element-Specific-Properties)
-  validator: >-
-    {% if not addOnTool_resource_size %}
-    resource size cannot be empty
-    {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include and addOnTool_advanced }}"
-
 addOnTool_project_properties_question:
   type: str
-  help: Does the Add-on tool required any additional configuration values during runtime? (e.g. choose No if you don't know what this is)
+  help: Does the Add-on Tool require any additional configuration values during runtime? (e.g. choose No if you don't know what this is)
   default: "No"
   choices:
     - "Yes"

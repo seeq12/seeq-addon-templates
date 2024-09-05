@@ -17,22 +17,20 @@ _tasks:
 
 _message_before_copy: |
 
-    ================================================================================================
-    Welcome to the Seeq Add-on Template!
-
-    This template generates a working example that can be easily deployed to the 
+    ************************************************************************************************
+    Seeq Create Add-on is a utility to create a working Add-on that can be easily deployed to the 
     Seeq Add-on Manager. Once generated you can modify it to fit your needs.
 
-    An Add-on in the Add-on Manager is composed of ELEMENTS. There are four element types:
+    A packaged Add-on in the Add-on Manager is composed of ELEMENTS. There are four element types:
     `AddOnTool`, `Plugin`, `DataLabFunctions` and `FormulaPackage`. An Add-on must have at
     least one element, but it may have any combination of element types and any number of
     each element type. More information about element types can be found in the Seeq Knowledge Base.
 
-    This command will start with general questions about the Add-on, followed by 
+    This utility will start with general questions about the Add-on, followed by 
     questions for each element that you would like to generate.
 
     Let's get started...
-    ================================================================================================
+    ************************************************************************************************
 
 # questions
 
@@ -52,8 +50,8 @@ project_name:
 
 project_description:
     type: str
-    help: Enter description of this Add-On
-    placeholder: "(e.g. Gets signals from workbench and does simple math with them)"
+    help: Enter description of the Add-On
+    placeholder: "(This description will be displayed in the Add-on Manager)"
     validator: >-
         {% if not project_description %}
         add-on description cannot be empty.
@@ -61,7 +59,7 @@ project_description:
 
 project_version:
     type: str
-    help: Enter (semantic) version of this add-on
+    help: Enter (semantic) version of the Add-on
     placeholder: "(e.g.: 0.0.1)"
     validator: >-
         {% if not (project_version | regex_search('^(0|[0-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$')) %}
@@ -70,7 +68,7 @@ project_version:
 
 project_icon:
     type: str
-    help: Enter icon. This will be shown in the Add-on Manager. (see fontawesome.com/v4/icons) # TODO: I don't think this list is right
+    help: Enter fontawesome icon name. This will be shown in the Add-on Manager. (see fontawesome.com/v4/icons) # TODO: I don't think this list is right
     default: fa-bullseye
     validator: >-
         {% if not project_icon %}
@@ -117,7 +115,7 @@ elements_to_include:
 
 element_prompts:
     type: str
-    help: "\n\n\n 2. Next, the command will guide you through generating each element you have selected."
+    help: "\n\n\n 2. The utility will now guide you through each selected element."
     default: Press enter to continue
     when: "{% if elements_to_include %}true{% endif %}"
 
