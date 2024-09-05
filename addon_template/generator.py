@@ -37,10 +37,9 @@ def create_addon(args):
     try:
         copier.run_copy(str(CURRENT_DIRECTORY), data=None, **vars(args))
         destination_path = pathlib.Path(args.dst_path).resolve()
-        print(f"Creating virtual environment in {destination_path / '.venv'} ...")
         create_virtual_environment(destination_path, clean=True, hide_stdout=True)
         path_to_python = destination_path / ".venv" / ("Scripts" if WINDOWS_OS else "bin") / "python"
-        print(f"Virtual environment created. \nInstalling Add-on dependencies ...")
+        print(f"Installing Add-on dependencies ...")
         command_to_run = f"{path_to_python} {destination_path}/addon.py bootstrap --global-python-env {destination_path}"
         subprocess.run(command_to_run, shell=True, check=True, cwd=destination_path, stdout=subprocess.DEVNULL)
         print(info_open_ide(destination_path))

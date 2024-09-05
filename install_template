@@ -8,7 +8,6 @@ source variables.sh
 # Function to create a virtual environment
 create_env() {
 	echo -e "\n*************************************************************"
-	echo "Creating virtual environment in $VENV"
 	echo -e "Using shell: $SHELL"
 	if [ ! -d "$DEST_DIR" ]; then
     mkdir -p "$DEST_DIR"

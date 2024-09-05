@@ -52,7 +52,7 @@ def create_virtual_environment(
     ):
         print("Virtual environment already exists.")
         return
-    print("Creating virtual environment...")
+    print(f"Creating virtual environment in {venv_path}")
     venv.EnvBuilder(
         system_site_packages=False, with_pip=True, clear=True, symlinks=not windows_os
     ).create(venv_path)
