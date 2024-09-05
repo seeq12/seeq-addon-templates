@@ -4,10 +4,11 @@ setlocal enabledelayedexpansion
 cd /d "%~dp0"
 
 set "LOCAL_DIR=%~dp0"
-set "VENV=%LOCAL_DIR%.venv"
 set "ADDON_SCRIPT_PATH=%LOCAL_DIR%\addon.bat"
 set "ADDON_VENV_FILE=%LOCAL_DIR%\addon_venv"
+
 set "ADDON_TEMPLATE_FOLDER=seeqAddonsTemplate"
+set "VENV=%ADDON_TEMPLATE_FOLDER%\.venv"
 
 call :CreateEnv
 
@@ -44,7 +45,7 @@ call :Info
 echo Press any key to exit
 pause >nul
 
-goto :eof
+exit /b
 
 
 :: Function to create a virtual environment
@@ -95,10 +96,11 @@ goto :eof
 echo.
 echo ************************************************************
 echo.
-echo  To generate your example add-on run the following command
-echo  in a new terminal:
+echo  Installation complete
 echo.
-echo    addon create "<destination_dir>"
+echo  Run `addon --help` to see the available options
 echo.
-echo ************************************************************
+echo  For example, to create an example Add-on, run the command
+echo     addon create <destination_dir>
+echo \n************************************************************
 goto :eof

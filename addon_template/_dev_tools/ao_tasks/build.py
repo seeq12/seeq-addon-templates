@@ -1,3 +1,5 @@
+import pathlib
+
 from _dev_tools.ao_tasks.utils import (
     filter_element_paths,
     get_element_paths_with_type,
@@ -15,4 +17,4 @@ def build(args=None):
     sorted_elements_with_types = {element_path: target_elements[element_path] for element_path in sorted_elements}
     for element_path, element_type in sorted_elements_with_types.items():
         print(f'Building element: {element_path}')
-        get_module(element_path, element_type).build()
+        get_module(element_path, element_type).build(pathlib.Path(element_path))

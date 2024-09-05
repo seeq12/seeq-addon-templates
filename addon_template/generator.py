@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import sys
 import argparse
 import pathlib
 import subprocess
@@ -33,25 +34,33 @@ def info_open_ide(destination_path):
 
 def create_addon(args):
     args = modify_args(args)
-    copier.run_copy(str(CURRENT_DIRECTORY), data=None, **vars(args))
-    destination_path = pathlib.Path(args.dst_path).resolve()
-    print(f"Creating virtual environment in {destination_path / '.venv'}")
-    create_virtual_environment(destination_path, clean=True)
-    path_to_python = destination_path / ".venv" / ("Scripts" if WINDOWS_OS else "bin") / "python"
-    command_to_run = f"{path_to_python} {destination_path}/addon.py bootstrap"
-
-    subprocess.run(command_to_run, shell=True, check=True, cwd=destination_path)
-
-    print(info_open_ide(destination_path))
+    try:
+        copier.run_copy(str(CURRENT_DIRECTORY), data=None, **vars(args))
+        destination_path = pathlib.Path(args.dst_path).resolve()
+        print(f"Creating virtual environment in {destination_path / '.venv'} ...")
+        create_virtual_environment(destination_path, clean=True, hide_stdout=True)
+        path_to_python = destination_path / ".venv" / ("Scripts" if WINDOWS_OS else "bin") / "python"
+        print(f"Virtual environment created. \nInstalling Add-on dependencies ...")
+        command_to_run = f"{path_to_python} {destination_path}/addon.py bootstrap --global-python-env {destination_path}"
+        subprocess.run(command_to_run, shell=True, check=True, cwd=destination_path, stdout=subprocess.DEVNULL)
+        print(info_open_ide(destination_path))
+    except KeyboardInterrupt as e:
+        print(f"\nError: Operation canceled by user")
 
 
 def update_addon(args=None):
     args = modify_args(args)
-    copier.run_recopy(data=None, **vars(args))
+    destination_path = pathlib.Path(args.dst_path).resolve()
+
+    try:
+        copier.run_recopy(data=None, **vars(args))
+        print(info_open_ide(destination_path))
+    except KeyboardInterrupt as e:
+        print(f"\nError: Operation canceled by user")
 
 
 def main():
-    parser = argparse.ArgumentParser(prog='copier.py', description='Template generator for Seeq Add-ons')
+    parser = argparse.ArgumentParser(prog='generator.py', description='Template generator for Seeq Add-ons')
     subparsers = parser.add_subparsers(description='sub-command help', required=True)
 
     copier_options = {

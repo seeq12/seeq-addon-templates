@@ -10,15 +10,17 @@ from _dev_tools.ao_tasks.utils import (
     ELEMENT_PATH,
     ELEMENT_IDENTIFIER,
     CONFIGURATION_SCHEMA,
+    CREDENTIALS_JSON_FILE,
     get_add_on_identifier,
-    _parse_url_username_password,
+    parse_url_username_password,
     get_add_on_package_name,
     get_add_on_json,
     generate_schema_default_dict,
     filter_element_paths,
     get_element_paths_with_type,
     get_folders_from_args,
-    get_module
+    get_module,
+    save_json,
 )
 
 from _dev_tools.ao_tasks import package
@@ -28,7 +30,10 @@ def deploy(args):
     if args.dir is None:
         _deploy_entire_package(args)
     else:
-        url, username, password = _parse_url_username_password(args)
+        url, username, password = parse_url_username_password(args)
+        if url is None or username is None or password is None:
+            raise Exception("Please provide --url, --user, and --password arguments.")
+        save_json(CREDENTIALS_JSON_FILE, {'url': url, 'username': username, 'password': password})
         target_elements = filter_element_paths(get_element_paths_with_type(), get_folders_from_args(args))
         for element_path, element_type in target_elements.items():
             print(f'Deploying element: {element_path}')
@@ -37,7 +42,7 @@ def deploy(args):
 
 def _deploy_entire_package(args):
     add_on_identifier = get_add_on_identifier()
-    url, username, password = _parse_url_username_password(args)
+    url, username, password = parse_url_username_password(args)
     session = AddOnManagerSession(url, username, password)
 
     package(args)
@@ -86,7 +91,7 @@ def _deploy_entire_package(args):
     else:
         raise Exception(f"Can't install or update Add-on {get_add_on_identifier()}")
 
-    print("Deployment to Add On Manager Complete")
+    print("Deployment Complete.")
 
 
 def get_configuration():
@@ -121,7 +126,7 @@ def get_configuration():
 
 def uninstall(args):
     add_on_identifier = get_add_on_identifier()
-    url, username, password = _parse_url_username_password(args)
+    url, username, password = parse_url_username_password(args)
     session = AddOnManagerSession(url, username, password)
     print("Checking if Add-on is installed")
     add_on_response = session.get_add_on(add_on_identifier)

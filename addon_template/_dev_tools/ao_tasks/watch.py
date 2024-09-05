@@ -5,14 +5,16 @@ from _dev_tools.ao_tasks.utils import (
     filter_element_paths,
     get_element_paths_with_type,
     get_folders_from_args,
-    get_module, _parse_url_username_password
+    get_module, parse_url_username_password
 )
 
 
 def watch(args):
     target_elements = filter_element_paths(get_element_paths_with_type(), get_folders_from_args(args))
     processes = {}
-    url, username, password = _parse_url_username_password(args)
+    url, username, password = parse_url_username_password(args)
+    if url is None or username is None or password is None:
+        raise Exception("Please provide --url, --user, and --password arguments.")
     for element_path, element_type in target_elements.items():
         print(f'watching element: {element_path}')
         processes[element_path] = get_module(

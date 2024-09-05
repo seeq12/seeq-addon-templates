@@ -15,12 +15,12 @@ from _dev_tools.ao_tasks.utils import (
     _upload_file,
     _get_authenticated_session,
     _watch_from_environment,
+    save_json,
+    CREDENTIALS_JSON_FILE
 )
 
 from _dev_tools.utils import (
-    get_venv_paths,
-    create_virtual_environment,
-    update_venv
+    get_venv_paths
 )
 
 FILE_EXTENSIONS = {".py", ".txt", ".ipynb", ".json", ".vue"}
@@ -39,26 +39,25 @@ def check_dependencies() -> None:
     pass
 
 
-def bootstrap(element_path: pathlib.Path, clean: bool) -> None:
-    print(element_path)
-    create_virtual_environment(element_path, clean)
-    update_venv(element_path)
+def bootstrap(element_path: pathlib.Path, url: str, username: str, password: str, clean: bool, global_python_env: pathlib.Path) -> None:
+    pass # Environment is already bootstrapped at top level 
 
-
-def build() -> None:
-    print('There is no need to build add-on tools that are based on Jupyter notebooks. '
+def build(element_path: pathlib.Path) -> None:
+    print('There is no need to build Add-on Tools or Data Lab Functions elements. '
           'This operation is skipped for this add-on element')
 
 
 def deploy(element_path: pathlib.Path, url: str, username: str, password: str) -> None:
-    path_to_python = get_venv_paths(element_path, path_requested="path_to_python")
+    # Pass empty path to get_venv_paths to get the paths for the top-level virtual environment
+    path_to_python = get_venv_paths(pathlib.Path(''), path_requested="path_to_python")
     subprocess.run(f"{path_to_python} {CURRENT_FILE} --action deploy --element {element_path}"
                    f" --url {url} --username {username} --password {password}",  shell=True, check=True)
 
 
 def watch(element_path: pathlib.Path, url, username, password) -> subprocess.Popen:
     deploy(element_path, url, username, password)
-    venv_path, windows_os, path_to_python, path_to_pip, path_to_scripts, wheels_path = get_venv_paths(element_path)
+    # Pass empty path to get_venv_paths to get the paths for the top-level virtual environment
+    path_to_python = get_venv_paths(pathlib.Path(''), path_requested="path_to_python")
 
     return subprocess.Popen(f"{path_to_python} {CURRENT_FILE} --action watch --element {element_path}"
                             f" --url {url} --username {username} --password {password}", shell=True)
