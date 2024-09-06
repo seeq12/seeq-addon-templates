@@ -1,3 +1,0 @@
-global-exclude build/*
-global-exclude dist/*
-global-exclude *.egg-info/*

@@ -31,7 +31,13 @@ create_env() {
 build_project() {
   echo -e "\n*************************************************************"
   echo -e "\nBuilding seeq-addon-template project"
-  "$VENV"/bin/python -m build 2>&1 | grep -v "WARNING" > /dev/null
+  set +e
+  err=$(/Users/albertorivas/.sq-addon/.venv/bin/python -m build 2> /dev/null)
+  set -e
+  if [[ $err == *"ERROR"* ]]; then
+    echo "$err"
+    exit 1
+  fi
 
 }
 

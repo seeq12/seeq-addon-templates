@@ -1,16 +1,7 @@
-#_exclude:
-#    - ".git"
-#    - "copier.yaml"
-#    - "add_on_tool.yaml"
-#    - "requirements.txt"
-#    - "entrypoint.py"
-#    - addon_example
-#    - includes
+_exclude:
+    - __pycache__
 
 _subdirectory: addon_example
-
-#_jinja_extensions:
-#    - jinja2_jsonschema.JsonSchemaExtension
 
 _tasks:
     - command: cp -R {{ _copier_conf.src_path }}/_dev_tools ./

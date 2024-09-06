@@ -18,3 +18,7 @@ addon_template = [
     "addon_example/**/*",
     "addon_example/{% if 'AddOnTool' in elements_to_include %}{% from pathjoin('includes', 'slug.jinja') import slugify %}{{ slugify(addOnTool_name) }}{% endif %}/**/*",
 ]
+
+[tool.setuptools.exclude-package-data]
+addon_template = ["__pycache__"]
+"addon_template._dev_tools" = ["__pycache__"]
