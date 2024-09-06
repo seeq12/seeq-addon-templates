@@ -53,11 +53,11 @@
         "examples": [
           {
             "description": "Multiply two signals and double the result.",
-            "formula": "SignalMultiplier($signal1, $signal2)"
+            "formula": "ExampleFormulaPackage_SignalMultiplier($signal1, $signal2)"
           },
           {
             "description": "Add two signals.",
-            "formula": "SignalAdder($signal1, $signal2)"
+            "formula": "ExampleFormulaPackage_SignalAdder($signal1, $signal2)"
           }
         ]
       }

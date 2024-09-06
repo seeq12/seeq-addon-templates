@@ -3,7 +3,7 @@ import json
 import pathlib
 
 from .add_on_manager_session import AddOnManagerSession
-from _dev_tools.ao_tasks.utils import (
+from _dev_tools.addon_tasks.utils import (
     ADD_ON_EXTENSION,
     DIST_FOLDER,
     ELEMENTS,
@@ -23,7 +23,7 @@ from _dev_tools.ao_tasks.utils import (
     save_json,
 )
 
-from _dev_tools.ao_tasks import package
+from _dev_tools.addon_tasks import package
 
 
 def deploy(args):

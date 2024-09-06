@@ -4,7 +4,7 @@ import pathlib
 import subprocess
 from typing import List
 
-from _dev_tools.ao_tasks.utils import (
+from _dev_tools.addon_tasks.utils import (
     CREDENTIALS_JSON_FILE,
     save_json,
     load_json,
@@ -36,7 +36,7 @@ def deploy(element_path: pathlib.Path, url: str, username: str, password: str) -
 
 
 def get_files_to_package(element_path: pathlib.Path) -> List[str]:
-    from _dev_tools.ao_tasks.utils import find_files_in_folder_recursively
+    from _dev_tools.addon_tasks.utils import find_files_in_folder_recursively
 
     files_to_deploy = find_files_in_folder_recursively(
         str(element_path),

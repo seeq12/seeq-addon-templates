@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import os
-import sys
 import argparse
 import pathlib
 import subprocess
@@ -14,10 +13,14 @@ CURRENT_DIRECTORY = pathlib.Path(__file__).parent.resolve()
 WINDOWS_OS = os.name == 'nt'
 
 
-def modify_args(args):
+def modify_args(args, destination_path=None):
     if args.force:
         args.defaults = True
         args.overwrite = True
+        if not os.path.isfile(destination_path):
+            raise FileNotFoundError(
+                f"argument --force can't be use if file {destination_path}/._copier_answers.json doesn't exist."
+            )
     delattr(args, 'force')
     delattr(args, 'func')
     args.skip_if_exists = args.skip
@@ -33,10 +36,12 @@ def info_open_ide(destination_path):
 
 
 def create_addon(args):
-    args = modify_args(args)
+    destination_path = pathlib.Path(args.dst_path).resolve()
+    args = modify_args(args, destination_path)
+
     try:
         copier.run_copy(str(CURRENT_DIRECTORY), data=None, **vars(args))
-        destination_path = pathlib.Path(args.dst_path).resolve()
+
         create_virtual_environment(destination_path, clean=True, hide_stdout=True)
         path_to_python = destination_path / ".venv" / ("Scripts" if WINDOWS_OS else "bin") / "python"
         print(f"Installing Add-on dependencies ...")
@@ -48,8 +53,8 @@ def create_addon(args):
 
 
 def update_addon(args=None):
-    args = modify_args(args)
     destination_path = pathlib.Path(args.dst_path).resolve()
+    args = modify_args(args, destination_path)
 
     try:
         copier.run_recopy(data=None, **vars(args))

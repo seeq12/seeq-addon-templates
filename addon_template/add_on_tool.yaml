@@ -7,7 +7,7 @@ addOnTool_prompts:
 addOnTool_description:
   type: str
   help: Enter description of the Add-on Tool element
-  placeholder: (This is the description of the Add-on Tool just below the name in workbench or the homescreen
+  placeholder: (This is the short description of the Add-on Tool just below the name in workbench or the homescreen
   validator: >-
     {% if not addOnTool_description %}
     description cannot be empty

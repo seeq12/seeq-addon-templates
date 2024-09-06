@@ -1,6 +1,6 @@
 import argparse
 
-from _dev_tools.ao_tasks import (
+from _dev_tools.addon_tasks import (
     bootstrap as bootstrapping,
     build as building,
     package as packaging,

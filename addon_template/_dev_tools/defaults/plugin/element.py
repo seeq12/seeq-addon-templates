@@ -4,7 +4,7 @@ import pathlib
 import subprocess
 from typing import List
 
-from _dev_tools.ao_tasks.utils import (
+from _dev_tools.addon_tasks.utils import (
     CREDENTIALS_JSON_FILE,
     save_json,
     load_json,

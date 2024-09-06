@@ -9,7 +9,7 @@ from typing import Optional, List, Dict, Set
 from datetime import datetime
 from os.path import isdir, relpath
 
-from _dev_tools.ao_tasks.element_protocol import ElementProtocol
+from _dev_tools.addon_tasks.element_protocol import ElementProtocol
 
 PROJECT_PATH = pathlib.Path(__file__).parent.parent.parent.resolve()
 WHEELS_PATH = PROJECT_PATH / '.wheels'

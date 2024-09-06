@@ -4,7 +4,7 @@ import pathlib
 import zipfile
 from .build import build
 
-from _dev_tools.ao_tasks.utils import (
+from _dev_tools.addon_tasks.utils import (
     PROJECT_PATH,
     ADD_ON_EXTENSION,
     DIST_FOLDER,

@@ -51,23 +51,11 @@
           "project": {
             "type": "object",
             "required": [{{ addOnTool_project_required_properties }}]
-          },
-          "advanced_project_configuration" : {
-            "type": "object",
-            "required": ["kernel_name"],
-            "properties" : {
-              "kernel_name": {
-                "type": "string",
-                "default": "python311"
-              }
-            }
           }
-
         },
         "required": [
           "display",
-          "project",
-          "advanced_project_configuration"
+          "project"
         ]
       },
       "configuration_filename": "config",
@@ -94,7 +82,7 @@
     {% endif %}
     {% if 'DataLabFunctions' in elements_to_include %}
     {
-      "name": "{{ project_name }} Data Lab Functions",
+      "name": "com.seeq.{{identifier}}.data-lab-functions",
       "identifier": "com.seeq.{{identifier}}.data-lab-functions",
       "type": "DataLabFunctions",
       "path": "{{ add_on_path }}-data-lab-functions",

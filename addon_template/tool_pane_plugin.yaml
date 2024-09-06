@@ -1,5 +1,5 @@
 plugin_prompts:
   type: str
-  help: "\n\n ******* Tool Panel Plugin element configuration *******"
+  help: "\n\n ******* Tool Panel Plugin element configuration *******\n This element does not required additional configuration."
   default: Press enter to continue
   when: "{{ 'ToolPanePlugin' in elements_to_include }}"

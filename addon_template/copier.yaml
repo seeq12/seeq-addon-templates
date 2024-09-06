@@ -41,8 +41,8 @@ project_name:
 
 project_description:
     type: str
-    help: Enter description of the Add-On
-    placeholder: "(This description will be displayed in the Add-on Manager)"
+    help: Enter the description of the Add-On
+    placeholder: "(This can be a long description and it will be displayed in the Add-on Manager)"
     validator: >-
         {% if not project_description %}
         add-on description cannot be empty.
@@ -80,11 +80,13 @@ project_license:
     help: Choose a license. To skip, press Enter
     default: "No license"
     choices:
+        - "No license"
         - "Apache License 2.0"
         - "MIT License"
         - "GNU General Public License"
         - "3-clause BSD License"
-        - "No license"
+        - "Custom License"
+
     validator: >-
         {% if not project_license %}
         Please choose at least one option
