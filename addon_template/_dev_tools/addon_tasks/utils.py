@@ -29,14 +29,14 @@ ELEMENT_IDENTIFIER = 'identifier'
 CONFIGURATION_SCHEMA = "configuration_schema"
 PREVIEWS = "previews"
 
-DEFAULT_ADD_ON_TOOL_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.data_lab_project'
 ADD_ON_TOOL_TYPE = "AddOnTool"
-DEFAULT_PLUGIN_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.plugin'
+DEFAULT_ADD_ON_TOOL_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.data_lab_project'
+DISPLAY_PANE_PLUGIN_TYPE = "Plugin"
+DEFAULT_DISPLAY_PANE_PLUGIN_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.plugin'
+TOOL_PANE_PLUGIN_TYPE = "Plugin"
 DEFAULT_TOOL_PANE_PLUGIN_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.plugin'
-PLUGIN_TYPE = "DisplayPanePlugin"
-TOOL_PANE_PLUGIN_TYPE = "ToolPanePlugin"
-DEFAULT_FORMULA_PACKAGE_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.formula_package'
 FORMULA_PACKAGE_TYPE = "FormulaPackage"
+DEFAULT_FORMULA_PACKAGE_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.formula_package'
 DATA_LAB_FUNCTIONS_TYPE = "DataLabFunctions"
 DATA_LAB_FUNCTIONS_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.data_lab_project'
 
