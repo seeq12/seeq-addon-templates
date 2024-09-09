@@ -92,6 +92,16 @@ project_license:
         Please choose at least one option
         {% endif %}
 
+custom_license:
+    type: str
+    help: Enter custom license text
+    placeholder: "(e.g.: Copyright (c) 2021)"
+    when: "{{ project_license == 'Custom License' }}"
+    validator: >-
+        {% if not custom_license %}
+        custom license text cannot be empty.
+        {% endif %}
+
 elements_to_include:
     type: str
     help: Choose element(s) to include in the Add-On

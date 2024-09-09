@@ -43,6 +43,14 @@ addOnTool_advanced:
         - Add-on Tool Name: Show a different name for the AddOnTool in the Add-on Manager vs. Workbench
         - Add-on Tool Icon: Show a different icon for the AddOnTool in the Add-on Manager vs. Workbench
         - Project Properties: Add additional configuration values required by the Add-on during runtime
+    
+    NOTE: If you are updating an existing Add-on and have previously selected 'Yes' to this question, 
+    
+    you can't skip the advanced settings since your answers were saved on the `.copier-answers.yml` 
+    
+    file of the generated project. You can delete the answers for these questions in the `.copier-answers.yml` file 
+    
+    and then select 'No' to this question to skip the advanced settings.
 
 addOnTool_name:
   type: str
@@ -67,12 +75,9 @@ addOnTool_icon:
   when: "{{ 'AddOnTool' in elements_to_include and addOnTool_advanced }}"
 
 addOnTool_project_properties_question:
-  type: str
+  type: bool
   help: Does the Add-on Tool require any additional configuration values during runtime? (e.g. choose No if you don't know what this is)
-  default: "No"
-  choices:
-    - "Yes"
-    - "No"
+  default: no
   validator: >-
     {% if not addOnTool_project_properties_question %}
     Please choose one option
@@ -81,25 +86,30 @@ addOnTool_project_properties_question:
 
 addOnTool_project_properties:
   type: json
-  help: "You can pass configuration properties as an arbitrary json object that will appeared in the Data Lab project hosting the Add-on tool. Paste your json object here:"
-  default:
+  help: "You can pass configuration properties as a json object that will appeared in the Data Lab project hosting 
+  the Add-on tool. \nThe json object must have the following schema for each property:
+   \n{\"prop\": {\"type\": \"object|string|bool\", \"default\": \"prop_value\". 
+   \n For example, {\"prop1\": {\"type\": \"string\", \"default\": \"value1\"}, \"prop2\": {\"type\": \"bool\", \"default\": true}}\n\n
+   \n\nPaste your json object here:"
+  default: {}
   #  validator: "{ addOnTool_project_properties is jsonschema({'type': 'integer', 'minimum': 0}) }}"
-  when: "{{ 'AddOnTool' in elements_to_include and addOnTool_project_properties_question == 'Yes'}}"
+  when: "{{ 'AddOnTool' in elements_to_include and addOnTool_project_properties_question}}"
 
 addOnTool_project_required_properties_question:
-  type: str
+  type: bool
   help: Are any of these additional properties required?
-  default: "No"
+  default: no
   choices:
     - "Yes"
     - "No"
-  when: "{{ 'AddOnTool' in elements_to_include and addOnTool_project_properties_question == 'Yes'}}"
+  when: "{{ 'AddOnTool' in elements_to_include and addOnTool_project_properties_question}}"
 
 addOnTool_project_required_properties:
   type: str
   help: What is the list of required additional properties? (Each property must be enclosed by double quotes and separated by commas)
+  default: ""
   validator: >-
     {% if not (addOnTool_project_required_properties | regex_search('^"([^"]*)"( *, *"([^"]*)")*$')) %}
     each property must be enclosed by double quotes and properties must be separated by commas (e.g. "prop1", "prop2")
     {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include and addOnTool_project_required_properties_question == 'Yes'}}"
+  when: "{{ 'AddOnTool' in elements_to_include and addOnTool_project_required_properties_question}}"

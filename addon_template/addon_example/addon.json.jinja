@@ -51,7 +51,7 @@
           },
           "project": {
             "type": "object",
-            {% if addOnTool_project_properties_question == 'Yes' %}
+            {% if addOnTool_project_properties_question %}
             "properties": {{ addOnTool_project_properties | tojson }},
             {% endif %}
             "required": [{{ addOnTool_project_required_properties }}]
