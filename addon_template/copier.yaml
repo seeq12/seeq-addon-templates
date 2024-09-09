@@ -98,7 +98,7 @@ elements_to_include:
     choices:
         - AddOnTool
         - DataLabFunctions
-        - Plugin
+        - DisplayPanePlugin
         - ToolPanePlugin
         - FormulaPackage
     multiselect: true
@@ -123,7 +123,7 @@ element_prompts:
 # DataLab Functions element questions
 !include data_lab_functions.yaml
 ---
-# Plugin element questions
+# Display Pane Plugin element questions
 !include plugin.yaml
 ---
 # Tool Pane Plugin element questions

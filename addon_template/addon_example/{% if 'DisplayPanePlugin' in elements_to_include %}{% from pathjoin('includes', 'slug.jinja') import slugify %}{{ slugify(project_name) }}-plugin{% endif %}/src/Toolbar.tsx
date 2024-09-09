@@ -34,7 +34,7 @@ export function Toolbar(props) {
 
   return (
     <div className="seeq-toolbar" ref={myRef}>
-      <div>Example Visualization Plugin</div>
+      <div>Example Visualization Display Pane Plugin</div>
     </div>
   );
 }

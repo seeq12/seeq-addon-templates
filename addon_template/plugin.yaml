@@ -1,5 +1,5 @@
 plugin_prompts:
   type: str
-  help: "\n\n ******* Plugin element configuration *******\n This element does not required additional configuration."
+  help: "\n\n ******* Display Pane Plugin element configuration *******\n This element does not required additional configuration."
   default: Press enter to continue
-  when: "{{ 'Plugin' in elements_to_include }}"
+  when: "{{ 'DisplayPanePlugin' in elements_to_include }}"
