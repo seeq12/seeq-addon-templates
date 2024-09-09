@@ -96,8 +96,8 @@ def get_module(element_path: str, element_type: str) -> ElementProtocol:
             module = load_module(f"{DEFAULT_FORMULA_PACKAGE_ELEMENT_PATH}.{ELEMENT_ACTION_FILE}")
             assert isinstance(module, ElementProtocol)
             return module
-        elif element_type == PLUGIN_TYPE:
-            module = load_module(f"{DEFAULT_PLUGIN_ELEMENT_PATH}.{ELEMENT_ACTION_FILE}")
+        elif element_type == DISPLAY_PANE_PLUGIN_TYPE:
+            module = load_module(f"{DEFAULT_DISPLAY_PANE_PLUGIN_ELEMENT_PATH}.{ELEMENT_ACTION_FILE}")
             assert isinstance(module, ElementProtocol)
             return module
         elif element_type == TOOL_PANE_PLUGIN_TYPE:
