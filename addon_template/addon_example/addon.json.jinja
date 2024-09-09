@@ -12,8 +12,9 @@
   "elements": [
     {% if 'AddOnTool' in elements_to_include %}
     {
-      "name": "{{ project_name }}",
-      "identifier": "com.seeq.{{identifier}}.addontool",
+      {%- set identifier_tool = addOnTool_name|replace(' ', '_')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower|trim -%}
+      "name": "{{ addOnTool_name }}",
+      "identifier": "com.seeq.{{identifier_tool}}.addontool",
       "description": "{{ addOnTool_description }}",
       "type": "AddOnTool",
       "path": "{{ add_on_path }}-addon-tool",
@@ -50,12 +51,26 @@
           },
           "project": {
             "type": "object",
+            {% if addOnTool_project_properties_question == 'Yes' %}
+            "properties": {{ addOnTool_project_properties | tojson }},
+            {% endif %}
             "required": [{{ addOnTool_project_required_properties }}]
+          },
+          "advanced_project_configuration": {
+            "type": "object",
+            "properties": {
+              "kernel_name": {
+                "type": "string",
+                "default": "python311"
+              }
+            },
+            "required": ["kernel_name"]
           }
         },
         "required": [
           "display",
-          "project"
+          "project",
+          "advanced_project_configuration"
         ]
       },
       "configuration_filename": "config",

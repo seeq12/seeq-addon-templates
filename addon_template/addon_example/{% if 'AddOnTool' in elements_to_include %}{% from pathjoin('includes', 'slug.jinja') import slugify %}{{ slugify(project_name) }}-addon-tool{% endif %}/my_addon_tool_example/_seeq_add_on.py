@@ -89,7 +89,7 @@ class MyAddonToolExample(AppLayout):
         self.create_displayed_fig(fig)
 
     def push_to_seeq(self, *_):
-        df_pushed = push_signal(self.result_signal, self.workbook_id, 'From My Add-on')
+        df_pushed = push_signal(self.result_signal, self.workbook_id, 'From My Add-on Tool')
         display(Javascript(f'window.open("{df_pushed.spy.workbook_url}");'))
 
     def run(self):

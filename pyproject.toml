@@ -15,8 +15,7 @@ addon = "addon_template.generator:main"
 addon_template = [
     "**/*",
     "includes/*",
-    "addon_example/**/*",
-    "addon_example/{% if 'AddOnTool' in elements_to_include %}{% from pathjoin('includes', 'slug.jinja') import slugify %}{{ slugify(addOnTool_name) }}{% endif %}/**/*",
+    "addon_example/**/*"
 ]
 
 [tool.setuptools.exclude-package-data]
