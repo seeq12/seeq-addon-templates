@@ -47,7 +47,7 @@
   "docs": [
     {
       "name": "index",
-      "description": "This function package contains examples of how to create and use formula functions in Seeq Formula.",
+      "description": "<p>This function package contains examples of how to create and use formula functions in Seeq Formula.</p>",
       "title": "Example Formula Package",
       "examples": {
         "examples": [

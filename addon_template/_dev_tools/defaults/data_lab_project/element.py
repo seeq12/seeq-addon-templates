@@ -14,9 +14,7 @@ sys.path.append(os.path.abspath(CURRENT_FILE.parent.parent.parent.parent.resolve
 from _dev_tools.addon_tasks.utils import (
     _upload_file,
     _get_authenticated_session,
-    _watch_from_environment,
-    save_json,
-    CREDENTIALS_JSON_FILE
+    _watch_from_environment
 )
 
 from _dev_tools.utils import (
@@ -40,7 +38,8 @@ def check_dependencies() -> None:
 
 
 def bootstrap(element_path: pathlib.Path, url: str, username: str, password: str, clean: bool, global_python_env: pathlib.Path) -> None:
-    pass # Environment is already bootstrapped at top level 
+    pass  # Environment is already bootstrapped at top level
+
 
 def build(element_path: pathlib.Path) -> None:
     print('There is no need to build Add-on Tools or Data Lab Functions elements. '
