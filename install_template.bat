@@ -3,13 +3,6 @@ setlocal enabledelayedexpansion
 
 cd /d "%~dp0"
 
-set "LOCAL_DIR=%~dp0"
-set "ADDON_SCRIPT_PATH=%LOCAL_DIR%\addon.bat"
-set "ADDON_VENV_FILE=%LOCAL_DIR%\addon_venv"
-
-set "ADDON_TEMPLATE_FOLDER=seeqAddonsTemplate"
-set "VENV=%ADDON_TEMPLATE_FOLDER%\.venv"
-
 call :CreateEnv
 call :BuildProject
 call :InstallProject
