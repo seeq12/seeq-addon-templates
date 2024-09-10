@@ -11,34 +11,8 @@ set "ADDON_TEMPLATE_FOLDER=seeqAddonsTemplate"
 set "VENV=%ADDON_TEMPLATE_FOLDER%\.venv"
 
 call :CreateEnv
-
-echo %VENV% > "%ADDON_VENV_FILE%"
-
-if exist "%ADDON_VENV_FILE%" ("%VENV%\Scripts\python.exe" -m build) else (exit /b)
-
-for /f "tokens=2 delims==" %%a in ('findstr /C:"version = " %LOCAL_DIR%pyproject.toml') do (
-    set "version=%%~a"
-    set "version=!version:"=!"
-	for /f "tokens=* delims= " %%b in ("!version!") do set "version=%%b"
-)
-
-:: Check the ERRORLEVEL after setx
-if !ERRORLEVEL! NEQ 0 (
-	echo Error: Couldn't find version from pyproject.toml.
-	pause
-	exit /b !ERRORLEVEL!
-) else (
-	echo "seeq-addon-template version: %version%"
-)
-
-
-"%VENV%\Scripts\pip.exe" install "%LOCAL_DIR%dist\addon-%version%-py3-none-any.whl" --force-reinstall
-
-
-mkdir "%USERPROFILE%\%ADDON_TEMPLATE_FOLDER%"
-copy "%ADDON_SCRIPT_PATH%" "%USERPROFILE%\%ADDON_TEMPLATE_FOLDER%\addon.bat"
-copy "%ADDON_VENV_FILE%" "%USERPROFILE%\%ADDON_TEMPLATE_FOLDER%\addon_venv"
-
+call :BuildProject
+call :InstallProject
 call :AddToPath
 call :Info
 
@@ -48,12 +22,18 @@ pause >nul
 exit /b
 
 
-:: Function to create a virtual environment
 :CreateEnv
 echo.
-echo ********* Creating Virtual Environment **********************
+echo *************************************************************
 echo   Creating virtual environment in %VENV%
 echo Using shell: %COMSPEC%
+
+if not exist "%DEST_DIR%" (
+    mkdir "%DEST_DIR%"
+)
+
+copy "%LOCAL_DIR%\requirements.txt" "%DEST_DIR%"
+
 :: Check if python exists
 where /q python
 if %ERRORLEVEL% EQU 0 (
@@ -62,18 +42,58 @@ if %ERRORLEVEL% EQU 0 (
 	echo Python is not installed. Please install Python and try again.
 	exit /b 1
 )
-echo.
-echo ************************************************************
-echo.
-echo Virtual environment created
-echo.
-echo ************************************************************
-echo.
+echo %VENV% > "%ADDON_VENV_FILE%"
 goto :eof
+
+
+:BuildProject
+echo *************************************************************
+if exist "%VENV%\Scripts\python.exe" (
+    "%VENV%\Scripts\python.exe" -m build 2> NUL
+    if %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
+    )
+else (
+    exit /b
+)
+echo Build successful
+goto :eof
+
+
+:InstallProject
+echo *************************************************************
+echo Installing seeq-addon-template project
+for /f "tokens=2 delims==" %%a in ('findstr /C:"version = " %LOCAL_DIR%pyproject.toml') do (
+    set "version=%%~a"
+    set "version=!version:"=!"
+	for /f "tokens=* delims= " %%b in ("!version!") do set "version=%%b"
+)
+:: Check the ERRORLEVEL after set
+if !ERRORLEVEL! NEQ 0 (
+	echo Error: Couldn't find version from pyproject.toml.
+	pause
+	exit /b !ERRORLEVEL!
+) else (
+	echo "seeq-addon-template version: %version%"
+)
+
+echo Installing in python environment
+"%VENV%\Scripts\pip.exe" install "%LOCAL_DIR%dist\addon-%version%-py3-none-any.whl" --force-reinstall > NUL
+
+IF NOT EXIST "%BIN_PATH%" (
+    echo Creating directory %BIN_PATH%
+    mkdir "%BIN_PATH%"
+)
+
+echo Copying files to %BIN_PATH%
+copy "%ADDON_SCRIPT_PATH%" "%ADDON_SCRIPT_LOCAL_PATH%"
+copy "%ADDON_VENV_FILE%" "%ADDON_VENV_FILE_LOCAL_PATH%"
+copy "%VARIABLES_FILE%" "%VARIABLES_FILE_LOCAL_PATH%"
+goto :eof
+
 
 :: Function to add a directory to the PATH
 :AddToPath
-set "DIR_TO_ADD=%USERPROFILE%\%ADDON_TEMPLATE_FOLDER%"
+set "DIR_TO_ADD=%BIN_PATH%"
 
 for /f "tokens=2*" %%A in ('reg query "HKCU\Environment" /v Path 2^>nul') do set "USER_PATH=%%B"
 
@@ -96,11 +116,10 @@ goto :eof
 echo.
 echo ************************************************************
 echo.
-echo  Installation complete
+echo Installation complete
+echo Run `addon --help` to see the available options
 echo.
-echo  Run `addon --help` to see the available options
-echo.
-echo  For example, to create an example Add-on, run the command
-echo     addon create <destination_dir>
+echo For example, to create an example Add-on, run the command
+echo   addon create <destination_dir>
 echo \n************************************************************
 goto :eof
