@@ -2,12 +2,13 @@
 setlocal enabledelayedexpansion
 
 cd /d "%~dp0"
+call variables.bat
 
 call :CreateEnv
 call :BuildProject
-call :InstallProject
-call :AddToPath
-call :Info
+::call :InstallProject
+::call :AddToPath
+::call :Info
 
 echo Press any key to exit
 pause >nul
@@ -18,7 +19,6 @@ exit /b
 :CreateEnv
 echo.
 echo *************************************************************
-echo   Creating virtual environment in %VENV%
 echo Using shell: %COMSPEC%
 
 if not exist "%DEST_DIR%" (
@@ -30,7 +30,7 @@ copy "%LOCAL_DIR%\requirements.txt" "%DEST_DIR%"
 :: Check if python exists
 where /q python
 if %ERRORLEVEL% EQU 0 (
-	python %LOCAL_DIR%\entrypoint.py
+	python %LOCAL_DIR%\entrypoint.py "%DEST_DIR%" 2> NUL
 ) else (
 	echo Python is not installed. Please install Python and try again.
 	exit /b 1
@@ -41,11 +41,19 @@ goto :eof
 
 :BuildProject
 echo *************************************************************
+echo Building seeq-addon-template project
 if exist "%VENV%\Scripts\python.exe" (
-    "%VENV%\Scripts\python.exe" -m build 2> NUL
-    if %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
-    )
-else (
+	"%VENV%\Scripts\python.exe" -m build > %DEST_DIR%\build_output.txt 2>&1
+	for /f "tokens=*" %%a in (%DEST_DIR%\build_output.txt) do set err=%%a
+	:: del %DEST_DIR%\build_output.txt
+	findstr /M /C:"ERROR" "%DEST_DIR%\build_output.txt"
+	if !ERRORLEVEL! EQU 0 (
+		type "%DEST_DIR%\build_output.txt"
+		exit /b 1
+	)
+
+) else (
+	echo File not found: %VENV%/bin/python.
     exit /b
 )
 echo Build successful
