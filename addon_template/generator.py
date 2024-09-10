@@ -98,7 +98,8 @@ def main():
             type=parse_dict,
             default=None,
             required=False,
-            help='Take all default answers from template, except the data pass with this option'
+            help="Update only the specified data in the template. "
+                 "For example: `--data 'project_license=Apache License 2.0, project_maintainer=Seeq'`"
         ),
         '--defaults': dict(
             action='store_true',
