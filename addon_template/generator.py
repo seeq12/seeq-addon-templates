@@ -14,7 +14,7 @@ WINDOWS_OS = os.name == 'nt'
 
 
 def modify_args(args, destination_path=None):
-    if args.force:
+    if args.force or args.data:
         args.defaults = True
         args.overwrite = True
         if not os.path.isfile(destination_path / ".copier-answers.yml"):
@@ -23,6 +23,7 @@ def modify_args(args, destination_path=None):
             )
     delattr(args, 'force')
     delattr(args, 'func')
+    delattr(args, 'data')
     args.skip_if_exists = args.skip
     delattr(args, 'skip')
     args.unsafe = True
@@ -36,11 +37,12 @@ def info_open_ide(destination_path):
 
 
 def create_addon(args):
+    data = args.data
     destination_path = pathlib.Path(args.dst_path).resolve()
     args = modify_args(args, destination_path)
 
     try:
-        copier.run_copy(str(CURRENT_DIRECTORY), data=None, **vars(args))
+        copier.run_copy(str(CURRENT_DIRECTORY), data=data, **vars(args))
 
         create_virtual_environment(destination_path, clean=True, hide_stdout=True)
         path_to_python = destination_path / ".venv" / ("Scripts" if WINDOWS_OS else "bin") / "python"
@@ -53,17 +55,22 @@ def create_addon(args):
 
 
 def update_addon(args=None):
+    data = args.data
     destination_path = pathlib.Path(args.dst_path).resolve()
     args = modify_args(args, destination_path)
 
     try:
-        copier.run_recopy(data=None, **vars(args))
+        copier.run_recopy(data=data, **vars(args))
         print(info_open_ide(destination_path))
     except KeyboardInterrupt as e:
         print(f"\nError: Operation canceled by user")
 
 
 def main():
+    def parse_dict(arg):
+        pairs = arg.split(',')
+        return dict(pair.split('=') for pair in pairs)
+
     parser = argparse.ArgumentParser(prog='generator.py', description='Template generator for Seeq Add-ons')
     subparsers = parser.add_subparsers(description='sub-command help', required=True)
 
@@ -87,6 +94,12 @@ def main():
             default=False,
             required=False,
             help='Same as `--defaults --overwrite`.'),
+        '--data': dict(
+            type=parse_dict,
+            default=None,
+            required=False,
+            help='Take all default answers from template, except the data pass with this option'
+        ),
         '--defaults': dict(
             action='store_true',
             required=False,
