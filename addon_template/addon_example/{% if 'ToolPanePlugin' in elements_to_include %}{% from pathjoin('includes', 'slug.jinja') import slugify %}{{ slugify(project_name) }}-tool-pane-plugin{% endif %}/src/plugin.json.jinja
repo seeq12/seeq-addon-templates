@@ -1,0 +1,14 @@
+{%- set identifier = project_name|replace(' ', '_')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower|trim -%}
+
+{
+  "category": "ToolPane",
+  "identifier": "com.seeq.{{identifier}}.tool-pane-plugin",
+  "name": "{{ project_name }} Tool Pane Plugin",
+  "description": "A plugin that combines two signals",
+  "version": "{{ project_version }}",
+  "icon": "{{ project_icon }}",
+  "security": "not used",
+  "entryPoint": "",
+  "host": {},
+  "options": {}
+}

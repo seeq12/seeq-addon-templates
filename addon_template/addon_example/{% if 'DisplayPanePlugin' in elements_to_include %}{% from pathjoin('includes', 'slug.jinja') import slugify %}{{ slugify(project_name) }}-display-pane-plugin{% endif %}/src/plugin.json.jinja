@@ -1,10 +1,12 @@
+{%- set identifier = project_name|replace(' ', '_')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower|trim -%}
+
 {
   "category": "DisplayPane",
-  "identifier": "com.seeq.plugin.exampleplugin",
-  "name": "Example Display Pane Plugin",
+  "identifier": "com.seeq.{{identifier}}.display-pane-plugin",
+  "name": "{{ project_name }} Display Pane Plugin",
   "description": "A plugin that displays a pie chart",
-  "version": "0.0.1",
-  "icon": "fa fa-superpowers",
+  "version": "{{ project_version }}",
+  "icon": "{{ project_icon }}",
   "security": "not used",
   "entryPoint": "",
   "host": {

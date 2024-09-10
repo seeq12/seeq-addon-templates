@@ -17,9 +17,9 @@ def modify_args(args, destination_path=None):
     if args.force:
         args.defaults = True
         args.overwrite = True
-        if not os.path.isfile(destination_path):
+        if not os.path.isfile(destination_path / ".copier-answers.yml"):
             raise FileNotFoundError(
-                f"argument --force can't be use if file {destination_path}/._copier_answers.json doesn't exist."
+                f"argument --force can't be use if file {destination_path}/.copier-answers.yml doesn't exist."
             )
     delattr(args, 'force')
     delattr(args, 'func')
