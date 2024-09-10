@@ -31,13 +31,19 @@ create_env() {
 build_project() {
   echo -e "\n*************************************************************"
   echo -e "\nBuilding seeq-addon-template project"
-  set +e
-  err=$(/Users/albertorivas/.sq-addon/.venv/bin/python -m build 2> /dev/null)
-  set -e
-  if [[ $err == *"ERROR"* ]]; then
-    echo "$err"
+  if [ -f "$VENV/bin/python" ]; then
+    set +e
+    err=$("$VENV"/bin/python -m build 2> /dev/null)
+    set -e
+    if [[ $err == *"ERROR"* ]]; then
+      echo "$err"
+      exit 1
+    fi
+  else
+    echo "File not found: $VENV/bin/python."
     exit 1
   fi
+  echo -e "Build successful"
 
 }
 
@@ -47,7 +53,7 @@ install_project() {
   version=$(grep 'version =' pyproject.toml | sed 's/version = //g' | tr -d '"')
   echo "seeq-addon-template version: $version"
 
-  echo -e "\nInstalling in python environment"
+  echo -e "Installing in python environment"
   "$VENV"/bin/pip install dist/addon-"$version"-py3-none-any.whl -U > /dev/null
 
   if [ ! -d "$DEST_DIR/bin" ]; then
@@ -55,7 +61,7 @@ install_project() {
     mkdir -p "$DEST_DIR/bin"
   fi
 
-  echo -e "\nCopying files to $DEST_DIR/bin"
+  echo -e "Copying files to $DEST_DIR/bin"
   chmod +x "$ADDON_SCRIPT_PATH"
   chmod +x "$ADDON_VENV_FILE"
   chmod +x "$VARIABLES_FILE"
@@ -64,7 +70,7 @@ install_project() {
   cp "$VARIABLES_FILE" "$VARIABLES_FILE_LOCAL_PATH"
 }
 
-adding_to_path() {
+add_to_path() {
   echo -e "\n*************************************************************"
   echo -e "\nAdding directories to your PATH"
   files_to_check=(~/.bashrc ~/.zshrc ~/.bash_profile)
@@ -82,15 +88,15 @@ adding_to_path() {
 
 info() {
   	echo -e "\n************************************************************"
-  	echo -e "\n Installation complete"
-  	echo -e "\n Run 'addon --help' to see the available options"
-  	echo -e "\n For example, to create an example Add-on, run the command"
-  	echo -e "\n   'addon create <destination_dir>'"
+  	echo -e "\nInstallation complete"
+  	echo -e "Run 'addon --help' to see the available options"
+  	echo -e "For example, to create an example Add-on, run the command"
+  	echo -e "  'addon create <destination_dir>'"
   	echo -e "\n************************************************************"
 }
 
 create_env
 build_project
 install_project
-adding_to_path
+add_to_path
 info
