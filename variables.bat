@@ -1,6 +1,5 @@
 @echo off
 
-cd /d "%~dp0"
 
 set "LOCAL_DIR=%~dp0"
 set "ADDON_SCRIPT_PATH=%LOCAL_DIR%\addon.bat"
