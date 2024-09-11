@@ -1,12 +1,10 @@
 @echo off
 setlocal enabledelayedexpansion
 
-set "ADDON_TEMPLATE_FOLDER=seeqAddonsTemplate"
-set "ADDON_VENV_FILE=%USERPROFILE%\%ADDON_TEMPLATE_FOLDER%\addon_venv"
-echo %ADDON_VENV_FILE%
+call %USERPROFILE%\.sq-addon\bin\variables.sh
 
 REM Read the virtual environment path from a file
-for /F "tokens=*" %%A in (%ADDON_VENV_FILE%) do (
+for /F "tokens=*" %%A in (%ADDON_VENV_FILE_LOCAL_PATH%) do (
     set "VENV=%%A"
     REM Trim trailing spaces by reassigning the value
     for /l %%B in (240,-1,0) do if "!VENV:~%%B,1!"==" " set "VENV=!VENV:~0,%%B!"

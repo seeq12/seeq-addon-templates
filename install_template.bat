@@ -4,11 +4,11 @@ setlocal enabledelayedexpansion
 cd /d "%~dp0"
 call variables.bat
 
-call :CreateEnv
-call :BuildProject
-::call :InstallProject
-::call :AddToPath
-::call :Info
+call :CreateEnv || exit /b !ERRORLEVEL!
+call :BuildProject || exit /b !ERRORLEVEL!
+call :InstallProject || exit /b !ERRORLEVEL!
+call :AddToPath || exit /b !ERRORLEVEL!
+call :Info || exit /b !ERRORLEVEL!
 
 echo Press any key to exit
 pause >nul
@@ -45,12 +45,12 @@ echo Building seeq-addon-template project
 if exist "%VENV%\Scripts\python.exe" (
 	"%VENV%\Scripts\python.exe" -m build > %DEST_DIR%\build_output.txt 2>&1
 	for /f "tokens=*" %%a in (%DEST_DIR%\build_output.txt) do set err=%%a
-	:: del %DEST_DIR%\build_output.txt
 	findstr /M /C:"ERROR" "%DEST_DIR%\build_output.txt"
 	if !ERRORLEVEL! EQU 0 (
 		type "%DEST_DIR%\build_output.txt"
 		exit /b 1
 	)
+	del %DEST_DIR%\build_output.txt
 
 ) else (
 	echo File not found: %VENV%/bin/python.
@@ -64,17 +64,20 @@ goto :eof
 echo *************************************************************
 echo Installing seeq-addon-template project
 for /f "tokens=2 delims==" %%a in ('findstr /C:"version = " %LOCAL_DIR%pyproject.toml') do (
-    set "version=%%~a"
-    set "version=!version:"=!"
-	for /f "tokens=* delims= " %%b in ("!version!") do set "version=%%b"
+    if not errorlevel 1 (
+        set "version=%%~a"
+        set "version=!version:"=!"
+        for /f "tokens=* delims= " %%b in ("!version!") do set "version=%%b"
+    )
 )
+
 :: Check the ERRORLEVEL after set
-if !ERRORLEVEL! NEQ 0 (
-	echo Error: Couldn't find version from pyproject.toml.
-	pause
-	exit /b !ERRORLEVEL!
+if !ERRORLEVEL! EQU 0 (
+	echo seeq-addon-template version: %version%
 ) else (
-	echo "seeq-addon-template version: %version%"
+	echo Error: Couldn't find version from pyproject.toml.
+	echo !version!
+	exit /b !ERRORLEVEL!
 )
 
 echo Installing in python environment
@@ -121,6 +124,7 @@ echo Installation complete
 echo Run `addon --help` to see the available options
 echo.
 echo For example, to create an example Add-on, run the command
-echo   addon create <destination_dir>
-echo \n************************************************************
+echo   `addon create ^<destination_dir^>`
+echo.
+echo ************************************************************
 goto :eof
