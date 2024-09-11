@@ -8,6 +8,7 @@ import base64
 from typing import Optional, List, Dict, Set
 from datetime import datetime
 from os.path import isdir, relpath
+from stat import FILE_ATTRIBUTE_HIDDEN
 
 from _dev_tools.addon_tasks.element_protocol import ElementProtocol
 
@@ -409,7 +410,7 @@ def _is_hidden_file(full_path):
         return os.name == 'nt'
 
     def has_hidden_attribute(file_path):
-        return is_windows() and bool(os.stat(file_path).st_file_attributes & os.stat.FILE_ATTRIBUTE_HIDDEN)
+        return is_windows() and bool(os.stat(file_path).st_file_attributes & FILE_ATTRIBUTE_HIDDEN)
 
     try:
         return os.path.basename(full_path).startswith('.') or has_hidden_attribute(full_path)
