@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-call %USERPROFILE%\.sq-addon\bin\variables.sh
+call %USERPROFILE%\.sq-addon\bin\variables.bat
 
 REM Read the virtual environment path from a file
 for /F "tokens=*" %%A in (%ADDON_VENV_FILE_LOCAL_PATH%) do (
