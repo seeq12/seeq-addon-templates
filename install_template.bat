@@ -99,11 +99,11 @@ goto :eof
 :AddToPath
 set "DIR_TO_ADD=%BIN_PATH%"
 
+:: Get the current user path
 for /f "tokens=2*" %%A in ('reg query "HKCU\Environment" /v Path 2^>nul') do set "USER_PATH=%%B"
 
 :: Check if the directory is already in the User Path
-echo !USER_PATH! | findstr /I /C:"%DIR_TO_ADD%" >nul
-
+echo !USER_PATH! | find /I "%DIR_TO_ADD%" >nul
 if !ERRORLEVEL! EQU 0 (
     echo %DIR_TO_ADD% is already in the User Path
 ) else (
