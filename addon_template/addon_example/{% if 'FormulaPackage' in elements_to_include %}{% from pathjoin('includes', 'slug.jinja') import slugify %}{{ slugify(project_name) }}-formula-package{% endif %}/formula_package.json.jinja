@@ -1,6 +1,8 @@
+{%- set identifier = project_name|replace(' ', '')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower|trim -%}
+
 {
   "formulaPackage": {
-    "name": "ExampleFormulaPackage",
+    "name": "{{ identifier }}FormulaPackage",
     "creatorName": "Your Name",
     "creatorContactInfo": "your.name@seeq.com"
   },
@@ -53,11 +55,11 @@
         "examples": [
           {
             "description": "Multiply two signals and double the result.",
-            "formula": "ExampleFormulaPackage_SignalMultiplier($signal1, $signal2)"
+            "formula": "{{ identifier }}_SignalMultiplier($signal1, $signal2)"
           },
           {
             "description": "Add two signals.",
-            "formula": "ExampleFormulaPackage_SignalAdder($signal1, $signal2)"
+            "formula": "{{ identifier }}_SignalAdder($signal1, $signal2)"
           }
         ]
       }

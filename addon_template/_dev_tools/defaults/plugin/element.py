@@ -29,7 +29,7 @@ def bootstrap(element_path: pathlib.Path, url: str, username: str, password: str
         # Global python environment is not supported for this element.
         return
     if url is None or username is None or password is None:
-        raise Exception("Please provide --user --password and -url arguments.")
+        raise Exception("Please provide --user --password and --url arguments.")
     subprocess.run('npm ci', cwd=element_path, shell=True, check=True)
     subprocess.run('npm run bootstrap quiet', cwd=element_path, shell=True, check=True)
 
