@@ -32,7 +32,7 @@ Prompt in Windows) to see the available commands.
 There are two main commands available in the Add-on Example Generator:
 - `addon create` - This command generates a new Add-on project in the specified directory. 
 - `addon update` - This command updates the Add-on project in the specified directory with the latest version of the 
-  Add-on Example Generator and the updated answers from the user without recreating the already created virtual 
+  Add-on Example Generator and the updated answers from the user without recreating the existing virtual 
   environment.
 
 ## Creating a new Add-on project
