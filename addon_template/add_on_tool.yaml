@@ -36,21 +36,30 @@ addOnTool_window_details:
 
 addOnTool_advanced:
   type: bool
-  default: False
+  default: no
   help: >-
     Do you want to specify any of these advanced settings for the Add-on Tool element? If unsure, press enter.
 
         - Add-on Tool Name: Show a different name for the AddOnTool in the Add-on Manager vs. Workbench
         - Add-on Tool Icon: Show a different icon for the AddOnTool in the Add-on Manager vs. Workbench
         - Project Properties: Add additional configuration values required by the Add-on during runtime
+
+advanced_previous_answers:
+  type: str
+  default: Press enter to continue with advanced settings
+  help: >-
+    You can't skip some of the advanced settings, since you have previously selected 'Yes' to the advanced settings 
     
-    NOTE: If you are updating an existing Add-on and have previously selected 'Yes' to this question, 
+    for the Add-on Tool element. If you don't want to see this message the next time you run this utility,
     
-    you can't skip the advanced settings since your answers were saved on the `.copier-answers.yml` 
-    
-    file of the generated project. You can delete the answers for these questions in the `.copier-answers.yml` file 
-    
-    and then select 'No' to this question to skip the advanced settings.
+    you can delete the answers for these questions in the `.copier-answers.yml` file before running the utility.
+
+  when: "{{ not addOnTool_advanced and (addOnTool_name or addOnTool_icon or addOnTool_project_properties_question) }}"
+
+#_force_advance:
+#    type: bool
+#    default: yes
+#    when: "{{ not addOnTool_advanced and (addOnTool_name or addOnTool_icon or addOnTool_project_properties_question) }}"
 
 addOnTool_name:
   type: str
@@ -61,7 +70,7 @@ addOnTool_name:
     {% if not (addOnTool_name | regex_search('^[A-Za-z][A-Za-z0-9 _-]*$')) %}
     name of the AddOnTool element must start with a letter and cannot contain any symbols.
     {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include and addOnTool_advanced }}"
+  when: "{{ 'AddOnTool' in elements_to_include and (addOnTool_advanced or addOnTool_name)}}"
 
 addOnTool_icon:
   type: str
@@ -72,7 +81,7 @@ addOnTool_icon:
     {% if not addOnTool_icon %}
     icon cannot be empty
     {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include and addOnTool_advanced }}"
+  when: "{{ 'AddOnTool' in elements_to_include and (addOnTool_advanced or addOnTool_icon) }}"
 
 addOnTool_project_properties_question:
   type: bool
@@ -82,7 +91,7 @@ addOnTool_project_properties_question:
     {% if not addOnTool_project_properties_question %}
     Please choose one option
     {% endif %}
-  when: "{{ 'AddOnTool' in elements_to_include and addOnTool_advanced }}"
+  when: "{{ 'AddOnTool' in elements_to_include and (addOnTool_advanced or addOnTool_project_properties_question) }}"
 
 addOnTool_project_properties:
   type: json
@@ -91,7 +100,7 @@ addOnTool_project_properties:
    \n{\"prop\": {\"type\": \"object|string|bool\", \"default\": \"prop_value\". 
    \n For example, {\"prop1\": {\"type\": \"string\", \"default\": \"value1\"}, \"prop2\": {\"type\": \"bool\", \"default\": true}}\n\n
    \n\nPaste your json object here:"
-  default: {}
+  placeholder: "{}"
   #  validator: "{ addOnTool_project_properties is jsonschema({'type': 'integer', 'minimum': 0}) }}"
   when: "{{ 'AddOnTool' in elements_to_include and addOnTool_project_properties_question}}"
 
