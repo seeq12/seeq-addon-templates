@@ -34,6 +34,7 @@ There are two main commands available in the Add-on Example Generator:
 - `addon update` - This command updates the Add-on project in the specified directory with the latest version of the 
   Add-on Example Generator and the updated answers from the user without recreating the existing virtual 
   environment.
+- `addon --help` - This command displays the available commands and options. 
 
 ## Creating a new Add-on project
 To create a new Add-on project, follow these steps:
@@ -45,4 +46,6 @@ To create a new Add-on project, follow these steps:
 ### After creating your Add-on project
 * Open the project in your favorite IDE to start developing your Add-on. VS Code is a good choice if you don't have 
   a favorite IDE. 
+* The answers to your prompts are stored in the `.copier-answers.yml` file in the project folder. You can update the 
+  answers by running `addon update <path/to/destination/folder>` from a terminal window.
 * Open the README.md file in the project folder to get started with the Add-on project.

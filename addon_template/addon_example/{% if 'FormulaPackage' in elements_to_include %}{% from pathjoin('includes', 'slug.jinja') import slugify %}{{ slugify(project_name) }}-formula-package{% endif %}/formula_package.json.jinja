@@ -1,4 +1,4 @@
-{%- set identifier = project_name|replace(' ', '')|replace('_','')|regex_replace('(?<=[a-zA-Z])([A-Z])', '_\\1')|lower|trim -%}
+{%- set identifier = project_name|replace(' ', '')|replace('-','')|replace('_','')|regex_replace('(?<=\W)([a-zA-Z])', '\\1'|upper)|trim -%}
 {%- set decorator = range(1, 100)|random -%}
 
 {

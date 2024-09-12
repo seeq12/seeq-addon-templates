@@ -5,6 +5,10 @@ _subdirectory: addon_example
 
 _tasks:
     - command: cp -R {{ _copier_conf.src_path }}/_dev_tools ./
+    - command: rm -rf ./_dev_tools/__pycache__
+    - command: rm -rf ./_dev_tools/addon_tasks/__pycache__
+    - command: rm -rf ./_dev_tools/defaults/__pycache__
+    - command: rm -rf ./_dev_tools/tests/__pycache__
 
 _message_before_copy: |
 
