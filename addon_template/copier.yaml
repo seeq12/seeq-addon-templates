@@ -1,5 +1,5 @@
 _exclude:
-    - __pycache__
+    - '**/__pycache__'
 
 _subdirectory: addon_example
 
