@@ -30,9 +30,13 @@
                 "type": "string",
                 "default": "{{ addOnTool_icon }}"
               },
+              "launchLocation": {
+                "enum": ["toolsPane", "homescreen"],
+                "default": "{{ addOnTool_location }}"
+              },
               "linkType": {
                 "enum": ["window", "tab", "none"],
-                "default": "{{ addOnTool_location }}"
+                "default": "{{ addOnTool_launch_type }}"
               },
               "sortKey": {
                 "type": "string",

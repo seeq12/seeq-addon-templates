@@ -16,14 +16,25 @@ addOnTool_description:
 
 addOnTool_location:
   type: str
-  help: Enter how the Add-on Tool should be launched
-  default: window
+  help: Enter where the Add-on Tool is located
   choices:
-    - window
-    - tab
+    - toolsPane
     - homescreen
   validator: >-
     {% if not addOnTool_location %}
+    Please choose one option
+    {% endif %}
+  when: "{{ 'AddOnTool' in elements_to_include }}"
+
+addOnTool_launch_type:
+  type: str
+  help: Enter how the Add-on Tool should be launched
+  choices:
+    - window
+    - tab
+    - none
+  validator: >-
+    {% if not addOnTool_launch_type %}
     Please choose one option
     {% endif %}
   when: "{{ 'AddOnTool' in elements_to_include }}"
