@@ -89,7 +89,8 @@ add_to_path() {
 info() {
   	echo -e "\n************************************************************"
   	echo -e "\nInstallation complete"
-  	echo -e "Run 'addon --help' to see the available options"
+  	echo -e "CLOSE THIS TERMINAL NOW AND OPEN A NEW ONE"
+  	echo -e "Then, run 'addon --help' to see the available options"
   	echo -e "For example, to create an example Add-on, run the command"
   	echo -e "  'addon create <destination_dir>'"
   	echo -e "\n************************************************************"
@@ -100,3 +101,6 @@ build_project
 install_project
 add_to_path
 info
+
+read -rp "Press any key to exit..."
+osascript -e 'tell application "Terminal" to close first window'
