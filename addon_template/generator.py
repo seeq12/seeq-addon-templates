@@ -4,13 +4,39 @@ import argparse
 import pathlib
 import subprocess
 
-
 import copier
 from addon_template._dev_tools.utils import create_virtual_environment
 
 
 CURRENT_DIRECTORY = pathlib.Path(__file__).parent.resolve()
 WINDOWS_OS = os.name == 'nt'
+SOURCE_REPOSITORY = 'seeq-addon-templates'
+
+
+def get_git_repo_name(path: pathlib.Path):
+    path = path.resolve()
+    while path != path.parent:  # Stop when we reach the root directory
+        try:
+            repo_path = subprocess.check_output(['git', '-C', path, 'rev-parse', '--show-toplevel'], stderr=subprocess.STDOUT)
+            repo_path = repo_path.decode('utf-8').strip()
+            repo_path = pathlib.Path(repo_path)
+            if repo_path == path:
+                repo_url = subprocess.check_output(['git', '-C', path, 'remote', 'get-url', 'origin'], stderr=subprocess.STDOUT)
+                repo_url = repo_url.decode('utf-8').strip()
+
+                return repo_url.split('/')[-1].replace('.git', '')
+        except subprocess.CalledProcessError:
+            pass  # If the current directory is not a git repository, move up to the parent directory
+        path = path.parent
+
+    return None
+
+
+def is_path_in_source_git_repo(path: pathlib.Path):
+    if get_git_repo_name(path) == SOURCE_REPOSITORY:
+        return True
+    else:
+        return False
 
 
 def modify_args(args, destination_path=None):
@@ -41,6 +67,10 @@ def create_addon(args):
     destination_path = pathlib.Path(args.dst_path).resolve()
     args = modify_args(args, destination_path)
 
+    if is_path_in_source_git_repo(destination_path):
+        raise Exception(f"Creating a new Add-on inside the source repository is not allowed. "
+                        f"Try a different destination path")
+
     try:
         copier.run_copy(str(CURRENT_DIRECTORY), data=data, **vars(args))
 
@@ -58,6 +88,10 @@ def update_addon(args=None):
     data = args.data
     destination_path = pathlib.Path(args.dst_path).resolve()
     args = modify_args(args, destination_path)
+
+    if is_path_in_source_git_repo(destination_path):
+        raise Exception(f"Creating a new Add-on inside the source repository is not allowed. "
+                        f"Try a different destination path")
 
     try:
         copier.run_recopy(data=data, **vars(args))
