@@ -126,7 +126,7 @@ def main():
         pairs = arg.split(',')
         return dict(pair.split('=') for pair in pairs)
 
-    parser = argparse.ArgumentParser(prog='generator.py', description='Template generator for Seeq Add-ons')
+    parser = argparse.ArgumentParser(prog='addon', description='Template generator for Seeq Add-ons')
     subparsers = parser.add_subparsers(description='sub-command help', required=True)
 
     copier_options = {

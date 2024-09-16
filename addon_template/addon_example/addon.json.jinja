@@ -1,7 +1,6 @@
 {% from pathjoin('includes', 'slug.jinja') import slugify %}
 {%- set identifier = slugify(project_name) -%}
 {%- set add_on_path = slugify(project_name) -%}
-
 {
   "identifier": "com.seeq.{{ identifier }}",
   "name": "{{ project_name }}",

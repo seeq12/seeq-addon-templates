@@ -68,7 +68,7 @@ project_icon:
 project_maintainer:
     type: str
     help: Enter Add-on maintainer
-    placeholder: "(e.g.: Seeq Corporation, https://seeq.com)"
+    placeholder: "(e.g.: John Doe, John.Doe@company.com)"
     validator: >-
         {% if not project_maintainer %}
         maintainer field cannot be empty.

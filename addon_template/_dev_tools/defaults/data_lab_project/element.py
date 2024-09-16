@@ -18,7 +18,9 @@ from _dev_tools.addon_tasks.utils import (
 )
 
 from _dev_tools.utils import (
-    get_venv_paths
+    get_venv_paths,
+    create_virtual_environment,
+    update_venv
 )
 
 FILE_EXTENSIONS = {".py", ".txt", ".ipynb", ".json", ".vue"}
@@ -37,8 +39,21 @@ def check_dependencies() -> None:
     pass
 
 
-def bootstrap(element_path: pathlib.Path, url: str, username: str, password: str, clean: bool, global_python_env: pathlib.Path) -> None:
-    pass  # Environment is already bootstrapped at top level
+def bootstrap(
+        element_path: pathlib.Path,
+        url: str,
+        username: str,
+        password: str,
+        clean: bool,
+        global_python_env: pathlib.Path,
+        single_element: bool
+) -> None:
+    if single_element is False and global_python_env is None:
+        print("Environment is already bootstrapped at top level. ")
+        return
+    print(element_path)
+    create_virtual_environment(element_path, clean, global_python_env)
+    update_venv(element_path, global_python_env)
 
 
 def build(element_path: pathlib.Path) -> None:

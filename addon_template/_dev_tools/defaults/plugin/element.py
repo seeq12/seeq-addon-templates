@@ -24,7 +24,14 @@ def check_dependencies() -> None:
     print(f'NPM version: {npm_version}')
 
 
-def bootstrap(element_path: pathlib.Path, url: str, username: str, password: str, clean: bool, global_python_env: pathlib.Path) -> None:
+def bootstrap(
+        element_path: pathlib.Path,
+        url: str, username: str,
+        password: str,
+        clean: bool,
+        global_python_env: pathlib.Path,
+        single_element: bool
+) -> None:
     if global_python_env:
         # Global python environment is not supported for this element.
         return
