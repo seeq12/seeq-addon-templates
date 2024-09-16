@@ -50,8 +50,8 @@ def _deploy_entire_package(args):
     if args.clean:
         uninstall(args)
 
-    # upload the add-on
-    print("Uploading add-on")
+    # upload the Add-on
+    print("Uploading Add-on")
     filename = f"{get_add_on_package_name()}{ADD_ON_EXTENSION}"
     print(DIST_FOLDER / f"{filename}")
     with open(DIST_FOLDER / f"{filename}", "rb") as f:
@@ -96,7 +96,7 @@ def _deploy_entire_package(args):
 
 def get_configuration():
     """
-    Fetch the configuration of the add-on, used when deploying the add-on to add-on-manager.
+    Fetch the configuration of the Add-on, used when deploying the Add-on to Add-on-manager.
     If a configuration.json file is present in an element, it will use that instead of the default configuration.
     """
     addon_json = get_add_on_json()
@@ -131,7 +131,7 @@ def uninstall(args):
     print("Checking if Add-on is installed")
     add_on_response = session.get_add_on(add_on_identifier)
     if add_on_response.json().get("add_on_status") == "CanUninstall":
-        print("Uninstalling add-on")
+        print("Uninstalling Add-on")
         uninstall_response = session.uninstall_add_on(add_on_identifier, force=False)
         if not uninstall_response.ok:
             if (

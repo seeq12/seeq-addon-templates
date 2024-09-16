@@ -38,7 +38,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='addon.py', description='Add-on Manager')
     subparsers = parser.add_subparsers(help='sub-command help', required=True)
 
-    parser_bootstrap = subparsers.add_parser('bootstrap', help='Bootstrap your add-on development environment')
+    parser_bootstrap = subparsers.add_parser('bootstrap', help='Bootstrap your Add-on development environment')
     parser_bootstrap.add_argument('--username', type=str, required=False, default=None)
     parser_bootstrap.add_argument('--password', type=str, required=False, default=None)
     parser_bootstrap.add_argument('--url', type=str, required=False, default=None)
@@ -49,12 +49,12 @@ if __name__ == "__main__":
                                   help='Installs all python dependencies in the same global environment.')
     parser_bootstrap.set_defaults(func=bootstrap)
 
-    parser_build = subparsers.add_parser('build', help='Build your add-on')
+    parser_build = subparsers.add_parser('build', help='Build your Add-on')
     parser_build.add_argument('--dir', type=str, nargs='*', default=None,
                               help='Execute the command for the subset of the element directories specified.')
     parser_build.set_defaults(func=build)
 
-    parser_deploy = subparsers.add_parser('deploy', help='Deploy your add-on')
+    parser_deploy = subparsers.add_parser('deploy', help='Deploy your Add-on')
     parser_deploy.add_argument('--username', type=str, required=False)
     parser_deploy.add_argument('--password', type=str, required=False)
     parser_deploy.add_argument('--url', type=str, required=False)
@@ -65,7 +65,7 @@ if __name__ == "__main__":
                                help='Execute the command for the subset of the element directories specified.')
     parser_deploy.set_defaults(func=deploy)
 
-    parser_package = subparsers.add_parser('package', help='Package your add-on')
+    parser_package = subparsers.add_parser('package', help='Package your Add-on')
     parser_package.add_argument('--skip-build', action='store_true', default=False, help='Skip build step')
     parser_package.set_defaults(func=package)
 

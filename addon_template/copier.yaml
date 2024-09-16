@@ -40,7 +40,7 @@ project_name:
     placeholder: "(e.g.: My Add-on Project)"
     validator: >-
         {% if not (project_name | regex_search('^[A-Za-z][A-Za-z0-9 _-]*$')) %}
-        add-on name must start with a letter and cannot contain any symbols.
+        Add-on name must start with a letter and cannot contain any symbols.
         {% endif %}
 
 project_description:
@@ -49,7 +49,7 @@ project_description:
     placeholder: "(This can be a long description and it will be displayed in the Add-on Manager)"
     validator: >-
         {% if not project_description %}
-        add-on description cannot be empty.
+        Add-on description cannot be empty.
         {% endif %}
 
 project_version:
@@ -58,7 +58,7 @@ project_version:
     placeholder: "(e.g.: 0.0.1)"
     validator: >-
         {% if not (project_version | regex_search('^(0|[0-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$')) %}
-        add-on version must follow semantic versioning format.
+        Add-on version must follow semantic versioning format.
         {% endif %}
 
 project_icon:

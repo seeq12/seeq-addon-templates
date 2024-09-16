@@ -8,7 +8,7 @@ from typing import List
 
 CURRENT_FILE = pathlib.Path(__file__)
 
-# make the add-on package available to the `deploy` script
+# make the Add-on package available to the `deploy` script
 sys.path.append(os.path.abspath(CURRENT_FILE.parent.parent.parent.parent.resolve()))
 
 from _dev_tools.addon_tasks.utils import (
@@ -43,7 +43,7 @@ def bootstrap(element_path: pathlib.Path, url: str, username: str, password: str
 
 def build(element_path: pathlib.Path) -> None:
     print('There is no need to build Add-on Tools or Data Lab Functions elements. '
-          'This operation is skipped for this add-on element')
+          'This operation is skipped for this Add-on element')
 
 
 def deploy(element_path: pathlib.Path, url: str, username: str, password: str) -> None:
