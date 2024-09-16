@@ -8,6 +8,11 @@ developing your own Add-ons.
 The Add-on Example Generator requires the following software to be installed on your machine:
 - Python 3.8 or later
 - Node.js 21.7.3 or later
+- On Windows, make sure that long paths are enabled both in Windows RegEdit and Git. 
+  - You can enable long paths in the Windows RegEdit by running the following command in PowerShell as an 
+    administrator:
+    `Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem' -Name 'LongPathsEnabled' -Value 1`. 
+  - To enable long paths in Git, run the following command in Git Bash: `git config --system core.longpaths true`
 
 # Installation
 To install the Add-on Example Generator, follow these steps:
@@ -16,16 +21,6 @@ To install the Add-on Example Generator, follow these steps:
 3. Run `./install_template` (Linux/Mac) or double-click on `install_template.bat` (Windows) to install the utility.
 
 Once the installation is complete you can run `addon --help` from a terminal window (bash/zsh on Mac or Command 
-Prompt in Windows) to see the available commands.
-
-# Updates
-To update the Add-on Example Generator, follow these steps:
-1. Run `git checkout develop` in the root directory of the cloned repository to get the latest version of the Add-on 
-   Example Generator.
-2. Run `git pull` to update your local repository with the latest changes.
-3. Run `./install_template` (Linux/Mac) or double-click on `install_template.bat` (Windows) to re-install the utility.
-
-Once the installation is complete you can run `addon --help` from a terminal window (bash/zsh on Mac or Command
 Prompt in Windows) to see the available commands.
 
 # Usage
@@ -49,3 +44,13 @@ To create a new Add-on project, follow these steps:
 * The answers to your prompts are stored in the `.copier-answers.yml` file in the project folder. You can update the 
   answers by running `addon update <path/to/destination/folder>` from a terminal window.
 * Open the README.md file in the project folder to get started with the Add-on project.
+
+# Updates
+To update the Add-on Example Generator, follow these steps:
+1. Run `git checkout develop` in the root directory of the cloned repository to get the latest version of the Add-on
+   Example Generator.
+2. Run `git pull` to update your local repository with the latest changes.
+3. Run `./install_template` (Linux/Mac) or double-click on `install_template.bat` (Windows) to re-install the utility.
+
+Once the installation is complete you can run `addon --help` from a terminal window (bash/zsh on Mac or Command
+Prompt in Windows) to see the available commands.
