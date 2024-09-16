@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import shutil
 import argparse
 import pathlib
 import subprocess
@@ -39,6 +40,21 @@ def is_path_in_source_git_repo(path: pathlib.Path):
         return False
 
 
+def copy_dev_tools(destination_path):
+    print(f"Copying `_dev_tools` to {destination_path}")
+    destination = destination_path / "_dev_tools"
+    if destination.exists():
+        shutil.rmtree(destination)
+    shutil.copytree(CURRENT_DIRECTORY / "_dev_tools", destination)
+
+
+def delete_pycache(destination_path):
+    print(f"Deleting `__pycache__` from {destination_path}")
+    for root, dirs, files in os.walk(destination_path):
+        if '__pycache__' in dirs:
+            shutil.rmtree(os.path.join(root, '__pycache__'))
+
+
 def modify_args(args, destination_path=None):
     if args.force or args.data:
         args.defaults = True
@@ -73,7 +89,7 @@ def create_addon(args):
 
     try:
         copier.run_copy(str(CURRENT_DIRECTORY), data=data, **vars(args))
-
+        copy_dev_tools(destination_path)
         create_virtual_environment(destination_path, clean=True, hide_stdout=True)
         path_to_python = destination_path / ".venv" / ("Scripts" if WINDOWS_OS else "bin") / "python"
         print(f"Installing Add-on dependencies ...")
@@ -82,6 +98,8 @@ def create_addon(args):
         print(info_open_ide(destination_path))
     except KeyboardInterrupt as e:
         print(f"\nError: Operation canceled by user")
+    except Exception as e:
+        print(f"\nError: {e}")
 
 
 def update_addon(args=None):
@@ -95,9 +113,12 @@ def update_addon(args=None):
 
     try:
         copier.run_recopy(data=data, **vars(args))
+        copy_dev_tools(destination_path)
         print(info_open_ide(destination_path))
     except KeyboardInterrupt as e:
         print(f"\nError: Operation canceled by user")
+    except Exception as e:
+        print(f"\nError: {e}")
 
 
 def main():

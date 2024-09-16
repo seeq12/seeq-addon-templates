@@ -3,12 +3,6 @@ _exclude:
 
 _subdirectory: addon_example
 
-_tasks:
-    - command: cp -R {{ _copier_conf.src_path }}/_dev_tools ./
-    - command: rm -rf ./_dev_tools/__pycache__
-    - command: rm -rf ./_dev_tools/addon_tasks/__pycache__
-    - command: rm -rf ./_dev_tools/defaults/__pycache__
-    - command: rm -rf ./_dev_tools/tests/__pycache__
 
 _message_before_copy: |
 
@@ -55,6 +49,7 @@ project_description:
 project_version:
     type: str
     help: Enter (semantic) version of the Add-on
+    default: 0.0.1
     placeholder: "(e.g.: 0.0.1)"
     validator: >-
         {% if not (project_version | regex_search('^(0|[0-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$')) %}
