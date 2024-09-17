@@ -68,6 +68,7 @@ def _deploy_entire_package(args):
 
     if upload_response_body['add_on_status'] == "CanInstall":
         print("Installing Add-on")
+        print("This might take a few minutes to complete...")
         install_response = session.install_add_on(
             add_on_identifier, upload_response_body["binary_filename"], configuration
         )

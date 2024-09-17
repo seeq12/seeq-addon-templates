@@ -102,5 +102,5 @@ install_project
 add_to_path
 info
 
-read -rp "Press any key to exit..."
+read -n1 -rp "Press any key to exit..."
 osascript -e 'tell application "Terminal" to close first window'
