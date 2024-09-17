@@ -7,7 +7,7 @@ import path from 'path';
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import stream from 'stream';
-import { pipeline as streamPipeline } from 'stream'; 
+import { pipeline as streamPipeline } from 'stream';
 import process from 'process';
 
 import { rimraf } from 'rimraf';
@@ -50,12 +50,17 @@ async function commandBootstrap() {
   log('');
 
   async function promptUrl() {
-    const { url } = await inquirer
-      .prompt([{
+    let url;
+    if (existing.url) {
+      url = existing.url;
+    } else {
+      const response = await inquirer.prompt([{
         type: 'input',
         name: 'url',
         default: existing.url,
       }]);
+      url = response.url;
+    }
 
     try {
       log('');
@@ -76,7 +81,7 @@ async function commandBootstrap() {
     await writeBootstrap({ ...existing, url });
   }
 
-  log(chalk.bold('You can specify the Access Key and Password for the Seeq Server.') + ' These');
+  log(chalk.bold('You can specify the Access Key (or username) and Password for the Seeq Server.') + ' These');
   log('credentials will be used to publish the plugin to the Seeq Server for');
   log('fast iteration during development but aren\'t otherwise needed');
   log('');
@@ -88,12 +93,14 @@ async function commandBootstrap() {
   log(' 3. Click "Access Keys" from the dropdown');
   log(' 4. Name the access key (i.e., Plugin Development)');
   log('');
-  log('If you don\'t want to provide an access key, leave these blank');
-  log('');
 
   async function promptAccessKey() {
-    const { accessKey, password } = await inquirer
-      .prompt([{
+    let accessKey, password;
+    if (existing.accessKey && existing.password) {
+      accessKey = existing.accessKey;
+      password = existing.password;
+    } else {
+      const response = await inquirer.prompt([{
         type: 'input',
         name: 'accessKey',
         default: existing.accessKey
@@ -102,6 +109,9 @@ async function commandBootstrap() {
         name: 'password',
         default: existing.password
       }]);
+      accessKey = response.accessKey;
+      password = response.password;
+    }
 
     log('');
     if (!!accessKey && !!password) {
@@ -168,6 +178,8 @@ async function commandBootstrap() {
 
   log(chalk.green.bold('Bootstrap Complete:'));
   log(` - Use ${chalk.bold('"npm run watch"')} to update the plugin on the server as you make changes`);
+  log(` - Use ${chalk.bold('"npm run tsc"')} to run the typechecker`);
+  log(` - Use ${chalk.bold('"npm run lint"')} to run the code style linter`);
   log(` - Use ${chalk.bold('"npm run build"')} to build a plugin file that can be uploaded to another Seeq Server`);
   log('');
 }
@@ -200,13 +212,13 @@ async function commandPackage() {
 }
 
 async function writeBootstrap({ url, accessKey, password }) {
-  await fsp.writeFile(resolve('.credentials.json'), JSON.stringify({ url, accessKey, password }, null, 2), 'utf8');
+  await fsp.writeFile(resolve('../.credentials.json'), JSON.stringify({ url, accessKey, password }, null, 2), 'utf8');
 }
 
 async function readBootstrap() {
   let contents;
   try {
-    contents = JSON.parse(await fsp.readFile(resolve('.credentials.json'), 'utf8'));
+    contents = JSON.parse(await fsp.readFile(resolve('../.credentials.json'), 'utf8'));
   } catch (ex) {
     if (ex.code === 'ENOENT') {
       contents = {};
@@ -214,10 +226,10 @@ async function readBootstrap() {
       throw ex;
     }
   }
-  const { url, accessKey, password } = contents;
+  const { url, username, password } = contents;
   return {
     url: url || 'http://localhost:34216',
-    accessKey: accessKey || null,
+    accessKey: username || null,
     password: password || null
   };
 }
@@ -309,7 +321,7 @@ async function downloadFile(url, filename, destination) {
   }
 
   return await streamPipeline(
-    res.body, 
+    res.body,
     fs.createWriteStream(path.resolve(destination, filename)), (err) => {
       if (err) {
         throw err;
@@ -436,4 +448,3 @@ main()
     logError(e);
     process.exit(1);
   });
-  

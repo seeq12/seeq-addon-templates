@@ -52,8 +52,11 @@ def save_json(path: pathlib.Path, values: dict) -> None:
 def load_json(path: pathlib.Path) -> Optional[dict]:
     if not path.exists():
         return None
-    with open(path, mode='r', encoding='utf-8') as json_file:
-        return json.load(json_file)
+    try:
+        with open(path, mode='r', encoding='utf-8') as json_file:
+            return json.load(json_file)
+    except json.JSONDecodeError:
+        raise Exception(f'Error loading JSON file: {path}')
 
 
 def get_credentials_json() -> Optional[dict]:

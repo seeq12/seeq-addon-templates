@@ -44,12 +44,17 @@ async function commandBootstrap() {
   log('');
 
   async function promptUrl() {
-    const { url } = await inquirer
-      .prompt([{
+    let url;
+    if (existing.url) {
+      url = existing.url;
+    } else {
+      const response = await inquirer.prompt([{
         type: 'input',
         name: 'url',
         default: existing.url,
       }]);
+      url = response.url;
+    }
 
     try {
       log('');
@@ -70,7 +75,7 @@ async function commandBootstrap() {
     await writeBootstrap({ ...existing, url });
   }
 
-  log(chalk.bold('You can specify the Access Key and Password for the Seeq Server.') + ' These');
+  log(chalk.bold('You can specify the Access Key (or username) and Password for the Seeq Server.') + ' These');
   log('credentials will be used to publish the plugin to the Seeq Server for');
   log('fast iteration during development but aren\'t otherwise needed');
   log('');
@@ -82,12 +87,14 @@ async function commandBootstrap() {
   log(' 3. Click "Access Keys" from the dropdown');
   log(' 4. Name the access key (i.e., Plugin Development)');
   log('');
-  log('If you don\'t want to provide an access key, leave these blank');
-  log('');
 
   async function promptAccessKey() {
-    const { accessKey, password } = await inquirer
-      .prompt([{
+    let accessKey, password;
+    if (existing.accessKey && existing.password) {
+      accessKey = existing.accessKey;
+      password = existing.password;
+    } else {
+      const response = await inquirer.prompt([{
         type: 'input',
         name: 'accessKey',
         default: existing.accessKey
@@ -96,6 +103,9 @@ async function commandBootstrap() {
         name: 'password',
         default: existing.password
       }]);
+      accessKey = response.accessKey;
+      password = response.password;
+    }
 
     log('');
     if (!!accessKey && !!password) {
@@ -196,13 +206,13 @@ async function commandPackage() {
 }
 
 async function writeBootstrap({ url, accessKey, password }) {
-  await fsp.writeFile(resolve('.credentials.json'), JSON.stringify({ url, accessKey, password }, null, 2), 'utf8');
+  await fsp.writeFile(resolve('../.credentials.json'), JSON.stringify({ url, accessKey, password }, null, 2), 'utf8');
 }
 
 async function readBootstrap() {
   let contents;
   try {
-    contents = JSON.parse(await fsp.readFile(resolve('.credentials.json'), 'utf8'));
+    contents = JSON.parse(await fsp.readFile(resolve('../.credentials.json'), 'utf8'));
   } catch (ex) {
     if (ex.code === 'ENOENT') {
       contents = {};
@@ -210,10 +220,10 @@ async function readBootstrap() {
       throw ex;
     }
   }
-  const { url, accessKey, password } = contents;
+  const { url, username, password } = contents;
   return {
     url: url || 'http://localhost:34216',
-    accessKey: accessKey || null,
+    accessKey: username || null,
     password: password || null
   };
 }
@@ -393,7 +403,7 @@ async function postZip(url, auth) {
     log(`WARNING: ${err}`);
   });
   archive.pipe(innerStream);
-  archive.finalize();
+  await archive.finalize();
   form.append('file', innerStream, filename);
 
   const res = await fetch(`${base(url)}/api/plugins`, {
@@ -426,4 +436,3 @@ main()
     logError(e);
     process.exit(1);
   });
-  
