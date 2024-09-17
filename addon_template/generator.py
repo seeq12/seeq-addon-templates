@@ -61,7 +61,15 @@ def modify_args(args, destination_path=None):
         args.overwrite = True
         if not os.path.isfile(destination_path / ".copier-answers.yml"):
             raise FileNotFoundError(
-                f"argument --force can't be use if file {destination_path}/.copier-answers.yml doesn't exist."
+                f"argument --force can't be used if file {destination_path}/.copier-answers.yml doesn't exist."
+                f"\n Try running `addon create <destination_path>` first."
+            )
+    if args.defaults is True or args.overwrite is True:
+        if not os.path.isfile(destination_path / ".copier-answers.yml"):
+            raise FileNotFoundError(
+                f"arguments --defaults or --overwrite can't be used if file"
+                f" {destination_path}/.copier-answers.yml doesn't exist."
+                f"\n Try running `addon create <destination_path>` first."
             )
     delattr(args, 'force')
     delattr(args, 'func')

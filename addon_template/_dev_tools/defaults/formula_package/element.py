@@ -19,7 +19,15 @@ def check_dependencies() -> None:
     pass
 
 
-def bootstrap(element_path: pathlib.Path, url: str, username: str, password: str, clean: bool, global_python_env: pathlib.Path) -> None:
+def bootstrap(
+        element_path: pathlib.Path,
+        url: str,
+        username: str,
+        password: str,
+        clean: bool,
+        global_python_env: pathlib.Path,
+        single_element: bool
+) -> None:
     pass
 
 

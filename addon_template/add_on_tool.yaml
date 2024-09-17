@@ -54,6 +54,7 @@ addOnTool_advanced:
         - Add-on Tool Name: Show a different name for the AddOnTool in the Add-on Manager vs. Workbench
         - Add-on Tool Icon: Show a different icon for the AddOnTool in the Add-on Manager vs. Workbench
         - Project Properties: Add additional configuration values required by the Add-on during runtime
+  when: "{{ 'AddOnTool' in elements_to_include }}"
 
 advanced_previous_answers:
   type: str
@@ -65,12 +66,7 @@ advanced_previous_answers:
     
     you can delete the answers for these questions in the `.copier-answers.yml` file before running the utility.
 
-  when: "{{ not addOnTool_advanced and (addOnTool_name or addOnTool_icon or addOnTool_project_properties_question) }}"
-
-#_force_advance:
-#    type: bool
-#    default: yes
-#    when: "{{ not addOnTool_advanced and (addOnTool_name or addOnTool_icon or addOnTool_project_properties_question) }}"
+  when: "{{ 'AddOnTool' in elements_to_include and not addOnTool_advanced and (addOnTool_name or addOnTool_icon or addOnTool_project_properties_question) }}"
 
 addOnTool_name:
   type: str

@@ -26,7 +26,8 @@ def check_dependencies() -> None:
 
 def bootstrap(
         element_path: pathlib.Path,
-        url: str, username: str,
+        url: str,
+        username: str,
         password: str,
         clean: bool,
         global_python_env: pathlib.Path,
