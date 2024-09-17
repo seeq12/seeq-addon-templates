@@ -58,7 +58,7 @@ def bootstrap(
 
 def build(element_path: pathlib.Path) -> None:
     print('There is no need to build Add-on Tools or Data Lab Functions elements. '
-          'This operation is skipped for this Add-on element')
+          f'This operation is skipped for the {element_path} element')
 
 
 def deploy(element_path: pathlib.Path, url: str, username: str, password: str) -> None:
