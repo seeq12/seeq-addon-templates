@@ -1,3 +1,1 @@
 ipyvuetify>=1.10.0
-plotly>=5.24.0
-traitlets>=5.1.1

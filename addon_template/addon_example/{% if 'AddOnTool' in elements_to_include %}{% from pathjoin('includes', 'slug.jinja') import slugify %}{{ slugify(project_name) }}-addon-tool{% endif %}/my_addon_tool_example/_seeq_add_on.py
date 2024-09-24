@@ -1,13 +1,11 @@
 import warnings
 import pandas as pd
-import plotly.graph_objects as go
 from IPython.display import clear_output
 from IPython.display import display, Javascript
 
-from . import create_new_signal, df_plot, pull_only_signals
+from . import create_new_signal, create_matplotlib_widget, pull_only_signals, AppLayout
 from ._backend import push_signal
 from .utils import get_workbook_worksheet_workstep_ids, get_worksheet_url
-from .ui_components import AppLayout
 
 warnings.filterwarnings('ignore')
 
@@ -28,69 +26,82 @@ class MyAddonToolExample(AppLayout):
         self.result_signal = pd.DataFrame()
         clear_output()
 
-        self.signal_plot = go.FigureWidget()
+        super(MyAddonToolExample, self).__init__(
+            first_signal_on_change=self.first_signal_dropdown,
+            second_signal_on_change=self.second_signal_dropdown,
+            math_operator_on_change=self.math_operator_dropdown,
+            push_to_seeq_on_click=self.push_to_seeq
+        )
 
-        super(MyAddonToolExample, self).__init__(first_signal_on_change=self.first_signal_dropdown,
-                                                 second_signal_on_change=self.second_signal_dropdown,
-                                                 math_operator_on_change=self.math_operator_dropdown,
-                                                 push_to_seeq_on_click=self.push_to_seeq
-                                                 )
-        self.first_dropdown_items = list(self.df.columns)
-        self.second_dropdown_items = list(self.df.columns)
-        self.create_displayed_fig(df_plot(pd.DataFrame))
+        self.first_signal.items = list(self.df.columns)
+        self.second_signal.items = list(self.df.columns)
+        self.create_displayed_fig()
 
     def math_operation(self):
-        if self.math_operator_value == '+':
+        if self.math_operator.v_model == '+':
             return 'add'
-        if self.math_operator_value == '-':
+        if self.math_operator.v_model == '-':
             return 'subtract'
-        if self.math_operator_value == 'x':
+        if self.math_operator.v_model == 'x':
             return 'multiply'
-        if self.math_operator_value == '/':
+        if self.math_operator.v_model == '/':
             return 'divide'
 
-    def first_signal_dropdown(self, data):
+    def first_signal_dropdown(self, widget, event, data):
         # ipyvuetify doesn't assign the value of the component till the end of the callback. Thus, assigned manually
-        self.first_dropdown_value = data
+        self.first_signal.v_model = data
         self.update_display()
 
-    def second_signal_dropdown(self, data):
+    def second_signal_dropdown(self, widget, event, data):
         # ipyvuetify doesn't assign the value of the component till the end of the callback. Thus, assigned manually
-        self.second_dropdown_value = data
+        self.second_signal.v_model = data
         self.update_display()
 
-    def math_operator_dropdown(self, data):
+    def math_operator_dropdown(self, widget, event, data):
         # ipyvuetify doesn't assign the value of the component till the end of the callback. Thus, assigned manually
-        self.math_operator_value = data
+        self.math_operator.v_model = data
         self.update_display()
 
-    def create_displayed_fig(self, fig):
-        self.disabled_controls = False
-        if fig is None:
-            self.visualization = 'message'
+    def show_ui_component(self, component):
+        hide_object = 'display: none !important;'
+        self.matplotlib_plot.style_ = hide_object
+        self.spinner.style_ = hide_object
+        self.message.style_ = hide_object
+        if component == 'message':
+            self.message.style_ = ''
+        if component == 'plot':
+            self.matplotlib_plot.style_ = ''
+        if component == 'spinner':
+            self.spinner.style_ = 'height: 200px;'
+
+    def create_displayed_fig(self):
+        self.controls.disabled = False
+        if self.result_signal.empty:
+            self.show_ui_component('message')
             return
 
-        self.btn_disabled = False
-        self.signal_plot = go.FigureWidget(fig)
-        self.visualization = 'plot'
+        self.save_button.disabled = False
+        self.matplotlib_plot.children = [create_matplotlib_widget(self.result_signal)]
+        self.show_ui_component('plot')
 
     def update_display(self, *_):
+        print('display here')
         self.result_signal = pd.DataFrame()
-        self.disabled_controls = True
-        self.visualization = 'spinner'
-        self.btn_disabled = True
-        if {self.first_dropdown_value, self.second_dropdown_value}.issubset(set(self.df.columns)):
-            self.result_signal = create_new_signal(self.df[self.first_dropdown_value].values,
-                                                   self.df[self.second_dropdown_value].values,
+        self.controls.disabled = True
+        self.show_ui_component('spinner')
+        self.save_button.disabled = True
+        if {self.first_signal.v_model, self.second_signal.v_model}.issubset(set(self.df.columns)):
+            print("here")
+            self.result_signal = create_new_signal(self.df[self.first_signal.v_model].values,
+                                                   self.df[self.second_signal.v_model].values,
                                                    self.df.index,
                                                    self.math_operation())
 
-        fig = df_plot(self.result_signal)
-        self.create_displayed_fig(fig)
+        self.create_displayed_fig()
 
     def push_to_seeq(self, *_):
         df_pushed = push_signal(self.result_signal, self.workbook_id, 'From My Add-on Tool')
         display(Javascript(f'window.open("{df_pushed.spy.workbook_url}");'))
 
     def run(self):
-        return self
+        return self.app

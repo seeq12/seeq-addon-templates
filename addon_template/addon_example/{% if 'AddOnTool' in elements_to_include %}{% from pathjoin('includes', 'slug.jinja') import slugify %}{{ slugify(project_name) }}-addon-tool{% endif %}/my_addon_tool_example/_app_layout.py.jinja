@@ -1,0 +1,165 @@
+import ipyvuetify as v
+from typing import Callable
+
+
+class AppLayout:
+    """
+    UI component - Layout of the Add-on
+    """
+
+    v.theme.themes.light.success = '#007960'
+    v.theme.themes.light.primary = '#007960'
+
+    def __init__(
+            self,
+            first_signal_on_change: Callable[[str, str, str], None] = None,
+            second_signal_on_change: Callable[[str, str, str], None] = None,
+            math_operator_on_change: Callable[[str, str, str], None] = None,
+            push_to_seeq_on_click: Callable[[str, str, str], None] = None
+    ):
+
+        # user callback functions
+        self.first_signal_on_change = first_signal_on_change
+        self.second_signal_on_change = second_signal_on_change
+        self.math_operator_on_change = math_operator_on_change
+        self.push_to_seeq_on_click = push_to_seeq_on_click
+
+        self.app_bar = v.AppBar(
+            color='#007960',
+            dark=True,
+            dense=True,
+            style_='padding-right: 15px;',
+            children=[
+                v.ToolbarTitle(class_='ml-4', children=['{{ addOnTool_name }}']),
+            ]
+        )
+
+        self.first_signal = v.Select(
+            label='Select first signal',
+            items=[],
+            dense=True,
+            outline=True,
+            color='#007960',
+            filled=True,
+            item_color='primary',
+            v_model='',
+            style_='max-width: 500px',
+            class_='mr-5',
+            disabled=False
+        )
+
+        self.math_operator = v.Select(
+            label='Select math operation',
+            items=['+', '-', 'x', '/'],
+            dense=True,
+            outline=True,
+            color='#007960',
+            filled=True,
+            item_color='primary',
+            v_model='+',
+            style_='max-width: 70px',
+            class_='mr-5',
+            disabled=False
+        )
+
+        self.second_signal = v.Select(
+            label='Select second signal',
+            items=[],
+            dense=True,
+            outline=True,
+            color='#007960',
+            filled=True,
+            item_color='primary',
+            v_model='',
+            style_='max-width: 500px',
+            class_='mr-5',
+            disabled=False
+        )
+
+        self.dropdowns = v.Html(
+            tag='div',
+            class_='d-flex flex-row flex-wrap pr-3 pt-2 pb-4',
+            children=[
+                self.first_signal,
+                self.math_operator,
+                self.second_signal
+            ]
+        )
+
+        self.save_button = v.Btn(
+            disabled=True,
+            style_='text-transform: capitalize;',
+            class_='mt-5',
+            color='primary',
+            target='_blank',
+            loading=False,
+            children=['Signal to Workbench']
+        )
+        self.controls = v.Card(
+            disabled=False,
+            class_='d-flex flex-column pr-3 pl-3 pt-5',
+            color='#F6F6F6',
+            children=[
+                v.Html(tag='div', class_='pr-4', children=['Choose signals and math operator']),
+                v.Html(
+                    tag='div',
+                    class_='d-flex flex-row flex-wrap justify-space-between pr-3 pt-2',
+                    children=[
+                        self.dropdowns,
+                        self.save_button
+                    ]
+                )
+            ]
+        )
+
+        self.matplotlib_plot = v.Html(tag='div', style_='', children=[v.Html()])
+        self.message = v.Html(tag='div', style_='', children=['No data to show'])
+        self.spinner = v.Html(
+            tag='div',
+            style_='',
+            class_='d-flex flex-row justify-center align-center',
+            children=[
+                v.ProgressCircular(color='primary', indeterminate=True, size='50', width='6')
+            ]
+        )
+
+        self.visualization_area = v.Html(
+            tag='div',
+            style_='background-color: #FFFFFF; border:2px solid #F6F6F6',
+            children=[
+                self.matplotlib_plot,
+                self.message,
+                self.spinner
+            ]
+        )
+
+        self.main_container = v.Html(
+            tag='div',
+            children=[
+                v.Html(tag='div'),
+                self.controls,
+                self.visualization_area
+            ]
+        )
+
+        self.app = v.App(class_='pa-1', children=[self.app_bar, self.main_container])
+        self.first_signal.on_event('change', self.vue_first_signal_on_change)
+        self.second_signal.on_event('change', self.vue_second_signal_on_change)
+        self.math_operator.on_event('change', self.vue_math_operator_on_change)
+        self.save_button.on_event('click', self.vue_push_to_seeq_on_click)
+
+    def vue_first_signal_on_change(self, widget, event, data):
+        if self.first_signal_on_change is not None:
+            self.first_signal_on_change(widget, event, data)
+
+    def vue_second_signal_on_change(self, widget, event, data):
+        if self.second_signal_on_change is not None:
+            self.second_signal_on_change(widget, event, data)
+
+    def vue_math_operator_on_change(self, widget, event, data):
+        if self.math_operator_on_change is not None:
+            self.math_operator_on_change(widget, event, data)
+
+    def vue_push_to_seeq_on_click(self, widget, event, data):
+        if self.push_to_seeq_on_click is not None:
+            self.push_to_seeq_on_click(widget, event, data)
