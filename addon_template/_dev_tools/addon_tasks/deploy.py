@@ -43,6 +43,7 @@ def deploy(args):
 def _deploy_entire_package(args):
     add_on_identifier = get_add_on_identifier()
     url, username, password = parse_url_username_password(args)
+    save_json(CREDENTIALS_JSON_FILE, {'url': url, 'username': username, 'password': password})
     session = AddOnManagerSession(url, username, password)
 
     package(args)
