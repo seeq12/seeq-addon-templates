@@ -1,0 +1,8 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+source "$HOME/.sq-addon/bin/variables.sh"
+VENV=$(cat "$ADDON_VENV_FILE_LOCAL_PATH")
+
+"$VENV"/bin/python "$VENV"/bin/addon "$@"

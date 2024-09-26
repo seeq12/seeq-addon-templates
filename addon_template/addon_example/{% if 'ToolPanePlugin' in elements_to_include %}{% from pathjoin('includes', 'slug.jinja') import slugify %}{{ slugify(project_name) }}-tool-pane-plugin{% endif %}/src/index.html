@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <link rel="stylesheet" href="styles.css">
+  <title>Signal Combiner</title>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Signal Combiner</h1>
+    <div class="dropdowns">
+        <select id="signalA" class="dropdown"></select>
+        <select id="operator" class="dropdown">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option>
+        </select>
+        <select id="signalB" class="dropdown"></select>
+    </div>
+    <div id="spinner" class="spinner"></div>
+    <div id="error" class="error"></div>
+    <div class="buttons">
+        <button id="cancelButton" class="btn cancel">Cancel</button>
+        <button id="executeButton" class="btn execute">Execute</button>
+    </div>
+  </div>
+  <script src="/plugins/sdk/seeq.js"></script>
+  <script crossorigin src="main.js"></script>
+</body>
+</html>
