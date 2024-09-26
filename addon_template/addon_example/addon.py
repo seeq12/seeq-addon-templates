@@ -6,7 +6,9 @@ from _dev_tools.addon_tasks import (
     package as packaging,
     deploy as deploying,
     watch as watching,
-    elements_testing as testing
+    elements_testing as testing,
+    print_all_log_files,
+    print_logs
 )
 
 
@@ -32,6 +34,23 @@ def watch(args):
 
 def elements_test(args):
     testing(args)
+
+#
+# def log_files(args):
+#     return print_all_log_files(args)
+
+
+def logs(args):
+    args.logs_aom = False
+    if args.file is None:
+        print_all_log_files(args)
+        return
+    return print_logs(args)
+
+
+def logs_aom(args):
+    args.logs_aom = True
+    return print_logs(args)
 
 
 if __name__ == "__main__":
@@ -77,6 +96,23 @@ if __name__ == "__main__":
     parser_watch.add_argument('--dir', type=str, nargs='*', default=None,
                               help='Execute the command for the subset of the element directories specified.')
     parser_watch.set_defaults(func=watch)
+
+    parser_logs = subparsers.add_parser('logs-aom', help='Get the Add-on Manager latest logs')
+    parser_logs.add_argument('--username', type=str)
+    parser_logs.add_argument('--password', type=str)
+    parser_logs.add_argument('--url', type=str)
+    parser_logs.set_defaults(func=logs_aom)
+
+    parser_logs = subparsers.add_parser(
+        'logs',
+        help='Get the list of Add-on Manager log files '
+             'or view of the logs of a specific file if `--file <filename>` is supplied.')
+    parser_logs.add_argument('--username', type=str)
+    parser_logs.add_argument('--password', type=str)
+    parser_logs.add_argument('--url', type=str)
+    parser_logs.add_argument('--file', type=str, default=None, required=False,
+                             help='View logs of the supplied file.')
+    parser_logs.set_defaults(func=logs)
 
     parser_test = subparsers.add_parser('test', help='Run the tests for all or individual elements')
     parser_test.add_argument('--dir', type=str, nargs='*', default=None,

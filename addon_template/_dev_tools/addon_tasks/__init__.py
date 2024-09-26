@@ -5,6 +5,7 @@ from _dev_tools.addon_tasks.package import package
 from _dev_tools.addon_tasks.testing import elements_testing
 from _dev_tools.addon_tasks.deploy import deploy
 from _dev_tools.addon_tasks.watch import watch
+from _dev_tools.addon_tasks.logs import print_all_log_files, print_logs
 
 __all__ = [
     'ElementProtocol',
@@ -13,5 +14,7 @@ __all__ = [
     'package',
     'deploy',
     'watch',
-    'elements_testing'
+    'elements_testing',
+    'print_all_log_files',
+    'print_logs'
 ]

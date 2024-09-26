@@ -41,3 +41,11 @@ folder. If you want work with a specific element, you can run `python addon.py b
 create a virtual environment for that specific element. However, you can also
 run ` python addon.py bootstrap --dir <element_folder> --global-python-env .` to update the global environment with new
 dependencies that you might add to the `requirements.txt` file of each element.
+
+## Logs
+You can get the logs of the Add-on Manager from the server you are deploying to. The following commands can be used:
+* `python addon.py logs` to get a list of all the logs files from the Add-on Manager.
+* `python addon.py logs --file <log_file>` to get the content of a specific log file.
+* `python addon.py logs-aom` is a shortcut of `python addon.py logs --file com.seeq.add-on-manager.log`.
+
+Tailing the logs is not currently supported.

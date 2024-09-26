@@ -65,6 +65,19 @@ class DataLabFunctionSession(Session):
             **kwargs,
         )
 
+    def dlf_logs(self, method, log_file, *args, **kwargs):
+        if log_file is None:
+            log_file = ""
+        else:
+            log_file = f"/{log_file.strip("/")}"
+        joined_url = f"{self.base_url}/data-lab/{self.project_id}/functions/logs{log_file}"
+        return super().request(
+            method,
+            joined_url,
+            *args,
+            **kwargs,
+        )
+
 
 class AddOnManagerSession(DataLabFunctionSession):
     API_NOTEBOOK_NAME = "addonmanagerAPI"
@@ -78,6 +91,14 @@ class AddOnManagerSession(DataLabFunctionSession):
             method,
             self.API_NOTEBOOK_NAME,
             endpoint,
+            *args,
+            **kwargs,
+        )
+
+    def aom_logs_request(self, method, log_file, *args, **kwargs):
+        return super().dlf_logs(
+            method,
+            log_file,
             *args,
             **kwargs,
         )
@@ -135,4 +156,10 @@ class AddOnManagerSession(DataLabFunctionSession):
                     "configuration": configuration,
                 }
             ),
+        )
+
+    def get_logs(self, log_file=None):
+        return self.aom_logs_request(
+            "GET",
+            log_file
         )
