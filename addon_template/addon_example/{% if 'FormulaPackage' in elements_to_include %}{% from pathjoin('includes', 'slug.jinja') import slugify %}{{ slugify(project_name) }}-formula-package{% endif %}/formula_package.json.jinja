@@ -12,7 +12,7 @@
       "name": "SignalMultiplier{{ decorator }}",
       "id": "{{ identifier }}-SignalMultiplier{{ decorator }}",
       "description": "<p>This function multiplies two signals and doubles the result of the multiplication </p>",
-      "formula": "($signal1  * $signal2) * 2",
+      "formula": "$signal1  * $signal2",
       "type": "UserDefinedFormulaFunction",
       "parameters": [
         {
@@ -55,7 +55,7 @@
       "examples": {
         "examples": [
           {
-            "description": "Multiply two signals and double the result.",
+            "description": "Multiply two signals.",
             "formula": "{{ identifier }}_SignalMultiplier{{ decorator }}($signal1, $signal2)"
           },
           {

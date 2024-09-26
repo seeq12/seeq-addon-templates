@@ -33,7 +33,7 @@ From the example-plugin folder, you can do the following:
 
  Once you've executed "npm run bootstrap", the Seeq plugin API can be referenced at the bottom of the sdk/seeq.d.ts file in the API interface.
 
- # Add-on manager
+ # Interacting Add-on manager
 You can use the `addon.py` tools from the root directory:
 1. Activate the virtual environment
 	* If you are using a Terminal, you can activate the virtual environment by running `source .venv/bin/activate`
