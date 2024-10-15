@@ -69,7 +69,7 @@ class DataLabFunctionSession(Session):
         if log_file is None:
             log_file = ""
         else:
-            log_file = f"/{log_file.strip("/")}"
+            log_file = f"/{log_file.strip('/')}"
         joined_url = f"{self.base_url}/data-lab/{self.project_id}/functions/logs{log_file}"
         return super().request(
             method,
