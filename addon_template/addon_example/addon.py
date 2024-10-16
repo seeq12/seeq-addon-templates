@@ -54,7 +54,7 @@ def logs_aom(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(prog='addon.py', description='Add-on Manager')
+    parser = argparse.ArgumentParser(prog='addon.py', description='Add-on Developer Tools')
     subparsers = parser.add_subparsers(help='sub-command help', required=True)
 
     parser_bootstrap = subparsers.add_parser('bootstrap', help='Bootstrap your Add-on development environment')
