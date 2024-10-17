@@ -4,6 +4,12 @@ setlocal enabledelayedexpansion
 cd /d "%~dp0"
 call variables.bat
 
+:: Check if the first command-line argument is "addtopath"
+if "%~1"=="addtopath" (
+    call :AddToPath
+    exit /b
+)
+
 call :CreateEnv || exit /b !ERRORLEVEL!
 call :BuildProject || exit /b !ERRORLEVEL!
 call :InstallProject || exit /b !ERRORLEVEL!

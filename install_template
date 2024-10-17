@@ -74,6 +74,8 @@ install_project() {
   cp "$ADDON_SCRIPT_PATH" "$ADDON_SCRIPT_LOCAL_PATH"
   cp "$ADDON_VENV_FILE" "$ADDON_VENV_FILE_LOCAL_PATH"
   cp "$VARIABLES_FILE" "$VARIABLES_FILE_LOCAL_PATH"
+  cp "$ADDON_SCRIPT_PATH_WINDOWS" "$ADDON_SCRIPT_LOCAL_PATH_WINDOWS"
+  cp "$VARIABLES_FILE_WINDOWS" "$VARIABLES_FILE_LOCAL_PATH_WINDOWS"
 }
 
 add_to_path() {
@@ -90,6 +92,8 @@ add_to_path() {
         echo "$ADD_TO_PATH" >> "$file"
       fi
   done
+
+  cmd.exe /C "$LOCAL_DIR/install_template.bat addtopath"
 }
 
 info() {

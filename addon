@@ -5,4 +5,8 @@ IFS=$'\n\t'
 source "$HOME/.sq-addon/bin/variables.sh"
 VENV=$(cat "$ADDON_VENV_FILE_LOCAL_PATH")
 
-"$VENV"/bin/python "$VENV"/bin/addon "$@"
+if [[ "$(uname)" == "MINGW"* ]] || [[ "$(uname)" == "CYGWIN"* ]] || [[ "$(uname)" == "MSYS"* ]]; then
+    "$VENV"/Scripts/python "$VENV"/Scripts/addon "$@"
+else
+    "$VENV"/bin/python "$VENV"/bin/addon "$@"
+fi
