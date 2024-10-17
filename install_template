@@ -5,6 +5,12 @@ IFS=$'\n\t'
 # Get the local directory (where the script is located)
 source variables.sh
 
+if [[ "$(uname)" == "MINGW"* ]] || [[ "$(uname)" == "CYGWIN"* ]] || [[ "$(uname)" == "MSYS"* ]]; then
+    ENV_FOLDER="$VENV/Scripts"
+else
+    ENV_FOLDER="$VENV/bin"
+fi
+
 # Function to create a virtual environment
 create_env() {
 	echo -e "\n*************************************************************"
@@ -31,16 +37,16 @@ create_env() {
 build_project() {
   echo -e "\n*************************************************************"
   echo -e "\nBuilding seeq-addon-template project"
-  if [ -f "$VENV/bin/python" ]; then
+  if [ -f "$ENV_FOLDER/python" ]; then
     set +e
-    err=$("$VENV"/bin/python -m build 2> /dev/null)
+    err=$("$ENV_FOLDER"/python -m build 2> /dev/null)
     set -e
     if [[ $err == *"ERROR"* ]]; then
       echo "$err"
       exit 1
     fi
   else
-    echo "File not found: $VENV/bin/python."
+    echo "File not found: $ENV_FOLDER/python."
     exit 1
   fi
   echo -e "Build successful"
@@ -54,7 +60,7 @@ install_project() {
   echo "seeq-addon-template version: $version"
 
   echo -e "Installing in python environment"
-  "$VENV"/bin/pip install dist/addon-"$version"-py3-none-any.whl -U > /dev/null
+  "$ENV_FOLDER"/pip install dist/addon-"$version"-py3-none-any.whl -U > /dev/null
 
   if [ ! -d "$DEST_DIR/bin" ]; then
     echo "Creating directory $DEST_DIR/bin"
