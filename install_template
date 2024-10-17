@@ -95,8 +95,8 @@ add_to_path() {
       fi
   done
 
-  if [[ "$OS" == "WINDOWS" ]]; then
-    cmd.exe /C "$LOCAL_DIR/install_template.bat addtopath"
+  if [[ "$OS" == "Windows" ]]; then
+    "$LOCAL_DIR"/install_template.bat addtopath
   fi
 }
 
