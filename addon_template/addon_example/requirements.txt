@@ -1,0 +1,6 @@
+seeq
+seeq-spy
+requests
+watchfiles
+beautifulsoup4
+lxml

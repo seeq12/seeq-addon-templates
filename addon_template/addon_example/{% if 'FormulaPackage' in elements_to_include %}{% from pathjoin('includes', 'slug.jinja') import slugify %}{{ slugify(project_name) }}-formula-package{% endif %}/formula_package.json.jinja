@@ -1,0 +1,69 @@
+{%- set identifier = project_name|replace(' ', '')|replace('-','')|replace('_','')|regex_replace('(?<=\W)([a-zA-Z])', '\\1'|upper)|trim -%}
+{%- set decorator = range(1, 100)|random -%}
+
+{
+  "formulaPackage": {
+    "name": "{{ identifier }}FormulaPackage",
+    "creatorName": "Your Name",
+    "creatorContactInfo": "your.name@seeq.com"
+  },
+  "functions": [
+    {
+      "name": "SignalMultiplier{{ decorator }}",
+      "id": "{{ identifier }}-SignalMultiplier{{ decorator }}",
+      "description": "<p>This function multiplies two signals and doubles the result of the multiplication </p>",
+      "formula": "$signal1  * $signal2",
+      "type": "UserDefinedFormulaFunction",
+      "parameters": [
+        {
+          "unbound": true,
+          "name": "signal1",
+          "formula": "1.toSignal()"
+        },
+        {
+          "unbound": true,
+          "name": "signal2",
+          "formula": "1.toSignal()"
+        }
+      ]
+    },
+    {
+      "name": "SignalAdder{{ decorator }}",
+      "id": "{{ identifier }}-SignalAdder{{ decorator }}",
+      "description": "<p>This functions adds two signals</p>",
+      "formula": "$signal1 + $signal2",
+      "type": "UserDefinedFormulaFunction",
+      "parameters": [
+        {
+          "unbound": true,
+          "name": "signal1",
+          "formula": "1.toSignal()"
+        },
+        {
+          "unbound": true,
+          "name": "signal2",
+          "formula": "1.toSignal()"
+        }
+      ]
+    }
+  ],
+  "docs": [
+    {
+      "name": "index",
+      "description": "<p>This function package contains examples of how to create and use formula functions in Seeq Formula.</p>",
+      "title": "Example Formula Package",
+      "examples": {
+        "examples": [
+          {
+            "description": "Multiply two signals.",
+            "formula": "{{ identifier }}_SignalMultiplier{{ decorator }}($signal1, $signal2)"
+          },
+          {
+            "description": "Add two signals.",
+            "formula": "{{ identifier }}_SignalAdder{{ decorator }}($signal1, $signal2)"
+          }
+        ]
+      }
+    }
+  ]
+}

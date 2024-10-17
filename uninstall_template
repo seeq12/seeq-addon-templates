@@ -1,0 +1,28 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+# Get the local directory (where the script is located)
+source variables.sh
+
+if [ -d "$DEST_DIR" ]; then
+  echo "Removing $DEST_DIR"
+  rm -rf "$DEST_DIR";
+fi
+
+# Define the files to check
+files_to_check=(~/.bashrc ~/.zshrc ~/.bash_profile)
+
+# Loop over the files
+for file in "${files_to_check[@]}"; do
+    # Check if the markers exist in the file
+    if grep -Fxq "$PATH_START_MARKER" "$file" && grep -Fxq "$PATH_END_MARKER" "$file"; then
+        # If they exist, remove the lines between them
+        echo "Cleaning up $file"
+        if [[ "$(uname)" == "Darwin" ]]; then
+            sed -i "" "/$PATH_START_MARKER/,/$PATH_END_MARKER/d" "$file"
+        else
+            sed -i "/$PATH_START_MARKER/,/$PATH_END_MARKER/d" "$file"
+        fi
+    fi
+done
