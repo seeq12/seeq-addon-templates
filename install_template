@@ -110,3 +110,11 @@ info
 
 read -n1 -rp "Press any key to exit..."
 osascript -e 'tell application "Terminal" to close first window'
+
+if [[ "$(uname)" == "Darwin" ]]; then
+    osascript -e 'tell application "Terminal" to close first window'
+elif [[ "$(uname)" == "MINGW"* ]] || [[ "$(uname)" == "CYGWIN"* ]] || [[ "$(uname)" == "MSYS"* ]]; then
+   Stop-Process -Id "$PID"
+else
+    echo "Please close this terminal and open a new one."
+fi
