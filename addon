@@ -6,7 +6,7 @@ source "$HOME/.sq-addon/bin/variables.sh"
 VENV=$(cat "$ADDON_VENV_FILE_LOCAL_PATH")
 
 if [[ "$(uname)" == "MINGW"* ]] || [[ "$(uname)" == "CYGWIN"* ]] || [[ "$(uname)" == "MSYS"* ]]; then
-    "$VENV"/Scripts/python "$VENV"/Scripts/addon "$@"
+    "$VENV"/Scripts/python "$VENV"/Scripts/addon.exe "$@"
 else
     "$VENV"/bin/python "$VENV"/bin/addon "$@"
 fi

@@ -6,6 +6,7 @@ call variables.bat
 
 :: Check if the first command-line argument is "addtopath"
 if "%~1"=="addtopath" (
+    echo Adding to the User Path
     call :AddToPath
     exit /b
 )

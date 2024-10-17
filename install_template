@@ -6,8 +6,10 @@ IFS=$'\n\t'
 source variables.sh
 
 if [[ "$(uname)" == "MINGW"* ]] || [[ "$(uname)" == "CYGWIN"* ]] || [[ "$(uname)" == "MSYS"* ]]; then
+    OS="Windows"
     ENV_FOLDER="$VENV/Scripts"
 else
+    OS="NotWindows"
     ENV_FOLDER="$VENV/bin"
 fi
 
@@ -93,7 +95,9 @@ add_to_path() {
       fi
   done
 
-  cmd.exe /C "$LOCAL_DIR/install_template.bat addtopath"
+  if [[ "$OS" == "WINDOWS" ]]; then
+    cmd.exe /C "$LOCAL_DIR/install_template.bat addtopath"
+  fi
 }
 
 info() {
