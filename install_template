@@ -94,10 +94,6 @@ add_to_path() {
         echo "$ADD_TO_PATH" >> "$file"
       fi
   done
-
-  if [[ "$OS" == "Windows" ]]; then
-    "$LOCAL_DIR"/install_template.bat addtopath
-  fi
 }
 
 info() {
