@@ -37,6 +37,7 @@ async function main() {
 
 async function commandBootstrap() {
   const existing = await readBootstrap();
+  let retries = 0;
 
   log(chalk.bold('Please specify the url of the Seeq Server to use for development.') + ' The type');
   log('definitions of the SDK will be fetched from this server and the plugin will');
@@ -88,9 +89,9 @@ async function commandBootstrap() {
   log(' 4. Name the access key (i.e., Plugin Development)');
   log('');
 
-  async function promptAccessKey() {
+  async function promptAccessKey(retries) {
     let accessKey, password;
-    if (existing.accessKey && existing.password) {
+    if (retries === 0 && existing.accessKey && existing.password) {
       accessKey = existing.accessKey;
       password = existing.password;
     } else {
@@ -120,12 +121,16 @@ async function commandBootstrap() {
         return { accessKey, password };
       } catch (e) {
         logError(e);
-        return promptAccessKey();
+        retries++;
+        if (retries >= 3) {
+            throw new Error('Too many retries, please check your credentials and try again.');
+        }
+        return promptAccessKey(retries);
       }
     }
   }
 
-  const { accessKey, password } = await promptAccessKey();
+  const { accessKey, password } = await promptAccessKey(retries);
 
   if (existing.accessKey !== accessKey || existing.password !== password) {
     await writeBootstrap({ ...existing, accessKey, password });
