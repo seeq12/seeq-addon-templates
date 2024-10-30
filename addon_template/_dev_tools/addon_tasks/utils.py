@@ -308,7 +308,7 @@ def _upload_file(server_url, request_session, auth_header, project_id, source, d
     except RetryError:
         pass
     if response is None or response.status_code == 500:
-        _upload_directory(server_url, auth_header, request_session, project_id, destination)
+        _upload_directory(server_url, request_session, auth_header, project_id, destination)
         try:
             response = request_session.put(jupyter_path, data=body, headers=auth_header, cookies=auth_header,
                                            verify=True, timeout=60)
