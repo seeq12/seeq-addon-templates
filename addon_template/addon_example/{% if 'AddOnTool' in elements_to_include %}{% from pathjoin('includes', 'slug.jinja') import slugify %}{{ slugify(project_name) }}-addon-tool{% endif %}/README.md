@@ -16,4 +16,4 @@ You can use the `addon.py` tools from the root directory:
    your Seeq server. You only need to run this command if you are adding dependencies to the `requirements.txt` file.
 3. Run `python addon.py deploy` to deploy the Add-on package to the Add-on Manager.
 4. Run `python addon.py watch --dir <element_folder>` to watch the element folder and make changes that dynamically 
-   deployed to the Add-on Manager
+   deployed to the Add-on Manager.

@@ -3,6 +3,7 @@ from logging import Logger
 from seeq import spy
 from typing import Any
 
+
 def combine(REQUEST: Any, LOG: Logger) -> str:
     # Get params from request body
     idA = REQUEST['body']['idA']
