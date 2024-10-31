@@ -13,7 +13,6 @@ This example contains the following endpoints:
 - `GET /view-querystring` - Returns the request querystring parameters as a JSON response.
 - `POST /view-payload` - Returns the request body as a JSON response.
 - `POST /combine` - Gets the signals `idA` and `idB` from the request body and the math operator `op`. Then it creates a Seeq formula and pushes the formula to Seeq. Finally, it updates the display pane to show the mathematical result of the math operation that acted on the two signals. Returns the status dataframe of a `spy.workbooks.push()` response.
-- `POST /module-example/combine` - Same as `POST /combine` but with endpoint code located in a Python module.
 
 # Interacting with Add-on manager
 You can use the `addon.py` tools from the root directory:
