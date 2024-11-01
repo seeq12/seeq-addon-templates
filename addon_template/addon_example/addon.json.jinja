@@ -1,0 +1,139 @@
+{% from pathjoin('includes', 'slug.jinja') import slugify %}
+{%- set identifier = slugify(project_name) -%}
+{%- set add_on_path = slugify(project_name) -%}
+{
+  "identifier": "com.seeq.{{ identifier }}",
+  "name": "{{ project_name }}",
+  "description": "{{ project_description }}",
+  "version": "{{ project_version }}",
+  "maintainer": "{{ project_maintainer }}",
+  "license": "{{ project_license }}",
+  "icon": "{{ project_icon }}",
+  "elements": [
+    {% if 'AddOnTool' in elements_to_include %}
+    {
+      {%- set identifier_tool = addOnTool_name|replace(' ', '_')|regex_replace('(?<=[a-z_])([A-Z])', '_\\1')|replace('__', '_')|lower|trim -%}
+      "name": "{{ addOnTool_name }}",
+      "identifier": "com.seeq.{{identifier_tool}}.addontool",
+      "description": "{{ addOnTool_description }}",
+      "type": "AddOnTool",
+      "path": "{{ add_on_path }}-addon-tool",
+      "notebook_file_path": "addon_tool_example_target_notebook.ipynb",
+      "configuration_schema": {
+        "type": "object",
+        "properties": {
+          "display": {
+            "type": "object",
+            "properties": {
+              "icon": {
+                "type": "string",
+                "default": "{{ addOnTool_icon }}"
+              },
+              "launchLocation": {
+                "enum": ["toolsPane", "homescreen"],
+                "default": "{{ addOnTool_location }}"
+              },
+              "linkType": {
+                "enum": ["window", "tab", "none"],
+                "default": "{{ addOnTool_launch_type }}"
+              },
+              "sortKey": {
+                "type": "string",
+                "default": "S"
+              },
+              "windowDetails": {
+                "type": "string",
+                "default": "{{ addOnTool_window_details }}"
+              }
+            },
+            "required": [
+              "icon",
+              "linkType",
+              "sortKey",
+              "windowDetails"
+            ]
+          },
+          "project": {
+            "type": "object",
+            {% if addOnTool_project_properties_question %}
+            "properties": {{ addOnTool_project_properties | tojson }},
+            {% endif %}
+            "required": [{{ addOnTool_project_required_properties }}]
+          },
+          "advanced_project_configuration": {
+            "type": "object",
+            "properties": {
+              "kernel_name": {
+                "type": "string",
+                "default": "python311"
+              }
+            },
+            "required": ["kernel_name"]
+          }
+        },
+        "required": [
+          "display",
+          "project",
+          "advanced_project_configuration"
+        ]
+      },
+      "configuration_filename": "config",
+      "configuration_converter": "json"
+    }{% if 'DisplayPanePlugin' in elements_to_include or 'ToolPanePlugin' in elements_to_include or 'DataLabFunctions' in elements_to_include or 'FormulaPackage' in elements_to_include %}, {% endif %}
+    {% endif %}
+    {% if 'DisplayPanePlugin' in elements_to_include %}
+    {
+      "name": "{{ project_name }} Display Pane Plugin",
+      "identifier": "com.seeq.{{identifier}}.display-pane-plugin",
+      "type": "Plugin",
+      "category": "DisplayPane",
+      "path": "{{ add_on_path }}-display-pane-plugin"
+    }{% if 'ToolPanePlugin' in elements_to_include or 'DataLabFunctions' in elements_to_include or 'FormulaPackage' in elements_to_include %}, {% endif %}
+    {% endif %}
+    {% if 'ToolPanePlugin' in elements_to_include %}
+    {
+      "name": "{{ project_name }} Tool Pane Plugin",
+      "identifier": "com.seeq.{{identifier}}.tool-pane-plugin",
+      "type": "Plugin",
+      "category": "ToolPane",
+      "path": "{{ add_on_path }}-tool-pane-plugin"
+    }{% if 'DataLabFunctions' in elements_to_include or 'FormulaPackage' in elements_to_include %}, {% endif %}
+    {% endif %}
+    {% if 'DataLabFunctions' in elements_to_include %}
+    {
+      "name": "com.seeq.{{identifier}}.data-lab-functions",
+      "identifier": "com.seeq.{{identifier}}.data-lab-functions",
+      "type": "DataLabFunctions",
+      "path": "{{ add_on_path }}-data-lab-functions",
+      "configuration_schema": {    
+        "type": "object",
+        "properties": {
+          "advanced_project_configuration": {
+            "type": "object",
+            "properties": {
+              "kernel_name": {
+                "type": "string",
+                "default": "python311"
+              }
+            },
+            "required": ["kernel_name"]
+          }
+        },
+        "required": [
+          "advanced_project_configuration"
+        ]
+      }
+    }{% if 'FormulaPackage' in elements_to_include %}, {% endif %}
+    {% endif %}
+    {% if 'FormulaPackage' in elements_to_include %}
+    {
+      "name": "{{ project_name }} Formula Package",
+      "identifier": "com.seeq.{{identifier}}.formulapackage",
+      "type": "FormulaPackage",
+      "path": "{{ add_on_path }}-formula-package"
+    }
+    {% endif %}
+  ],
+  "previews": [],
+  "tags": {}
+}
