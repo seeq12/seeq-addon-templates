@@ -27,8 +27,10 @@ def combine(REQUEST: Any, LOG: Logger) -> str:
     LOG.info(f"Pushing formula for 'Combined Signal' to workbook {workbook_id}")
     combined_signal = spy.push(workbook=workbook_id, metadata=metadata)
 
+    include_inventory = True if spy.user.is_admin else False
+
     # Get the current worksheet
-    workbook = spy.workbooks.pull(workbook_id)[0]
+    workbook = spy.workbooks.pull(workbook_id, include_inventory=include_inventory)[0]
     worksheet = next((ws for ws in workbook.worksheets if ws.id == worksheet_id), None)
 
     # Add the combined signal if it's not already displayed on the worksheet
@@ -39,6 +41,5 @@ def combine(REQUEST: Any, LOG: Logger) -> str:
 
     # Push the updated worksheet back to Seeq
     LOG.info(f"Updating worksheet {worksheet_id} in workbook {workbook_id}")
-    spy.workbooks.push(workbook)
-    results = spy.workbooks.push(workbook)
+    results = spy.workbooks.push(workbook, include_inventory=include_inventory)
     return results.to_json()
