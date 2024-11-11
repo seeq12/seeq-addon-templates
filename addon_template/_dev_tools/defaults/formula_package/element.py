@@ -40,7 +40,8 @@ def build(element_path: pathlib.Path) -> None:
 
 
 def deploy(element_path: pathlib.Path, url: str, username: str, password: str) -> None:
-    pass
+    raise NotImplementedError(f"This method is not implemented for the Formula Package element. Try deploying the "
+                              f"entire Add-on package instead.")
 
 
 def get_files_to_package(element_path: pathlib.Path) -> List[str]:
@@ -56,7 +57,8 @@ def get_files_to_package(element_path: pathlib.Path) -> List[str]:
 
 
 def watch(element_path: pathlib.Path, url: str, username: str, password: str) -> subprocess.Popen:
-    pass
+    raise NotImplementedError(f"This method is not implemented for the Formula Package element. Try watching the "
+                              f"entire Add-on package instead.")
 
 
 def test(element_path: pathlib.Path) -> None:

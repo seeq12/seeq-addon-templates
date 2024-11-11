@@ -111,7 +111,7 @@ def _deploy_from_environment(url: str, username: str, password: str, element_pat
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Element scripts. Must be run from the virtual environment.")
+    parser = argparse.ArgumentParser(description="Data Lab Element scripts. Must be run from the virtual environment.")
     parser.add_argument('--url', type=str, help='URL to the Seeq server')
     parser.add_argument('--username', type=str, help='Username for authentication')
     parser.add_argument('--password', type=str, help='Password for authentication')

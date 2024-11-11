@@ -49,6 +49,9 @@ def print_logs(args):
     url, username, password = parse_url_username_password(args)
     save_json(CREDENTIALS_JSON_FILE, {'url': url, 'username': username, 'password': password})
     session = AddOnManagerSession(url, username, password)
+    if not session.spy_session.user.is_admin:
+        print("You must be an admin to view Add-on Manager logs.")
+        return
     log_file = f"{session.ADD_ON_MANAGER_PROJECT_NAME}.log" if args.logs_aom else args.file
     print(log_file)
     logs = session.get_logs(log_file)
