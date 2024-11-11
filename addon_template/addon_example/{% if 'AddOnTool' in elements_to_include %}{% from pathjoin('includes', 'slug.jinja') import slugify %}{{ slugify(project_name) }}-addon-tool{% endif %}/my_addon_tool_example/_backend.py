@@ -59,5 +59,18 @@ def pull_only_signals(url, grid='auto'):
     return df
 
 
-def push_signal(df, workbook_id, worksheet_name):
-    return spy.push(df, workbook=workbook_id, worksheet=worksheet_name, status=spy.Status(quiet=True), quiet=True)
+def push_signal(df, workbook_id, worksheet_id):
+    combined_signal = spy.push(df, workbook=workbook_id, status=spy.Status(quiet=True), quiet=True)
+    include_inventory = True if spy.user.is_admin else False
+
+    # Get the current worksheet
+    workbook = spy.workbooks.pull(workbook_id, include_inventory=include_inventory)[0]
+    worksheet = next((ws for ws in workbook.worksheets if ws.id == worksheet_id), None)
+
+    # Add the combined signal if it's not already displayed on the worksheet
+    combined_signal_id = combined_signal['ID'].values[0]
+    if combined_signal_id not in worksheet.display_items['ID'].values:
+        worksheet.display_items = pd.concat([worksheet.display_items, combined_signal]).reset_index()
+
+    # Push the updated worksheet back to Seeq
+    spy.workbooks.push(workbook, include_inventory=include_inventory)

@@ -1,7 +1,6 @@
 import warnings
 import pandas as pd
 from IPython.display import clear_output
-from IPython.display import display, Javascript
 
 from . import create_new_signal, create_matplotlib_widget, pull_only_signals, AppLayout
 from ._backend import push_signal
@@ -100,8 +99,7 @@ class MyAddonToolExample(AppLayout):
         self.create_displayed_fig()
 
     def push_to_seeq(self, *_):
-        df_pushed = push_signal(self.result_signal, self.workbook_id, 'From My Add-on Tool')
-        display(Javascript(f'window.open("{df_pushed.spy.workbook_url}");'))
+        push_signal(self.result_signal, self.workbook_id, self.worksheet_id)
 
     def run(self):
         return self.app
