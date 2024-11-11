@@ -13,7 +13,7 @@
     {% if 'AddOnTool' in elements_to_include %}
     {
       {%- set identifier_tool = addOnTool_name|replace(' ', '_')|regex_replace('(?<=[a-z_])([A-Z])', '_\\1')|replace('__', '_')|lower|trim -%}
-      "name": "{{ addOnTool_name }}",
+      "name": "{{ addOnTool_name }} Add-On Tool",
       "identifier": "com.seeq.{{identifier_tool}}.addontool",
       "description": "{{ addOnTool_description }}",
       "type": "AddOnTool",

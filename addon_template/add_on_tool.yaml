@@ -81,7 +81,7 @@ addOnTool_name:
 
 addOnTool_icon:
   type: str
-  help: Enter icon (see https://fontawesome.com/v4.7.0/icons/) # TODO: This list is not correct
+  help: Enter icon (see https://fontawesome.com/v4.7.0/icons/) # TODO: This list is not correct. CRAB-45639
   default: "{{ project_icon }}"
   placeholder: (This icon will be shown next to the Add-on Tool name in workbench under Tools > Add-ons )
   validator: >-

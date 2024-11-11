@@ -35,10 +35,6 @@ def watch(args):
 def elements_test(args):
     testing(args)
 
-#
-# def log_files(args):
-#     return print_all_log_files(args)
-
 
 def logs(args):
     args.logs_aom = False
