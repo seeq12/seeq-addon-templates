@@ -84,7 +84,7 @@ async function commandBootstrap() {
 
   log(chalk.bold('Specify the Access Key (or username) and Password for the Seeq Server.') + ' These');
   log('credentials will be used to publish the plugin to the Seeq Server for');
-  log('fast iteration during development');
+  log('fast iteration during development.');
   log('');
 
   log('To generate an access key:');

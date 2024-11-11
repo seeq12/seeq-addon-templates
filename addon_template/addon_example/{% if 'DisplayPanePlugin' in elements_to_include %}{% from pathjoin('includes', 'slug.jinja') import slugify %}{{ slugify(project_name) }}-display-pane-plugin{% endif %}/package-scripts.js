@@ -76,17 +76,16 @@ async function commandBootstrap() {
     await writeBootstrap({ ...existing, url });
   }
 
-  log(chalk.bold('You can specify the Access Key (or username) and Password for the Seeq Server.') + ' These');
+  log(chalk.bold('Specify the Access Key (or username) and Password for the Seeq Server.') + ' These');
   log('credentials will be used to publish the plugin to the Seeq Server for');
-  log('fast iteration during development but aren\'t otherwise needed');
+  log('fast iteration during development.');
   log('');
 
   log('To generate an access key:');
   log('');
-  log(' 1. Log into Seeq as an administrator');
-  log(' 2. Click on your name in the upper right corner');
-  log(' 3. Click "Access Keys" from the dropdown');
-  log(' 4. Name the access key (i.e., Plugin Development)');
+  log(' 1. Click on your name in the upper right corner');
+  log(' 2. Click "Access Keys" from the dropdown');
+  log(' 3. Name the access key (i.e., Plugin Development)');
   log('');
 
   async function promptAccessKey(retries) {
@@ -113,12 +112,9 @@ async function commandBootstrap() {
       try {
         log(chalk.dim('Verifying access key...'));
         const user = await login(url, accessKey, password);
-        if (!user.isAdmin) {
-          throw new Error(`Access key for ${user.email || user.name} is not an administrator`);
-        }
         log(chalk.green('  Access key is valid'));
         log('');
-        return { accessKey, password };
+        return { accessKey, password, user };
       } catch (e) {
         logError(e);
         retries++;
@@ -130,7 +126,7 @@ async function commandBootstrap() {
     }
   }
 
-  const { accessKey, password } = await promptAccessKey(retries);
+  const { accessKey, password, user } = await promptAccessKey(retries);
 
   if (existing.accessKey !== accessKey || existing.password !== password) {
     await writeBootstrap({ ...existing, accessKey, password });
@@ -146,7 +142,7 @@ async function commandBootstrap() {
     log('the `Features/Plugins/Enabled` configuration option.');
     log('');
     let enable = false;
-    if (!!accessKey && !!password) {
+    if (!!accessKey && !!password && user.isAdmin) {
       // Since we have an admin user, we can just enable support if the user wants
       ({ enable } = await inquirer
         .prompt([{
@@ -164,6 +160,9 @@ async function commandBootstrap() {
       await enablePluginsFeature(url, auth);
       log(chalk.green(`  Enabled plugin features`));
       log('');
+    } else if (!user.isAdmin) {
+        log('User is not an admin. Will be able to deploy only if experimental plugin support is already enabled.');
+
     } else {
       throw new Error('Experimental plugin support is not enabled. Please configure `Features/Plugins/Enabled`');
     }
@@ -195,9 +194,6 @@ async function commandDeploy() {
   }
 
   const user = await login(url, accessKey, password);
-  if (!user.isAdmin) {
-    throw new Error(`Access key for ${user.email || user.name} is not an administrator`);
-  }
 
   log(chalk.dim('Uploading plugin...'));
   await postZip(url, user.auth);
