@@ -1,0 +1,43 @@
+# Distribution / packagingdist/
+dist/
+build/
+eggs/
+wheels/
+node_modules/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Log files
+*.log
+
+# IDE
+.idea/
+.vscode/
+
+# jupyter notebook checkpoints
+*.ipynb_checkpoints*
+
+# plugins
+*.plugin
+
+# MacOS
+.DS_Store
+
+# credentials
+.credentials.json

@@ -42,7 +42,7 @@ addOnTool_launch_type:
 addOnTool_window_details:
   type: str
   help: You can optionally pass window (comma-separated) settings.
-  default: toolbar=0,location=0,scroll
+  default: toolbar=0,location=0,scroll,height=1000,width=800
   when: "{{ 'AddOnTool' in elements_to_include and addOnTool_location == 'window'}}"
 
 addOnTool_advanced:
