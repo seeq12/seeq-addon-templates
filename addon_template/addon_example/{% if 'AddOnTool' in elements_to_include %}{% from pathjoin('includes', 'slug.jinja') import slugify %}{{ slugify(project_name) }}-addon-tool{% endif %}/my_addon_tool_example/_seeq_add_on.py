@@ -84,13 +84,11 @@ class MyAddonToolExample(AppLayout):
         self.show_ui_component('plot')
 
     def update_display(self, *_):
-        print('display here')
         self.result_signal = pd.DataFrame()
         self.controls.disabled = True
         self.show_ui_component('spinner')
         self.save_button.disabled = True
         if {self.first_signal.v_model, self.second_signal.v_model}.issubset(set(self.df.columns)):
-            print("here")
             self.result_signal = create_new_signal(self.df[self.first_signal.v_model].values,
                                                    self.df[self.second_signal.v_model].values,
                                                    self.df.index,

@@ -29,7 +29,7 @@ def create_new_signal(signal_a: np.array, signal_b: np.array, index: pd.Index, o
     """
     if operation not in ['add', 'subtract', 'multiply', 'divide']:
         raise NameError(f"{operation} is not a supported math operator")
-    return pd.DataFrame(getattr(np, operation)(signal_a, signal_b), index=index, columns=['Result'])
+    return pd.DataFrame(getattr(np, operation)(signal_a, signal_b), index=index, columns=['Add-on Tool Combined Signal'])
 
 
 def pull_only_signals(url, grid='auto'):
@@ -60,7 +60,7 @@ def pull_only_signals(url, grid='auto'):
 
 
 def push_signal(df, workbook_id, worksheet_id):
-    combined_signal = spy.push(df, workbook=workbook_id, status=spy.Status(quiet=True), quiet=True)
+    combined_signal = spy.push(df, workbook=workbook_id, worksheet=None, status=spy.Status(quiet=True), quiet=True)
     include_inventory = True if spy.user.is_admin else False
 
     # Get the current worksheet
