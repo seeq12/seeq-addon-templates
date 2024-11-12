@@ -14,7 +14,7 @@ def combine(REQUEST: Any, LOG: Logger) -> str:
 
     # Create the formula to add the two signals
     metadata = pd.DataFrame([{
-        'Name': f'Combined Signal',
+        'Name': f'Plugin Combined Signal',
         'Formula': f"$signalA.setUnits('') {op} $signalB.setUnits('')",
         'Formula Parameters': {
             'signalA': idA,
@@ -24,7 +24,7 @@ def combine(REQUEST: Any, LOG: Logger) -> str:
     }])
 
     # Push the formula to Seeq
-    LOG.info(f"Pushing formula for 'Combined Signal' to workbook {workbook_id}")
+    LOG.info(f"Pushing formula for 'Plugin Combined Signal' to workbook {workbook_id}")
     combined_signal = spy.push(workbook=workbook_id, metadata=metadata)
 
     include_inventory = True if spy.user.is_admin else False
