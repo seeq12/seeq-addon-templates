@@ -48,6 +48,11 @@ def copy_dev_tools(destination_path):
     shutil.copytree(CURRENT_DIRECTORY / "_dev_tools", destination)
 
 
+def rename_gitignore(destination_path):
+    print(f"Renaming `gitignore` to {destination_path / '.gitignore'}")
+    shutil.move(destination_path / "gitignore", destination_path / ".gitignore")
+
+
 def delete_pycache(destination_path):
     print(f"Deleting `__pycache__` from {destination_path}")
     for root, dirs, files in os.walk(destination_path):
@@ -98,6 +103,7 @@ def create_addon(args):
     try:
         copier.run_copy(str(CURRENT_DIRECTORY), data=data, **vars(args))
         copy_dev_tools(destination_path)
+        rename_gitignore(destination_path)
         create_virtual_environment(destination_path, clean=True, hide_stdout=True)
         path_to_python = destination_path / ".venv" / ("Scripts" if WINDOWS_OS else "bin") / "python"
         print(f"Installing Add-on dependencies ...")
@@ -122,6 +128,7 @@ def update_addon(args=None):
     try:
         copier.run_recopy(data=data, **vars(args))
         copy_dev_tools(destination_path)
+        rename_gitignore(destination_path)
         print(info_open_ide(destination_path))
     except KeyboardInterrupt as e:
         print(f"\nError: Operation canceled by user")
