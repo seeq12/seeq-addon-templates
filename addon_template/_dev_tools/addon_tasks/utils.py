@@ -262,6 +262,18 @@ def generate_schema_default_dict(schema, path=""):
         raise ValueError(f"Unsupported type in path {path}: {schema['type']}")
 
 
+def check_feature_is_enabled(url, username, password, feature_path):
+    from seeq import sdk, spy
+    spy.login(username=username, password=password, url=url, quiet=True)
+    system_api = sdk.SystemApi(spy.client)
+    response = system_api.get_server_status()
+    for option in response.configuration_options:
+        if option.path == feature_path:
+            if option.value is False:
+                raise ValueError(
+                    f"Feature {feature_path} is not enabled. Please contact your Seeq administrator to enable it")
+
+
 def _get_authenticated_session(element_path, url, username, password):
     from seeq import sdk, spy
     spy.login(username=username, password=password, url=url, quiet=True)

@@ -21,20 +21,26 @@ from _dev_tools.addon_tasks.utils import (
     get_folders_from_args,
     get_module,
     save_json,
+    check_feature_is_enabled,
 )
 
 from _dev_tools.addon_tasks import package
 
 
 def deploy(args):
+    url, username, password = parse_url_username_password(args)
+    target_elements = filter_element_paths(get_element_paths_with_type(), get_folders_from_args(args))
+    element_types = list(target_elements.values())
+    if "AddOnTool" in element_types:
+        check_feature_is_enabled(url, username, password, "Features/AddOnTools/Enabled")
+    if "Plugin" in element_types:
+        check_feature_is_enabled(url, username, password, "Features/Plugins/Enabled")
     if args.dir is None:
         _deploy_entire_package(args)
     else:
-        url, username, password = parse_url_username_password(args)
         if url is None or username is None or password is None:
             raise Exception("Please provide --url, --user, and --password arguments.")
         save_json(CREDENTIALS_JSON_FILE, {'url': url, 'username': username, 'password': password})
-        target_elements = filter_element_paths(get_element_paths_with_type(), get_folders_from_args(args))
         for element_path, element_type in target_elements.items():
             print(f'Deploying element: {element_path}')
             get_module(element_path, element_type).deploy(pathlib.Path(element_path), url, username, password)
