@@ -57,8 +57,7 @@ def get_files_to_package(element_path: pathlib.Path) -> List[str]:
 
 
 def watch(element_path: pathlib.Path, url: str, username: str, password: str) -> subprocess.Popen:
-    raise NotImplementedError(f"This method is not implemented for the Formula Package element. Try watching the "
-                              f"entire Add-on package instead.")
+    pass
 
 
 def test(element_path: pathlib.Path) -> None:
