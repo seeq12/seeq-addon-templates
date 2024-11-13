@@ -42,6 +42,7 @@ DATA_LAB_FUNCTIONS_TYPE = "DataLabFunctions"
 DATA_LAB_FUNCTIONS_ELEMENT_PATH = f'{pathlib.Path(__file__).parent.parent.name}.defaults.data_lab_project'
 
 TIMESTAMP_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
+NOTE_FOR_FEATURE_FLAG_CHANGE = "Enabled by Add-on Packaging Utility"
 
 
 def save_json(path: pathlib.Path, values: dict) -> None:
@@ -270,8 +271,21 @@ def check_feature_is_enabled(url, username, password, feature_path):
     for option in response.configuration_options:
         if option.path == feature_path:
             if option.value is False:
-                raise ValueError(
-                    f"Feature {feature_path} is not enabled. Please contact your Seeq administrator to enable it")
+                if spy.user.is_admin:
+                    print(f"Feature {feature_path} is not enabled. Enabling it now.")
+                    system_api.set_configuration_options(body={
+                        "configurationOptions": [
+                            {
+                                "note": NOTE_FOR_FEATURE_FLAG_CHANGE,
+                                "path": feature_path,
+                                "value": True
+                            }
+                        ],
+                        "dryRun": False
+                    })
+                else:
+                    raise ValueError(
+                        f"Feature {feature_path} is not enabled. Please contact your Seeq administrator to enable it")
 
 
 def _get_authenticated_session(element_path, url, username, password):
