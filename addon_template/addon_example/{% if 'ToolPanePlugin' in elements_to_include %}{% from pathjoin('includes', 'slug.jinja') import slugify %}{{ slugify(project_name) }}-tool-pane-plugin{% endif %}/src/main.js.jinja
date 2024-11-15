@@ -1,6 +1,7 @@
 {%- set identifier = project_name|replace(' ', '_')|regex_replace('(?<=[a-z_])([A-Z])', '_\\1')|replace('__', '_')|lower|trim -%}
+{%- set company = company_name|replace(' ', '_')|regex_replace('(?<=[a-z_])([A-Z])', '_\\1')|replace('__', '_')|lower|trim -%}
 
-const DLF_PROJECT_NAME = "com.seeq.{{identifier}}.data-lab-functions"
+const DLF_PROJECT_NAME = "com.{{company}}.{{identifier}}.data-lab-functions"
 
 document.addEventListener("DOMContentLoaded", function() {
     registerHandlers();
