@@ -74,6 +74,15 @@ project_maintainer:
         maintainer field cannot be empty.
         {% endif %}
 
+company_name:
+    type: str
+    help: Enter the name of your company. This will be used along with the project name to make a unique identifier for the Add-on.
+    placeholder: "(e.g.: My Company)"
+    validator: >-
+        {% if not company_name %}
+        company name field cannot be empty.
+        {% endif %}
+
 project_license:
     type: str
     help: Choose a license. To skip, press Enter

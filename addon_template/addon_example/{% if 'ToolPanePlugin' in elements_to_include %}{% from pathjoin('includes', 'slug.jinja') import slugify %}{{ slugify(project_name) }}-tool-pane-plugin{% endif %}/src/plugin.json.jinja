@@ -1,8 +1,9 @@
 {%- set identifier = project_name|replace(' ', '_')|regex_replace('(?<=[a-z_])([A-Z])', '_\\1')|replace('__', '_')|lower|trim -%}
+{%- set company = company_name|replace(' ', '_')|regex_replace('(?<=[a-z_])([A-Z])', '_\\1')|replace('__', '_')|lower|trim -%}
 
 {
   "category": "ToolPane",
-  "identifier": "com.seeq.{{identifier}}.tool-pane-plugin",
+  "identifier": "com.{{company}}.{{identifier}}.tool-pane-plugin",
   "name": "{{ project_name }} Tool Pane Plugin",
   "description": "A plugin that combines two signals",
   "version": "{{ project_version }}",

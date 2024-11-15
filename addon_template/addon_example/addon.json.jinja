@@ -1,8 +1,9 @@
 {% from pathjoin('includes', 'slug.jinja') import slugify %}
 {%- set identifier = slugify(project_name) -%}
 {%- set add_on_path = slugify(project_name) -%}
+{%- set company = slugify(company_name) -%}
 {
-  "identifier": "com.seeq.{{ identifier }}",
+  "identifier": "com.{{company}}.{{ identifier }}",
   "name": "{{ project_name }}",
   "description": "{{ project_description }}",
   "version": "{{ project_version }}",
@@ -14,7 +15,7 @@
     {
       {%- set identifier_tool = addOnTool_name|replace(' ', '_')|regex_replace('(?<=[a-z_])([A-Z])', '_\\1')|replace('__', '_')|lower|trim -%}
       "name": "{{ addOnTool_name }} Add-On Tool",
-      "identifier": "com.seeq.{{identifier_tool}}.addontool",
+      "identifier": "com.{{company}}.{{identifier_tool}}.addontool",
       "description": "{{ addOnTool_description }}",
       "type": "AddOnTool",
       "path": "{{ add_on_path }}-addon-tool",
@@ -84,7 +85,7 @@
     {% if 'DisplayPanePlugin' in elements_to_include %}
     {
       "name": "{{ project_name }} Display Pane Plugin",
-      "identifier": "com.seeq.{{identifier}}.display-pane-plugin",
+      "identifier": "com.{{company}}.{{identifier}}.display-pane-plugin",
       "type": "Plugin",
       "category": "DisplayPane",
       "path": "{{ add_on_path }}-display-pane-plugin"
@@ -93,7 +94,7 @@
     {% if 'ToolPanePlugin' in elements_to_include %}
     {
       "name": "{{ project_name }} Tool Pane Plugin",
-      "identifier": "com.seeq.{{identifier}}.tool-pane-plugin",
+      "identifier": "com.{{company}}.{{identifier}}.tool-pane-plugin",
       "type": "Plugin",
       "category": "ToolPane",
       "path": "{{ add_on_path }}-tool-pane-plugin"
@@ -101,8 +102,8 @@
     {% endif %}
     {% if 'DataLabFunctions' in elements_to_include %}
     {
-      "name": "com.seeq.{{identifier}}.data-lab-functions",
-      "identifier": "com.seeq.{{identifier}}.data-lab-functions",
+      "name": "com.{{company}}.{{identifier}}.data-lab-functions",
+      "identifier": "com.{{company}}.{{identifier}}.data-lab-functions",
       "type": "DataLabFunctions",
       "path": "{{ add_on_path }}-data-lab-functions",
       "configuration_schema": {    
@@ -128,7 +129,7 @@
     {% if 'FormulaPackage' in elements_to_include %}
     {
       "name": "{{ project_name }} Formula Package",
-      "identifier": "com.seeq.{{identifier}}.formulapackage",
+      "identifier": "com.{{company}}.{{identifier}}.formulapackage",
       "type": "FormulaPackage",
       "path": "{{ add_on_path }}-formula-package"
     }
