@@ -7,7 +7,7 @@ import path from 'path';
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import stream from 'stream';
-import { pipeline as streamPipeline, Readable } from 'stream';
+import { pipeline } from 'stream';
 import process from 'process';
 
 import { rimraf } from 'rimraf';
@@ -20,6 +20,7 @@ import fetch from 'node-fetch';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
+const streamPipeline = promisify(pipeline);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -322,13 +323,7 @@ async function downloadFile(url, filename, destination) {
     throw err;
   }
 
-  return await streamPipeline(
-    res.body,
-    fs.createWriteStream(path.resolve(destination, filename)), (err) => {
-      if (err) {
-        throw err;
-      }
-    });
+    return await streamPipeline(res.body, fs.createWriteStream(path.resolve(destination, filename)));
 }
 
 async function downloadSdk(url) {
