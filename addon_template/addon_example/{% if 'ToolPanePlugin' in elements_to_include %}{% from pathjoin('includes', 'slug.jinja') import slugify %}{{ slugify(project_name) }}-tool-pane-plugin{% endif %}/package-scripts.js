@@ -7,7 +7,7 @@ import path from 'path';
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import stream from 'stream';
-import { pipeline as streamPipeline } from 'stream';
+import { pipeline as streamPipeline, Readable } from 'stream';
 import process from 'process';
 
 import { rimraf } from 'rimraf';
@@ -202,7 +202,7 @@ async function commandDeploy() {
   const user = await login(url, accessKey, password);
 
   log(chalk.dim('Uploading plugin...'));
-  await postZip(url, user.auth);
+  await postZip(url, user);
   log(chalk.green('  Uploaded plugin to ' + url));
 }
 
@@ -280,7 +280,8 @@ async function login(url, username, password) {
     auth: res.headers.get('x-sq-auth'),
     name: body.name,
     email: body.email,
-    isAdmin: body.isAdmin
+    isAdmin: body.isAdmin,
+    id: body.id,
   };
 }
 
@@ -360,15 +361,22 @@ function shortVersion(version) {
   return version.replace(/^(R\d+)\..*$/, '$1');
 }
 
-async function zip() {
+async function zip(skipPluginJson = false) {
   const seeqVersion = (await fsp.readFile(resolve('sdk', 'version.txt'))).toString();
   const { name, version } = JSON.parse(await fsp.readFile(resolve('src', 'plugin.json')));
   const filename = `${name}-${version}-${shortVersion(seeqVersion)}.plugin`;
 
+  function pluginJsonSkipper(entryData) {
+    if (skipPluginJson && entryData.name === 'plugin.json') {
+      return false; // Returning false will skip the file
+    }
+    return entryData;
+  }
+
   return {
     filename,
     archive: archiver('zip')
-      .directory(resolve('dist'), false)
+      .directory(resolve('dist'), false, (entryData) => pluginJsonSkipper(entryData))
   };
 }
 
@@ -401,25 +409,43 @@ async function generateZip() {
   return zipPath;
 }
 
-async function postZip(url, auth) {
-  const { filename, archive } = await zip();
+async function postZip(url, user) {
+  const { auth, id, isAdmin } = user;
+  const inDevelopment = !isAdmin;
+  const skipPluginJson = inDevelopment;
+  const { filename, archive } = await zip(skipPluginJson);
   const form = new FormData();
-  // FormData rejects archive because it isn't a stream, so use this dummy stream
   const IdentityStream = class extends stream.Transform {
+    // FormData rejects archive because it isn't a stream, so use this dummy stream
     _transform(chunk, encoding, done) {
       this.push(chunk);
       done();
     }
   };
+
+  if (inDevelopment) {
+    // When in development, we need to append the identifier in the plugin.json with the user id 
+    const pluginJson = JSON.parse(await fsp.readFile(resolve('src', 'plugin.json'), 'utf8'));
+    pluginJson.identifier = `${pluginJson.identifier}_${id.toLowerCase()}`;
+    const memoryStream = new Readable({
+      read() {
+          this.push(JSON.stringify(pluginJson, null, 2));
+          this.push(null);
+      }
+    });
+    archive.append(memoryStream, { name: 'plugin.json' });
+  }
+
   const innerStream = new IdentityStream();
   archive.on('warning', (err) => {
     log(`WARNING: ${err}`);
   });
   archive.pipe(innerStream);
   await archive.finalize();
+
   form.append('file', innerStream, filename);
 
-  const res = await fetch(`${base(url)}/api/plugins`, {
+  const res = await fetch(`${base(url)}/api/plugins?inDevelopment=${inDevelopment}`, {
     method: 'POST',
     headers: {
       'x-sq-auth': auth,
