@@ -35,5 +35,6 @@ def watch(args):
         except KeyboardInterrupt:
             print('Stopping watch')
             for process in processes.values():
-                process.terminate()
+                if process is not None: # Elements that pass on the watch command will return None
+                    process.terminate()
             break
