@@ -1,8 +1,9 @@
 {%- set identifier = project_name|replace(' ', '_')|regex_replace('(?<=[a-z_])([A-Z])', '_\\1')|replace('__', '_')|lower|trim -%}
+{%- set company = company_name|replace(' ', '_')|regex_replace('(?<=[a-z_])([A-Z])', '_\\1')|replace('__', '_')|lower|trim -%}
 
 {
   "category": "DisplayPane",
-  "identifier": "com.seeq.{{identifier}}.display-pane-plugin",
+  "identifier": "com.{{company}}.{{identifier}}.display-pane-plugin",
   "name": "{{ project_name }} Display Pane Plugin",
   "description": "A plugin that displays a pie chart",
   "version": "{{ project_version }}",
