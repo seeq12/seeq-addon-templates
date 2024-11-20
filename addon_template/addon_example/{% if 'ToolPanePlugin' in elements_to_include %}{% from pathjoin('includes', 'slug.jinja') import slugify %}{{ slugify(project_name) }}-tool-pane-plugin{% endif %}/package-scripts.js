@@ -420,6 +420,7 @@ async function postZip(url, user) {
 
   if (inDevelopment) {
     // When in development, we need to append the identifier in the plugin.json with the user id 
+    // to match what the Add-on Manager does and to avoid conflicts with other plugins.
     const pluginJson = JSON.parse(await fsp.readFile(resolve('src', 'plugin.json'), 'utf8'));
     pluginJson.identifier = `${pluginJson.identifier}_${id.toLowerCase()}`;
     const memoryStream = new stream.Readable({
