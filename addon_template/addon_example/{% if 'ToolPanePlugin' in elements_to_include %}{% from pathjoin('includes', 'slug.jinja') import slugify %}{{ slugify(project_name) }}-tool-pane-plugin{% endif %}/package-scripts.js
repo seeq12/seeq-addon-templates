@@ -422,7 +422,7 @@ async function postZip(url, user) {
     // When in development, we need to append the identifier in the plugin.json with the user id 
     const pluginJson = JSON.parse(await fsp.readFile(resolve('src', 'plugin.json'), 'utf8'));
     pluginJson.identifier = `${pluginJson.identifier}_${id.toLowerCase()}`;
-    const memoryStream = new Readable({
+    const memoryStream = new stream.Readable({
       read() {
           this.push(JSON.stringify(pluginJson, null, 2));
           this.push(null);
