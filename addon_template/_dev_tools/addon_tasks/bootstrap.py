@@ -9,7 +9,6 @@ from _dev_tools.addon_tasks.utils import (
     get_module,
     parse_url_username_password,
     save_json,
-    check_python_version,
     CREDENTIALS_JSON_FILE,
 )
 
