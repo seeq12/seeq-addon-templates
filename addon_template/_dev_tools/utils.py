@@ -1,9 +1,10 @@
 import os
+import sys
 import subprocess
 import pathlib
 import venv
 
-
+MIN_PYTHON_VERSION = (3, 11)
 VENV_NAME = ".venv"
 WHEELS_NAME = ".wheels"
 
@@ -105,3 +106,14 @@ def update_venv(element_path: pathlib.Path, global_path: pathlib.Path = None, hi
     pip_install_dependencies(element_path, path_to_pip, wheels_path, hide_stdout=hide_stdout)
 
     print("Virtual environment updated.")
+
+
+def check_python_version(major, minor):
+    python_version = sys.version_info
+    if python_version < (major, minor):
+        raise Exception(
+            f"Python {major}.{minor} or higher is required. Found {python_version.major}.{python_version.minor}.{python_version.micro}"
+        )
+    print(
+        f"Python version: {python_version.major}.{python_version.minor}.{python_version.micro}"
+    )

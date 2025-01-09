@@ -9,8 +9,11 @@ from _dev_tools.addon_tasks.utils import (
     get_module,
     parse_url_username_password,
     save_json,
-    CREDENTIALS_JSON_FILE
+    check_python_version,
+    CREDENTIALS_JSON_FILE,
 )
+
+from _dev_tools.utils import check_python_version, MIN_PYTHON_VERSION
 
 
 def bootstrap(args):
@@ -27,9 +30,6 @@ def bootstrap(args):
 
 
 def check_dependencies(element_paths_with_type: Dict[str, str]):
-    python_version = sys.version_info
-    if python_version < (3, 11):
-        raise Exception('Python 3.11 or higher is required.')
-    print(f'Python version: {python_version.major}.{python_version.minor}.{python_version.micro}')
+    check_python_version(*MIN_PYTHON_VERSION)
     for element_path, element_type in element_paths_with_type.items():
         get_module(element_path, element_type).check_dependencies()

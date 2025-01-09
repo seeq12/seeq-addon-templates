@@ -8,7 +8,7 @@ developing your own Add-ons.
 
 The Add-on Example Generator requires the following software to be installed on your machine:
 
-- Python 3.8 or later
+- Python 3.11 or later available on your path as either `python` or `python3`
 - Node.js 21.7.3 or later
 - On Windows, make sure that long paths are enabled both in Windows RegEdit and Git.
 	- You can enable long paths in the Windows RegEdit by running the following command in PowerShell as an
