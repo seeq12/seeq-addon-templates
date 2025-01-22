@@ -45,13 +45,23 @@
               "windowDetails": {
                 "type": "string",
                 "default": "{{ addOnTool_window_details }}"
+              },
+              "reuseWindow": {
+                "type": "boolean",
+                "default": true
+              },
+              "includeWorkbookParameters": {
+                "type": "boolean",
+                "default": true
               }
             },
             "required": [
               "icon",
               "linkType",
               "sortKey",
-              "windowDetails"
+              "windowDetails",
+              "reuseWindow",
+              "includeWorkbookParameters"
             ]
           },
           "project": {
