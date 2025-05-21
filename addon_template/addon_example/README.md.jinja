@@ -21,19 +21,23 @@ This project includes the following Add-on elements:
 # Getting Started
 To deploy your Add-on package example to Add-on Manager, follow the steps below:
 1. Activate the virtual environment
-	* If you are using a Terminal, you can activate the virtual environment by running `source .venv/bin/activate`
-	  (Linux/Mac) or `.venv\Scripts\activate` (Windows).
-	* If you are using an IDE, you can configure the IDE to use the virtual environment.
+    * If you are using a Terminal, you can activate the virtual environment by running `source .venv/bin/activate`
+      (Linux/Mac) or `.venv\Scripts\activate` (Windows).
+    * If you are using an IDE, you can configure the IDE to use the virtual environment.
 {% if 'DisplayPanePlugin' in elements_to_include or 'ToolPanePlugin' in elements_to_include %}
 2. Run `python addon.py bootstrap --url https://<my-seeq-server> --username <username> --password <password>` making
    sure you pass the correct URL, username, and password to your Seeq server.
 3. Run `python addon.py build` to build the `Plugin` elements in the Add-on package.
-4. Run `python addon.py deploy` to deploy the Add-on package to the Add-on Manager.
-5. Run `python addon.py watch` to make changes to the Add-on package and immediately update the changes to Add-on Manager.
+4. Run `python addon.py package` to create a distributable package of your Add-on.  
+   This command generates a `.addon` file (the packaged Add-on) and a `.addonmeta` file (metadata about the package), which can be uploaded to the Add-on Manager or shared with others.
+5. Run `python addon.py deploy` to deploy the Add-on package to the Add-on Manager.
+6. Run `python addon.py watch` to make changes to the Add-on package and immediately update the changes to Add-on Manager.
 {% else %}
-2. Run `python addon.py deploy --url https://<my-seeq-server> --username <username> --password <password>` making
+2. Run `python addon.py package` to create a distributable package of your Add-on.  
+   This command generates a `.addon` file (the packaged Add-on) and a `.addonmeta` file (metadata about the package), which can be uploaded to the Add-on Manager or shared with others.
+3. Run `python addon.py deploy --url https://<my-seeq-server> --username <username> --password <password>` making
    sure you pass the correct URL, username, and password to your Seeq server.
-3. Run `python addon.py watch` to make changes to the Add-on package and automatically update the changes to Add-on Manager.
+4. Run `python addon.py watch` to make changes to the Add-on package and automatically update the changes to Add-on Manager.
 {% endif %}
 
 
