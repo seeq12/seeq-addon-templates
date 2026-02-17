@@ -57,6 +57,7 @@
             },
             "required": [
               "icon",
+              "launchLocation",
               "linkType",
               "sortKey",
               "windowDetails",
@@ -64,13 +65,13 @@
               "includeWorkbookParameters"
             ]
           },
+          {% if addOnTool_project_properties_question %}
           "project": {
             "type": "object",
-            {% if addOnTool_project_properties_question %}
             "properties": {{ addOnTool_project_properties | tojson }},
-            {% endif %}
             "required": [{{ addOnTool_project_required_properties }}]
           },
+          {% endif %}
           "advanced_project_configuration": {
             "type": "object",
             "properties": {
@@ -84,7 +85,9 @@
         },
         "required": [
           "display",
+          {% if addOnTool_project_properties_question %}
           "project",
+          {% endif %}
           "advanced_project_configuration"
         ]
       },
