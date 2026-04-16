@@ -24,7 +24,7 @@ from _dev_tools.addon_tasks.utils import (
     check_feature_is_enabled,
 )
 
-from _dev_tools.addon_tasks import package
+from _dev_tools.addon_tasks.package import package as package_addon
 
 
 def deploy(args):
@@ -52,7 +52,7 @@ def _deploy_entire_package(args):
     save_json(CREDENTIALS_JSON_FILE, {'url': url, 'username': username, 'password': password})
     session = AddOnManagerSession(url, username, password)
 
-    package(args)
+    package_addon(args)
 
     if args.clean:
         uninstall(args)
