@@ -1,0 +1,34 @@
+from __future__ import annotations
+
+import json
+import os
+from pathlib import Path
+
+import pytest
+from seeq import spy
+
+from {{ python_package_name_override if python_package_name_override else 'my_datalab_functions_example' }}.api import get_status
+
+ADDON_ROOT = Path(__file__).resolve().parents[2]
+CREDENTIALS_PATH = ADDON_ROOT / ".credentials.json"
+
+
+@pytest.mark.system
+def test_get_status_can_run_in_a_live_authenticated_session() -> None:
+    if not CREDENTIALS_PATH.exists():
+        pytest.skip(f"Missing credentials file at {CREDENTIALS_PATH}")
+
+    credentials = json.loads(CREDENTIALS_PATH.read_text(encoding="utf-8"))
+    spy.login(
+        url=credentials["url"],
+        username=credentials["username"],
+        password=credentials["password"],
+        ignore_ssl_errors=True,
+        request_origin_label="{{ project_name }} system tests",
+    )
+
+    response = get_status()
+
+    assert response["success"] is True
+    assert response["error"] is None
+    assert response["data"]["addon"] == "{{ project_name }}"

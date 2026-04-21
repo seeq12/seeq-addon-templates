@@ -1,0 +1,16 @@
+from __future__ import annotations
+
+from datetime import datetime, timezone
+from typing import Any
+
+
+def get_status(_query: dict[str, Any] | None = None) -> dict[str, Any]:
+    return {
+        "success": True,
+        "data": {
+            "addon": "{{ project_name }}",
+            "status": "ok",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        },
+        "error": None,
+    }

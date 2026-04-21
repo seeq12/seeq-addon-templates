@@ -60,7 +60,7 @@ def watch(element_path: pathlib.Path, url: str, username: str, password: str) ->
     pass
 
 
-def test(element_path: pathlib.Path) -> None:
+def test(element_path: pathlib.Path, markers: str | None = None) -> None:
     pass
 
 

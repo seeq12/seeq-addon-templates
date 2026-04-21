@@ -1,0 +1,15 @@
+import { render, screen } from "@testing-library/react";
+import App from "./App";
+import { getSeeq } from "./seeq";
+
+vi.mock("./seeq", () => ({
+  getSeeq: vi.fn().mockResolvedValue({}),
+}));
+
+describe("App", () => {
+  it("renders the add-on title", async () => {
+    render(<App />);
+    expect(await screen.findByRole("heading", { name: "{{ project_name }}" })).toBeInTheDocument();
+    expect(getSeeq).toHaveBeenCalledTimes(1);
+  });
+});

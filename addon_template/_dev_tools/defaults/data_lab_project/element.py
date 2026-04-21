@@ -14,6 +14,7 @@ sys.path.append(os.path.abspath(CURRENT_FILE.parent.parent.parent.parent.resolve
 from _dev_tools.addon_tasks.utils import (
     _upload_file,
     _get_authenticated_session,
+    get_or_create_dlf_project_id,
     _watch_from_environment
 )
 
@@ -52,7 +53,7 @@ def bootstrap(
         print("Environment is already bootstrapped at top level. ")
         return
     print(element_path)
-    create_virtual_environment(element_path, clean, global_python_env)
+    create_virtual_environment(element_path, False if global_python_env else clean, global_python_env)
     update_venv(element_path, global_python_env)
 
 
@@ -77,15 +78,19 @@ def watch(element_path: pathlib.Path, url, username, password) -> subprocess.Pop
                             f" --url {url} --username {username} --password {password}", shell=True)
 
 
-def test(element_path: pathlib.Path) -> None:
+def test(element_path: pathlib.Path, markers: str | None = None) -> None:
     path_to_test = get_venv_paths(element_path, path_requested="test")
-    process = subprocess.run(f"{path_to_test.resolve()} -m unit", cwd=element_path.resolve(),
+    marker_expression = markers or "unit"
+
+    process = subprocess.run(f"{path_to_test.resolve()} -m \"{marker_expression}\"", cwd=element_path.resolve(),
                              check=False, shell=True, stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
 
     print("TEST PROCESS\n", process.stdout.decode())
     if process.stderr:
         print("TEST ERRORS\n", process.stderr.decode())
+    if process.returncode != 0:
+        raise subprocess.CalledProcessError(process.returncode, process.args)
 
 
 def get_build_dependencies() -> List[str]:
@@ -104,7 +109,8 @@ def get_files_to_package(element_path: pathlib.Path) -> List[str]:
 
 
 def _deploy_from_environment(url: str, username: str, password: str, element_path: pathlib.Path):
-    requests_session, auth_header, project_id = _get_authenticated_session(element_path, url, username, password)
+    requests_session, auth_header = _get_authenticated_session(url, username, password)
+    project_id = get_or_create_dlf_project_id(element_path, url, username, password)
     for destination in get_files_to_package(element_path):
         source = element_path / destination
         _upload_file(url, requests_session, auth_header, project_id, source, destination)

@@ -134,6 +134,56 @@ element_prompts:
     default: Press enter to continue
     when: "{% if elements_to_include %}true{% endif %}"
 
+addon_identifier_override:
+    type: str
+    default: ""
+    when: false
+
+plugin_identifier_override:
+    type: str
+    default: ""
+    when: false
+
+plugin_name_override:
+    type: str
+    default: ""
+    when: false
+
+plugin_path_override:
+    type: str
+    default: ""
+    when: false
+
+dlf_identifier_override:
+    type: str
+    default: ""
+    when: false
+
+dlf_name_override:
+    type: str
+    default: ""
+    when: false
+
+dlf_path_override:
+    type: str
+    default: ""
+    when: false
+
+python_package_name_override:
+    type: str
+    default: ""
+    when: false
+
+python_project_name_override:
+    type: str
+    default: ""
+    when: false
+
+dlf_kernel_name_override:
+    type: str
+    default: ""
+    when: false
+
 ---
 # Add-on Tool element questions
 !include add_on_tool.yaml

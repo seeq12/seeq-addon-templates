@@ -1,0 +1,21 @@
+{%- set company = company_name|replace(' ', '_')|regex_replace('(?<=[a-z_])([A-Z])', '_\\1')|replace('__', '_')|lower|trim -%}
+{%- set identifier = project_name|replace(' ', '_')|regex_replace('(?<=[a-z_])([A-Z])', '_\\1')|replace('__', '_')|lower|trim -%}
+{%- set plugin_identifier = plugin_identifier_override or ("com." ~ company ~ "." ~ identifier ~ ".display-pane-plugin") -%}
+{%- set plugin_name = plugin_name_override or (project_name ~ " Display Pane Plugin") -%}
+{%- set plugin_icon = ("fa " ~ project_icon) if project_icon.startswith("fa-") else project_icon -%}
+{
+  "category": "DisplayPane",
+  "identifier": "{{ plugin_identifier }}",
+  "name": "{{ plugin_name }}",
+  "description": "{{ project_description }}",
+  "version": "{{ project_version }}",
+  "icon": "{{ plugin_icon }}",
+  "security": "not used",
+  "entryPoint": "",
+  "host": {
+    "hideDisplayRangeSelector": false,
+    "hideInvestigateRangeSelector": false,
+    "hideBottomPanels": false
+  },
+  "options": {}
+}

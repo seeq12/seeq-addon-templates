@@ -1,0 +1,39 @@
+{
+  "cells": [
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "from {{ python_package_name_override if python_package_name_override else 'my_datalab_functions_example' }}.api import get_status\\n",
+        "from logging import Logger\\n",
+        "REQUEST = None\\n",
+        "LOG: Logger\\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "# GET /status\\n",
+        "get_status(REQUEST[\"args\"])\\n"
+      ]
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "{{ dlf_kernel_name_override or 'python311' }}"
+    },
+    "language_info": {
+      "name": "python",
+      "version": "3.11"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

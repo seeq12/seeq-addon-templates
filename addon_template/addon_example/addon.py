@@ -1,42 +1,53 @@
 import argparse
+import os
+import pathlib
+import sys
 
-from _dev_tools.addon_tasks import (
-    bootstrap as bootstrapping,
-    build as building,
-    package as packaging,
-    deploy as deploying,
-    watch as watching,
-    elements_testing as testing,
-    print_all_log_files,
-    print_logs
-)
 
+PROJECT_PATH = pathlib.Path(__file__).parent.resolve()
+VENV_PYTHON = PROJECT_PATH / ".venv" / ("Scripts" if os.name == "nt" else "bin") / "python"
+
+
+def _reexec_in_project_venv():
+    if not VENV_PYTHON.exists():
+        return
+    current_prefix = pathlib.Path(sys.prefix).resolve()
+    if current_prefix == (PROJECT_PATH / ".venv").resolve():
+        return
+    os.execv(str(VENV_PYTHON), [str(VENV_PYTHON), str(PROJECT_PATH / "addon.py"), *sys.argv[1:]])
 
 def bootstrap(args):
+    from _dev_tools.addon_tasks.bootstrap import bootstrap as bootstrapping
     bootstrapping(args)
 
 
 def build(args=None):
+    from _dev_tools.addon_tasks.build import build as building
     building(args)
 
 
 def package(args=None):
+    from _dev_tools.addon_tasks.package import package as packaging
     packaging(args)
 
 
 def deploy(args):
+    from _dev_tools.addon_tasks.deploy import deploy as deploying
     deploying(args)
 
 
 def watch(args):
+    from _dev_tools.addon_tasks.watch import watch as watching
     watching(args)
 
 
 def elements_test(args):
+    from _dev_tools.addon_tasks.testing import elements_testing as testing
     testing(args)
 
 
 def logs(args):
+    from _dev_tools.addon_tasks.logs import print_all_log_files, print_logs
     args.logs_aom = False
     if args.file is None:
         print_all_log_files(args)
@@ -45,11 +56,13 @@ def logs(args):
 
 
 def logs_aom(args):
+    from _dev_tools.addon_tasks.logs import print_logs
     args.logs_aom = True
     return print_logs(args)
 
 
 if __name__ == "__main__":
+    _reexec_in_project_venv()
     parser = argparse.ArgumentParser(prog='addon.py', description='Add-on Developer Tools')
     subparsers = parser.add_subparsers(help='sub-command help', required=True)
 
@@ -113,6 +126,8 @@ if __name__ == "__main__":
     parser_test = subparsers.add_parser('test', help='Run the tests for all or individual elements')
     parser_test.add_argument('--dir', type=str, nargs='*', default=None,
                              help='Execute the command for the subset of the element directories specified.')
+    parser_test.add_argument('--markers', type=str, default=None,
+                             help='Optional pytest marker expression for test runners that support marker selection.')
     parser_test.set_defaults(func=elements_test)
 
     options, unknown = parser.parse_known_args()

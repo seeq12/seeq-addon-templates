@@ -1,0 +1,75 @@
+:root {
+  color-scheme: light;
+  font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif;
+  background: radial-gradient(circle at top, #fff7db 0%, #f3efe1 45%, #ebe7db 100%);
+  color: #1f1f1a;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+.card {
+  width: min(42rem, 100%);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(31, 31, 26, 0.12);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 24px 80px rgba(31, 31, 26, 0.12);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  margin: 0 0 0.75rem;
+  color: #7a5d18;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 0.95;
+}
+
+.description {
+  margin: 1rem 0 0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #4a4539;
+}
+
+.facts {
+  margin: 1.5rem 0 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.facts div {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(31, 31, 26, 0.12);
+}
+
+dt {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #7a5d18;
+}
+
+dd {
+  margin: 0.25rem 0 0;
+  font-weight: 600;
+}

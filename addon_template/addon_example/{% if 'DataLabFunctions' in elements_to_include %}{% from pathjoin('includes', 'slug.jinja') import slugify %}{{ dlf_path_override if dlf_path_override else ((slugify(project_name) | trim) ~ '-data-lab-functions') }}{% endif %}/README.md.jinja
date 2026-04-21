@@ -1,0 +1,13 @@
+# {{ project_name }} Data Lab Functions
+
+This directory contains the optional Data Lab Functions backend for {{ project_name }}.
+
+The default entry notebook is `API.ipynb`.
+
+Testing defaults:
+
+- `python3 addon.py test --dir {{ dlf_path_override if dlf_path_override else 'data-lab-functions' }}` runs `unit` tests
+- `python3 addon.py test --dir {{ dlf_path_override if dlf_path_override else 'data-lab-functions' }} --markers system` runs only `system` tests
+- `python3 addon.py test --dir {{ dlf_path_override if dlf_path_override else 'data-lab-functions' }} --markers "unit or system"` runs both
+
+Keep `API.ipynb` as route glue only. Put real logic in Python modules so unit and system tests can call the backend functions directly.

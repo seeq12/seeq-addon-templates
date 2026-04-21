@@ -1,4 +1,5 @@
 import glob
+import json
 import os
 import pathlib
 import subprocess
@@ -9,6 +10,27 @@ from _dev_tools.addon_tasks.utils import (
     save_json,
     load_json,
 )
+
+
+def _use_pnpm(element_path: pathlib.Path) -> bool:
+    if (element_path / "pnpm-lock.yaml").exists():
+        return True
+    package_json = element_path / "package.json"
+    if package_json.exists():
+        with open(package_json, "r", encoding="utf-8") as handle:
+            package_data = json.load(handle)
+        package_manager = package_data.get("packageManager", "")
+        if isinstance(package_manager, str) and package_manager.startswith("pnpm@"):
+            return True
+    return False
+
+
+def _package_manager(element_path: pathlib.Path) -> str:
+    return "pnpm" if _use_pnpm(element_path) else "npm"
+
+
+def _run(element_path: pathlib.Path, command: str) -> None:
+    subprocess.run(command, cwd=element_path, shell=True, check=True)
 
 
 def check_dependencies() -> None:
@@ -22,6 +44,9 @@ def check_dependencies() -> None:
         raise Exception('NPM package is not installed. Please install the npm package.')
     npm_version = npm_result.stdout.strip()
     print(f'NPM version: {npm_version}')
+    pnpm_result = subprocess.run('pnpm -v', capture_output=True, shell=True, text=True)
+    if pnpm_result.returncode == 0:
+        print(f'PNPM version: {pnpm_result.stdout.strip()}')
 
 
 def bootstrap(
@@ -33,13 +58,14 @@ def bootstrap(
         global_python_env: pathlib.Path,
         single_element: bool
 ) -> None:
-    if global_python_env:
-        # Global python environment is not supported for this element.
-        return
     if url is None or username is None or password is None:
         raise Exception("Please provide --user --password and --url arguments.")
-    subprocess.run('npm ci', cwd=element_path, shell=True, check=True)
-    subprocess.run('npm run bootstrap quiet', cwd=element_path, shell=True, check=True)
+    if _use_pnpm(element_path):
+        _run(element_path, 'pnpm install --no-frozen-lockfile')
+        _run(element_path, 'pnpm run bootstrap quiet')
+    else:
+        _run(element_path, 'npm ci')
+        _run(element_path, 'npm run bootstrap quiet')
 
 
 def get_build_dependencies() -> List[str]:
@@ -47,13 +73,13 @@ def get_build_dependencies() -> List[str]:
 
 
 def build(element_path: pathlib.Path) -> None:
-    subprocess.run('npm run build', cwd=element_path, shell=True, check=True)
+    _run(element_path, f'{_package_manager(element_path)} run build')
 
 
 def deploy(element_path: pathlib.Path, url: str, username: str, password: str) -> None:
     # temporarily save the username, password, and url to the bootstrap file so that the deploy script can use them
     credentials_json = load_json(CREDENTIALS_JSON_FILE)
-    save_json(CREDENTIALS_JSON_FILE, {'accessKey': username, 'password': password, 'url': url})
+    save_json(CREDENTIALS_JSON_FILE, {'username': username, 'password': password, 'url': url})
     try:
         subprocess.run('node ./package-scripts.js deploy', cwd=element_path, shell=True, check=True)
     finally:
@@ -69,11 +95,11 @@ def get_files_to_package(element_path: pathlib.Path) -> List[str]:
 
 
 def watch(element_path: pathlib.Path, url: str, username: str, password: str) -> subprocess.Popen:
-    return subprocess.Popen('npm run watch', cwd=element_path, shell=True)
+    return subprocess.Popen(f'{_package_manager(element_path)} run watch', cwd=element_path, shell=True)
 
 
-def test(element_path: pathlib.Path) -> None:
-    subprocess.run('npm run test', cwd=element_path, shell=True, check=True)
+def test(element_path: pathlib.Path, markers: str | None = None) -> None:
+    _run(element_path, f'{_package_manager(element_path)} run test')
 
 
 if __name__ == "__main__":

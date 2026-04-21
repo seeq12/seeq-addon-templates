@@ -1,0 +1,11 @@
+{% from pathjoin('includes', 'slug.jinja') import slugify %}
+{
+  "include": [
+    "{{ dlf_path_override or ((slugify(project_name) | trim) ~ '-data-lab-functions') }}"
+  ],
+  "exclude": [
+    "**/__pycache__",
+    "**/.venv",
+    "_dev_tools"
+  ]
+}

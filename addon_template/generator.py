@@ -1,17 +1,26 @@
 #!/usr/bin/env python
+import importlib
 import os
 import shutil
 import argparse
 import pathlib
 import subprocess
 
-import copier
 from addon_template._dev_tools.utils import create_virtual_environment
 
 
 CURRENT_DIRECTORY = pathlib.Path(__file__).parent.resolve()
 WINDOWS_OS = os.name == 'nt'
 SOURCE_REPOSITORY = 'seeq-addon-templates'
+def _load_copier():
+    try:
+        return importlib.import_module("copier")
+    except ModuleNotFoundError as exc:
+        raise ModuleNotFoundError(
+            "Copier is not available in the current Python environment. "
+            "Install the existing add-on tooling with ./install_template "
+            "or run this command from the managed ~/.sq-addon/.venv environment."
+        ) from exc
 
 
 def get_git_repo_name(path: pathlib.Path):
@@ -91,7 +100,29 @@ def info_open_ide(destination_path):
             f"\n{'*' * 80}")
 
 
+def render_template(destination_path: pathlib.Path, data: dict | None = None, overwrite: bool = True) -> None:
+    copier = _load_copier()
+    destination_path = destination_path.resolve()
+    if is_path_in_source_git_repo(destination_path):
+        raise Exception(
+            "Creating a new Add-on inside the source repository is not allowed. "
+            "Try a different destination path"
+        )
+    copier.run_copy(
+        str(CURRENT_DIRECTORY),
+        dst_path=str(destination_path),
+        data=data,
+        defaults=True,
+        overwrite=overwrite,
+        unsafe=True,
+    )
+    copy_dev_tools(destination_path)
+    rename_gitignore(destination_path)
+    delete_pycache(destination_path)
+
+
 def create_addon(args):
+    copier = _load_copier()
     data = args.data
     destination_path = pathlib.Path(args.dst_path).resolve()
     args = modify_args(args, destination_path)
@@ -117,6 +148,7 @@ def create_addon(args):
 
 
 def update_addon(args=None):
+    copier = _load_copier()
     data = args.data
     destination_path = pathlib.Path(args.dst_path).resolve()
     args = modify_args(args, destination_path)

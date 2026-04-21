@@ -1,0 +1,52 @@
+{%- set company = company_name|replace(' ', '_')|regex_replace('(?<=[a-z_])([A-Z])', '_\\1')|replace('__', '_')|lower|trim -%}
+{%- set identifier = project_name|replace(' ', '_')|regex_replace('(?<=[a-z_])([A-Z])', '_\\1')|replace('__', '_')|lower|trim -%}
+{%- set plugin_identifier = plugin_identifier_override or ("com." ~ company ~ "." ~ identifier ~ ".display-pane-plugin") -%}
+import { useEffect, useState } from "react";
+import { getSeeq } from "./seeq";
+
+export default function App() {
+  const [sdkStatus, setSdkStatus] = useState("Checking Seeq SDK...");
+
+  useEffect(() => {
+    let cancelled = false;
+
+    getSeeq()
+      .then(() => {
+        if (!cancelled) {
+          setSdkStatus("Seeq SDK detected");
+        }
+      })
+      .catch((error: unknown) => {
+        if (cancelled) {
+          return;
+        }
+
+        const message = error instanceof Error ? error.message : "Seeq SDK not detected";
+        setSdkStatus(message);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return (
+    <main className="shell">
+      <section className="card">
+        <p className="eyebrow">Seeq Add-on</p>
+        <h1>{{ project_name }}</h1>
+        <p className="description">{{ project_description }}</p>
+        <dl className="facts">
+          <div>
+            <dt>Plugin Identifier</dt>
+            <dd>{{ plugin_identifier }}</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd>{sdkStatus}</dd>
+          </div>
+        </dl>
+      </section>
+    </main>
+  );
+}

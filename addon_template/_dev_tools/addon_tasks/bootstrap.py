@@ -13,6 +13,7 @@ from _dev_tools.addon_tasks.utils import (
 )
 
 from _dev_tools.utils import check_python_version, MIN_PYTHON_VERSION
+from _dev_tools.utils import create_virtual_environment
 
 
 def bootstrap(args):
@@ -20,10 +21,12 @@ def bootstrap(args):
     check_dependencies(target_elements)
     url, username, password = parse_url_username_password(args)
     save_json(CREDENTIALS_JSON_FILE, {'url': url, 'username': username, 'password': password})
+    global_python_env = pathlib.Path(args.global_python_env) if args.global_python_env else None
+    if global_python_env is not None:
+        create_virtual_environment(global_python_env, clean=args.clean, global_path=global_python_env)
     for element_path, element_type in target_elements.items():
         print(f'Bootstrapping element: {element_path}')
         single_element = True if args.dir else False
-        global_python_env = pathlib.Path(args.global_python_env) if args.global_python_env else None
         (get_module(element_path, element_type).
          bootstrap(pathlib.Path(element_path), url, username, password, args.clean, global_python_env, single_element))
 

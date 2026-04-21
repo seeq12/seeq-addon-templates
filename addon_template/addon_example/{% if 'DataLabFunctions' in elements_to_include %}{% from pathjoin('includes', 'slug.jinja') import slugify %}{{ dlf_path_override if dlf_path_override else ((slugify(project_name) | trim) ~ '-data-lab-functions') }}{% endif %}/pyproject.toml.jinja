@@ -1,0 +1,12 @@
+{% from pathjoin('includes', 'slug.jinja') import slugify %}
+[project]
+name = "{{ python_project_name_override or (slugify(project_name) | replace('_', '-') | trim) }}"
+version = "{{ project_version }}"
+description = "{{ project_description }}"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+markers = [
+  "unit: fast tests that do not require a live Seeq server",
+  "system: integration tests that call backend Python functions directly against a real Seeq server",
+]

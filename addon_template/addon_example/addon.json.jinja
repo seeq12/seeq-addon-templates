@@ -2,8 +2,16 @@
 {%- set identifier = slugify(project_name) -%}
 {%- set add_on_path = slugify(project_name) -%}
 {%- set company = slugify(company_name) -%}
+{%- set resolved_addon_identifier = addon_identifier_override or ("com." ~ company ~ "." ~ identifier) -%}
+{%- set resolved_plugin_name = plugin_name_override or (project_name ~ " Display Pane Plugin") -%}
+{%- set resolved_plugin_identifier = plugin_identifier_override or ("com." ~ company ~ "." ~ identifier ~ ".display-pane-plugin") -%}
+{%- set resolved_plugin_path = plugin_path_override or (add_on_path ~ "-display-pane-plugin") -%}
+{%- set resolved_dlf_name = dlf_name_override or ("com." ~ company ~ "." ~ identifier ~ ".data-lab-functions") -%}
+{%- set resolved_dlf_identifier = dlf_identifier_override or ("com." ~ company ~ "." ~ identifier ~ ".data-lab-functions") -%}
+{%- set resolved_dlf_path = dlf_path_override or (add_on_path ~ "-data-lab-functions") -%}
+{%- set resolved_dlf_kernel = dlf_kernel_name_override or "python311" -%}
 {
-  "identifier": "com.{{company}}.{{ identifier }}",
+  "identifier": "{{ resolved_addon_identifier }}",
   "name": "{{ project_name }}",
   "description": "{{ project_description }}",
   "version": "{{ project_version }}",
@@ -94,11 +102,11 @@
     {% endif %}
     {% if 'DisplayPanePlugin' in elements_to_include %}
     {
-      "name": "{{ project_name }} Display Pane Plugin",
-      "identifier": "com.{{company}}.{{identifier}}.display-pane-plugin",
+      "name": "{{ resolved_plugin_name }}",
+      "identifier": "{{ resolved_plugin_identifier }}",
       "type": "Plugin",
       "category": "DisplayPane",
-      "path": "{{ add_on_path }}-display-pane-plugin"
+      "path": "{{ resolved_plugin_path }}"
     }{% if 'ToolPanePlugin' in elements_to_include or 'DataLabFunctions' in elements_to_include or 'FormulaPackage' in elements_to_include %}, {% endif %}
     {% endif %}
     {% if 'ToolPanePlugin' in elements_to_include %}
@@ -112,10 +120,10 @@
     {% endif %}
     {% if 'DataLabFunctions' in elements_to_include %}
     {
-      "name": "com.{{company}}.{{identifier}}.data-lab-functions",
-      "identifier": "com.{{company}}.{{identifier}}.data-lab-functions",
+      "name": "{{ resolved_dlf_name }}",
+      "identifier": "{{ resolved_dlf_identifier }}",
       "type": "DataLabFunctions",
-      "path": "{{ add_on_path }}-data-lab-functions",
+      "path": "{{ resolved_dlf_path }}",
       "configuration_schema": {    
         "type": "object",
         "properties": {
@@ -124,7 +132,7 @@
             "properties": {
               "kernel_name": {
                 "type": "string",
-                "default": "python311"
+                "default": "{{ resolved_dlf_kernel }}"
               }
             },
             "required": ["kernel_name"]

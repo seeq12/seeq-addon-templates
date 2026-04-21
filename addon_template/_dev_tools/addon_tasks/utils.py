@@ -288,18 +288,34 @@ def check_feature_is_enabled(url, username, password, feature_path):
                         f"Feature {feature_path} is not enabled. Please contact your Seeq administrator to enable it")
 
 
-def _get_authenticated_session(element_path, url, username, password):
+def _get_authenticated_session(url, username, password):
     from seeq import sdk, spy
     spy.login(username=username, password=password, url=url, quiet=True)
     auth_header = {'sq-auth': spy.client.auth_token}
+    requests_session = _create_requests_session()
+    return requests_session, auth_header
+
+
+def get_or_create_dlf_project_id(element_path, url, username, password):
+    from seeq import sdk, spy
+    spy.login(username=username, password=password, url=url, quiet=True)
     items_api = sdk.ItemsApi(spy.client)
+    projects_api = sdk.ProjectsApi(spy.client)
     element_project_name = get_element_identifier_from_path(element_path)
     response = items_api.search_items(filters=[f'name=={element_project_name}'], types=['Project'])
-    if len(response.items) == 0:
-        raise Exception(f"Could not find a project with name {element_project_name}")
-    project_id = response.items[0].id
-    requests_session = _create_requests_session()
-    return requests_session, auth_header, project_id
+    if len(response.items) > 0:
+        return response.items[0].id
+
+    created_project = projects_api.create_project(
+        body=sdk.ProjectInputV1(
+            name=element_project_name,
+            description=f"{element_project_name} Data Lab Functions project",
+            project_type="DATA_LAB_FUNCTIONS",
+            startup_environment="system",
+            resource_size="GP_S",
+        )
+    )
+    return created_project.id
 
 
 def _create_requests_session():
@@ -386,7 +402,8 @@ async def hot_reload(element_path: pathlib.Path, url: str, username: str, passwo
                      file_extensions: set, excluded_files: set, excluded_folders: set):
 
     from watchfiles import awatch, Change
-    requests_session, auth_header, project_id = _get_authenticated_session(element_path, url, username, password)
+    requests_session, auth_header = _get_authenticated_session(url, username, password)
+    project_id = get_or_create_dlf_project_id(element_path, url, username, password)
     async for changes in awatch(element_path):
         for change in changes:
             if isdir(change[1]):

@@ -1,8 +1,12 @@
 # Overview
 
-This repository contains a templated project and utilities to generate packaged Add-on examples that are easily and
-quickly deployed into Seeq via the Add-on Manager. The example packaged Add-on can be used as a starting point for
-developing your own Add-ons.
+This repository contains the Seeq add-on template sources, deploy tooling, and example assets used to generate
+packaged add-ons for Seeq.
+
+There are now two supported ways to use it:
+
+- `addon create` / `addon update`: the existing Copier-driven flow for current consumers.
+- `scripts/create_addon.py`: a thin agent-friendly flow that instantiates a concrete project from `addon.json`.
 
 # Prerequisites
 
@@ -28,6 +32,37 @@ Once the installation is complete you can run `addon --help` from a terminal win
 Prompt in Windows) to see the available commands.
 
 # Usage
+
+## Agent-friendly flow
+
+The new agent-focused path keeps `addon.json` as the only contract an agent needs to author, then instantiates a
+concrete project with real files:
+
+```bash
+python3 scripts/validate_addon.py --mode contract --addon /path/to/addon.json
+python3 scripts/create_addon.py --addon /path/to/addon.json --output /path/to/new-addon
+python3 scripts/validate_addon.py --mode project --addon /path/to/new-addon/addon.json
+```
+
+For the first implementation slice this supports:
+
+- one `Plugin` element with `category: "DisplayPane"`
+- optional one `DataLabFunctions` element
+
+The generated project reuses the existing `addon.py` and `_dev_tools` flow, so after instantiation you work inside a
+normal add-on project:
+
+```bash
+cd /path/to/new-addon
+python3 addon.py bootstrap --url http://localhost:34216 --username <username> --password <password> --global-python-env .
+python3 addon.py build
+python3 addon.py deploy
+python3 addon.py package
+```
+
+See [AGENT_WORKFLOW.md](./AGENT_WORKFLOW.md) for the intended end-to-end agent interaction model.
+
+## Existing flow
 
 There are two main commands available in the Add-on Example Generator:
 
